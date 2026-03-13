@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Move Pé Calçados — Stories Manager</title>
+<link rel="manifest" href="./manifest.json"/>
+<meta name="theme-color" content="#0a0a0f"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Move Pé Stories"/>
+<link rel="apple-touch-icon" href="./icons/icon-192x192.png"/>
+<link rel="icon" type="image/png" href="./icons/favicon.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --surface3: #22222f;
+  --border: #2a2a3a;
+  --border2: #333345;
+  --accent: #6c63ff;
+  --accent2: #a78bfa;
+  --accent3: #38bdf8;
+  --green: #34d399;
+  --orange: #fb923c;
+  --red: #f87171;
+  --text: #f0f0f8;
+  --text2: #9898b8;
+  --text3: #555577;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* LAYOUT */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0 0;
+  overflow-y: auto;
+}
+
+#sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+.sidebar-logo {
+  padding: 0 20px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-circle {
+  width: 82px;
+  height: 82px;
+  background: #111;
+  border-radius: 50%;
+  border: 3px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  box-shadow: 0 0 0 1px #444, 0 4px 18px rgba(0,0,0,0.5);
+  flex-shrink: 0;
+}
+
+.logo-line1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.logo-line2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.sidebar-logo p {
+  font-size: 11px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  margin: 0 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.18s;
+  font-size: 13.5px;
+  color: var(--text2);
+  font-weight: 500;
+  position: relative;
+}
+
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: rgba(108,99,255,0.15); color: var(--accent2); }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 20px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.badge.green { background: var(--green); }
+.badge.accent { background: var(--accent); }
+
+.sidebar-bottom {
+  padding: 12px 8px 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.status-dot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(52,211,153,0.08);
+  border: 1px solid rgba(52,211,153,0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+
+.dot-pulse {
+  width: 7px; height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* TOPBAR */
+.topbar {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+}
+
+.topbar-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.topbar-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.stat-chip .val {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-chip .lbl {
+  font-size: 10px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-chip.blue .val { color: var(--accent2); }
+.stat-chip.green .val { color: var(--green); }
+.stat-chip.red .val { color: var(--red); }
+.stat-chip.orange .val { color: var(--orange); }
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  color: white;
+  box-shadow: 0 4px 16px rgba(108,99,255,0.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(108,99,255,0.4); }
+
+.btn-ghost {
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface3); }
+
+/* CONTENT */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* WEEK NAVIGATOR */
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.week-nav .week-range {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 140px;
+  text-align: center;
+}
+
+.nav-btn {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.nav-btn:hover { background: var(--surface3); color: var(--text); }
+
+.today-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: rgba(108,99,255,0.12);
+  border: 1px solid rgba(108,99,255,0.3);
+  color: var(--accent2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.today-btn:hover { background: rgba(108,99,255,0.2); }
+
+.select-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.select-btn:hover { color: var(--text); }
+
+/* TIMELINE GRID */
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+
+.day-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.day-header {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 14px 12px;
+}
+
+.day-header .day-name {
+  font-size: 12px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.day-header .day-date {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.day-header .day-count {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.day-col.today .day-header {
+  background: rgba(108,99,255,0.15);
+  border-color: rgba(108,99,255,0.45);
+  box-shadow: 0 0 0 1px rgba(108,99,255,0.2);
+}
+
+.day-col.today .day-header .day-date { color: var(--accent2); }
+
+.add-story-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(108,99,255,0.6);
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.add-story-btn:hover { background: var(--accent); transform: scale(1.1); }
+
+.day-header-wrap {
+  position: relative;
+}
+
+/* STORY CARDS */
+.story-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  aspect-ratio: 9/14;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  min-height: 110px;
+}
+
+.story-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+  border-color: var(--accent);
+  z-index: 2;
+}
+
+.story-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.story-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  background: linear-gradient(135deg, var(--surface2), var(--surface3));
+}
+
+.story-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+  padding: 24px 10px 9px;
+}
+
+.story-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-time {
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 2px;
+}
+
+.story-status {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.story-status.posted { background: rgba(52,211,153,0.95); }
+.story-status.scheduled { background: rgba(108,99,255,0.95); }
+.story-status.error { background: rgba(248,113,113,0.95); }
+
+.empty-day {
+  aspect-ratio: 9/14;
+  min-height: 110px;
+  border-radius: var(--radius);
+  border: 2px dashed var(--border2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 22px;
+  color: var(--border2);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.empty-day:hover { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.06); }
+.empty-day::after { content: 'Adicionar'; font-size: 10px; font-weight: 600; letter-spacing: .04em; font-family: 'DM Sans', sans-serif; }
+
+/* SECTION PANELS */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  flex: 1;
+}
+
+/* LIBRARY GRID */
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+  padding: 16px 20px;
+}
+
+.lib-item {
+  aspect-ratio: 9/16;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.lib-item:hover { border-color: var(--accent); transform: scale(1.03); }
+
+.lib-item .lib-emoji {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  background: linear-gradient(135deg, var(--surface2), var(--surface3));
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  width: 460px;
+  max-width: 95vw;
+  padding: 28px;
+  transform: translateY(20px) scale(0.97);
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+}
+
+.modal-overlay.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+
+.form-select option { background: var(--surface2); }
+
+.upload-zone {
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.upload-zone:hover { border-color: var(--accent); background: rgba(108,99,255,0.05); }
+.upload-zone .upload-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-zone p { font-size: 13px; color: var(--text2); }
+.upload-zone span { font-size: 11px; color: var(--text2); opacity: 0.6; margin-top: 4px; display: block; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  justify-content: flex-end;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface2);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.tab {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text2);
+  border: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tab.active {
+  background: var(--surface3);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: flex; flex-direction: column; gap: 20px; }
+
+/* LOGS */
+.log-list { padding: 12px 20px; display: flex; flex-direction: column; gap: 6px; }
+
+.log-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+}
+
+.log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.log-dot.ok { background: var(--green); }
+.log-dot.err { background: var(--red); }
+.log-dot.warn { background: var(--orange); }
+.log-time { color: var(--text2); font-size: 11px; min-width: 50px; }
+.log-msg { flex: 1; color: var(--text); }
+.log-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600;
+}
+.log-tag.ok { background: rgba(52,211,153,0.15); color: var(--green); }
+.log-tag.err { background: rgba(248,113,113,0.15); color: var(--red); }
+.log-tag.warn { background: rgba(251,146,60,0.15); color: var(--orange); }
+
+/* CONFIG */
+.config-section {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.config-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.config-icon { font-size: 20px; width: 32px; text-align: center; }
+
+.config-info { flex: 1; }
+.config-info h4 { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.config-info p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--border2);
+  border-radius: 20px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  border: none;
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle.on::after { left: 21px; }
+
+/* CONNECT BANNER */
+.connect-banner {
+  background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(56,189,248,0.1));
+  border: 1px solid rgba(108,99,255,0.3);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.connect-banner .icon { font-size: 36px; }
+.connect-banner h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+.connect-banner p { font-size: 12.5px; color: var(--text2); margin-top: 4px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 200;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast.success { border-color: rgba(52,211,153,0.4); }
+.toast.success .t-icon { color: var(--green); }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 0 -28px; }
+
+/* SCROLLBAR for content */
+* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(8px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.timeline-grid { animation: fadeIn 0.3s ease; }
+
+/* METRICS */
+.metrics-grid-top {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+  animation: fadeIn 0.35s ease both;
+}
+
+.metric-card:hover { border-color: var(--border2); }
+
+.metric-card .mc-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metric-card .mc-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metric-card .mc-delta {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mc-delta.up { color: var(--green); }
+.mc-delta.down { color: var(--red); }
+.mc-delta.neutral { color: var(--text2); }
+
+.metrics-grid-mid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.metrics-grid-bot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+canvas { display: block; }
+
+.chart-wrap {
+  padding: 16px 20px 20px;
+  position: relative;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.metric-period-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface2);
+  padding: 3px;
+  border-radius: 7px;
+}
+
+.mpt {
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text2);
+  border: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+}
+.mpt.active { background: var(--surface3); color: var(--text); }
+
+.top-story-list {
+  padding: 0 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.top-story-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--surface2);
+  transition: background 0.15s;
+  cursor: default;
+}
+.top-story-row:hover { background: var(--surface3); }
+
+.ts-rank {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text2);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.ts-rank.gold { color: #fbbf24; }
+.ts-rank.silver { color: #94a3b8; }
+.ts-rank.bronze { color: #c2783b; }
+
+.ts-emoji { font-size: 18px; flex-shrink: 0; }
+.ts-info { flex: 1; min-width: 0; }
+.ts-title { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ts-cat { font-size: 10px; color: var(--text2); }
+
+.ts-bar-wrap { width: 80px; flex-shrink: 0; }
+.ts-bar-bg { height: 4px; background: var(--border2); border-radius: 4px; overflow: hidden; }
+.ts-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent3)); }
+
+.ts-views { font-size: 12px; font-weight: 700; color: var(--text); min-width: 42px; text-align: right; flex-shrink: 0; }
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: 40px repeat(7, 1fr);
+  gap: 3px;
+  padding: 0 20px 16px;
+}
+
+.hm-label {
+  font-size: 10px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+
+.hm-day-label {
+  font-size: 10px;
+  color: var(--text2);
+  text-align: center;
+  padding-bottom: 4px;
+}
+
+.hm-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  position: relative;
+}
+.hm-cell:hover { transform: scale(1.15); z-index: 2; }
+
+.hm-tooltip {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* NOTIFICATION BANNER */
+.notif-banner {
+  display: none;
+  position: fixed;
+  top: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid rgba(163,230,53,0.4);
+  border-radius: 14px;
+  padding: 14px 20px;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  z-index: 300;
+  min-width: 380px;
+  max-width: 90vw;
+  animation: slideDown 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes slideDown {
+  from { opacity:0; transform: translateX(-50%) translateY(-20px); }
+  to   { opacity:1; transform: translateX(-50%) translateY(0); }
+}
+
+.notif-banner.show { display: flex; }
+
+.notif-icon-wrap {
+  width: 42px; height: 42px;
+  background: rgba(163,230,53,0.12);
+  border: 1px solid rgba(163,230,53,0.3);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+/* NOTIF STATUS in sidebar */
+.notif-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+
+.notif-status.off {
+  background: rgba(248,113,113,0.08);
+  border-color: rgba(248,113,113,0.2);
+  color: var(--red);
+}
+
+.notif-status.on {
+  background: rgba(163,230,53,0.08);
+  border-color: rgba(163,230,53,0.2);
+  color: #a3e635;
+}
+
+.notif-status:hover { opacity: 0.8; }
+
+/* STORY CARD notif badge */
+.story-notif-badge {
+  position: absolute;
+  top: 7px; left: 7px;
+  background: rgba(163,230,53,0.9);
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #0a0a0f;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* NOTIFICATION LOG in sidebar bottom */
+.next-story-widget {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: rgba(108,99,255,0.08);
+  border: 1px solid rgba(108,99,255,0.2);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+
+.next-story-widget .nsw-label {
+  color: var(--text2);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: 10px;
+}
+
+.next-story-widget .nsw-title {
+  color: var(--text);
+  font-weight: 600;
+  margin-top: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.next-story-widget .nsw-time {
+  color: var(--accent2);
+  font-weight: 700;
+  font-size: 13px;
+  margin-top: 2px;
+  font-family: 'Syne', sans-serif;
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-circle">
+        <span class="logo-line1">MOVE PÉ</span>
+        <span class="logo-line2">CALÇADOS</span>
+      </div>
+      <p id="sidebar-store-name" style="margin-top:10px; font-size:11px; color:var(--text2);">Stories Manager</p>
+    </div>
+
+    <nav id="sidebar-nav">
+      <div class="nav-item active" data-page="timeline" onclick="navigate(this)">
+        <span class="nav-icon">📅</span> Timeline
+      </div>
+      <div class="nav-item" data-page="upload" onclick="navigate(this)">
+        <span class="nav-icon">⬆️</span> Upload
+      </div>
+      <div class="nav-item" data-page="library" onclick="navigate(this)">
+        <span class="nav-icon">🖼️</span> Biblioteca
+      </div>
+      <div class="nav-item" data-page="metrics" onclick="navigate(this)">
+        <span class="nav-icon">📊</span> Métricas
+        <span class="badge green">New</span>
+      </div>
+      <div class="nav-item" data-page="logs" onclick="navigate(this)">
+        <span class="nav-icon">🔴</span> Erros / Logs
+        <span class="badge" id="error-badge">3</span>
+      </div>
+      <div class="nav-item" data-page="config" onclick="navigate(this)">
+        <span class="nav-icon">⚙️</span> Config
+      </div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="status-dot">
+        <div class="dot-pulse"></div>
+        Sistema ativo
+      </div>
+      <div class="notif-status off" id="notif-status" onclick="requestNotifPermission()" title="Clique para ativar notificações">
+        <span id="notif-status-icon">🔕</span>
+        <span id="notif-status-label">Notificações desativadas</span>
+      </div>
+      <div class="next-story-widget" id="next-story-widget" style="display:none">
+        <div class="nsw-label">⏰ Próximo story</div>
+        <div class="nsw-title" id="nsw-title">—</div>
+        <div class="nsw-time" id="nsw-time">—</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title" id="page-title">Timeline da Semana</div>
+      <div class="topbar-stats">
+        <div class="stat-chip blue"><span class="val" id="stat-agendados">0</span><span class="lbl">Agendados</span></div>
+        <div class="stat-chip green"><span class="val" id="stat-postados">0</span><span class="lbl">Postados</span></div>
+        <div class="stat-chip red"><span class="val" id="stat-erros">3</span><span class="lbl">Erros</span></div>
+        <div class="stat-chip orange"><span class="val" id="stat-midias">0</span><span class="lbl">Mídias</span></div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal()">✨ Organizar Semana</button>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- PAGE: TIMELINE -->
+      <div class="page active" id="page-timeline">
+
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div class="week-nav">
+            <button class="nav-btn" onclick="changeWeek(-1)">‹</button>
+            <span class="week-range" id="week-range">--/-- – --/--</span>
+            <button class="nav-btn" onclick="changeWeek(1)">›</button>
+          </div>
+          <button class="today-btn" onclick="goToday()">Hoje</button>
+          <button class="select-btn" onclick="showToast('Modo seleção ativado', '✅')">⊞ Modo seleção</button>
+        </div>
+
+        <div class="timeline-grid" id="timeline-grid"></div>
+      </div>
+
+      <!-- PAGE: UPLOAD -->
+      <div class="page" id="page-upload">
+        <div class="panel">
+          <div class="panel-header">
+            <span>⬆️</span>
+            <span class="panel-title">Fazer Upload de Stories</span>
+          </div>
+          <div style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+            <div class="upload-zone" onclick="showToast('Selecione os arquivos', '📂')" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+              <div class="upload-icon">📁</div>
+              <p>Arraste os arquivos aqui ou clique para selecionar</p>
+              <span>Suporta: MP4, MOV, JPG, PNG — máx. 30MB por arquivo</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Título / Descrição</label>
+              <input type="text" class="form-input" placeholder="Ex: Nike Air Force — Promoção semana 11" id="upload-title"/>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Data de postagem</label>
+                <input type="date" class="form-input" id="upload-date"/>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Horário</label>
+                <input type="time" class="form-input" value="09:00" id="upload-time"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Categoria</label>
+              <select class="form-select" id="upload-cat">
+                <option value="">Selecione uma categoria</option>
+                <option value="promo">🔥 Promoção</option>
+                <option value="produto">👟 Produto</option>
+                <option value="dica">💡 Dica</option>
+                <option value="depoimento">⭐ Depoimento</option>
+                <option value="bastidores">🎬 Bastidores</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" style="align-self:flex-start" onclick="addFromUpload()">➕ Adicionar à Biblioteca</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: LIBRARY -->
+      <div class="page" id="page-library">
+        <div class="panel">
+          <div class="panel-header">
+            <span>🖼️</span>
+            <span class="panel-title">Biblioteca de Mídias</span>
+            <div class="tabs">
+              <button class="tab active" onclick="filterLib(this,'todos')">Todos</button>
+              <button class="tab" onclick="filterLib(this,'promo')">Promoções</button>
+              <button class="tab" onclick="filterLib(this,'produto')">Produtos</button>
+              <button class="tab" onclick="filterLib(this,'dica')">Dicas</button>
+            </div>
+          </div>
+          <div class="library-grid" id="library-grid"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: LOGS -->
+      <div class="page" id="page-logs">
+        <div class="panel">
+          <div class="panel-header">
+            <span>📋</span>
+            <span class="panel-title">Logs do Sistema</span>
+            <button class="btn btn-ghost" style="padding:6px 12px; font-size:12px;" onclick="clearLogs()">🗑 Limpar</button>
+          </div>
+          <div class="log-list" id="log-list"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: CONFIG -->
+      <div class="page" id="page-config">
+
+        <!-- API CONNECTION PANEL -->
+        <div class="panel" id="api-panel">
+          <div class="panel-header">
+            <span>📸</span>
+            <span class="panel-title">Conexão Instagram API</span>
+            <span id="api-status-badge" style="margin-left:auto; font-size:11px; padding:3px 10px; border-radius:20px; background:var(--surface3); color:var(--text2);">Não conectado</span>
+          </div>
+          <div class="config-section">
+
+            <div style="background:var(--surface2); border-radius:var(--radius-sm); padding:14px; margin-bottom:8px; border:1px solid var(--border);">
+              <p style="font-size:12px; color:var(--text2); line-height:1.6;">
+                🔐 Cole abaixo o <strong style="color:var(--text)">Token de Acesso</strong> gerado no Explorador da Graph API. O token fica salvo <strong style="color:var(--text)">apenas no seu dispositivo</strong> e nunca é enviado para nenhum servidor externo.
+              </p>
+            </div>
+
+            <div class="config-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
+              <label style="font-size:12px; font-weight:600; color:var(--text2);">Token de Acesso</label>
+              <div style="display:flex; gap:8px; width:100%;">
+                <input type="password" id="ig-token-input" class="form-input" style="flex:1; padding:9px 12px; font-size:13px;" placeholder="Cole o token aqui..."/>
+                <button class="btn btn-primary" onclick="saveIGToken()" style="white-space:nowrap;">Salvar token</button>
+              </div>
+              <p id="token-saved-msg" style="font-size:12px; color:var(--green); display:none;">✅ Token salvo com sucesso!</p>
+            </div>
+
+            <div class="config-row" style="margin-top:4px;">
+              <div class="config-icon">🔍</div>
+              <div class="config-info">
+                <h4>Testar conexão</h4>
+                <p>Verifica se o token está válido e a conta está acessível</p>
+              </div>
+              <button class="btn" onclick="testIGConnection()" style="font-size:12px; padding:7px 14px;">Testar</button>
+            </div>
+
+            <div id="ig-account-info" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:14px; border:1px solid var(--green); margin-top:4px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:42px; height:42px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px;">📷</div>
+                <div>
+                  <div id="ig-account-name" style="font-size:14px; font-weight:700; color:var(--text);">—</div>
+                  <div id="ig-account-followers" style="font-size:12px; color:var(--text2); margin-top:2px;">—</div>
+                </div>
+                <div style="margin-left:auto; background:var(--green); color:#000; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ Conectado</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PUBLISH STORY PANEL -->
+        <div class="panel" id="publish-panel">
+          <div class="panel-header">
+            <span>🚀</span>
+            <span class="panel-title">Publicar Stories no Instagram</span>
+          </div>
+          <div class="config-section">
+
+            <!-- Upload zone múltiplos arquivos -->
+            <div id="upload-zone" onclick="document.getElementById('file-input').click()"
+              style="border:2px dashed var(--border2); border-radius:var(--radius); padding:28px; text-align:center; cursor:pointer; transition:.2s; background:var(--surface2);"
+              ondragover="event.preventDefault(); this.style.borderColor='var(--accent)'"
+              ondragleave="this.style.borderColor='var(--border2)'"
+              ondrop="handleFileDrop(event)">
+              <div style="font-size:36px; margin-bottom:8px;">📁</div>
+              <div style="font-size:14px; font-weight:600; color:var(--text);">Clique ou arraste as fotos/vídeos aqui</div>
+              <div style="font-size:12px; color:var(--text2); margin-top:4px;">JPG, PNG, MP4 • Vários arquivos de uma vez • Máx 100MB cada</div>
+              <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleFileSelect(this)"/>
+            </div>
+
+            <!-- Lista de arquivos selecionados -->
+            <div id="files-list" style="display:none; margin-top:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:12px; font-weight:600; color:var(--text2);">ARQUIVOS SELECIONADOS</span>
+                <button onclick="clearAllFiles()" style="background:none; border:none; color:var(--red); font-size:12px; cursor:pointer;">Limpar tudo</button>
+              </div>
+              <div id="files-grid" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+            </div>
+
+            <!-- Modo de publicação -->
+            <div style="background:var(--surface2); border-radius:var(--radius-sm); padding:14px; border:1px solid var(--border); margin-top:4px;">
+              <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:10px;">MODO DE PUBLICAÇÃO</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button id="mode-now-btn" class="btn btn-primary" onclick="setPublishMode('now')" style="font-size:12px; padding:8px 16px;">⚡ Publicar agora</button>
+                <button id="mode-sched-btn" class="btn" onclick="setPublishMode('scheduled')" style="font-size:12px; padding:8px 16px;">⏰ Agendar</button>
+              </div>
+
+              <!-- Opções de agendamento -->
+              <div id="schedule-options" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+                  <div>
+                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">DATA</label>
+                    <input type="date" id="sched-date" class="form-input" style="padding:8px 10px; font-size:13px;"/>
+                  </div>
+                  <div>
+                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">HORÁRIO</label>
+                    <input type="time" id="sched-time" class="form-input" style="padding:8px 10px; font-size:13px;"/>
+                  </div>
+                  <div>
+                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">INTERVALO ENTRE STORIES</label>
+                    <select id="sched-interval" class="form-input" style="padding:8px 10px; font-size:13px;">
+                      <option value="0">Todos juntos</option>
+                      <option value="30">30 minutos</option>
+                      <option value="60" selected>1 hora</option>
+                      <option value="120">2 horas</option>
+                      <option value="180">3 horas</option>
+                    </select>
+                  </div>
+                </div>
+                <p style="font-size:11px; color:var(--text2); margin-top:8px;">💡 Se selecionar vários arquivos com intervalo, cada um será postado no horário definido + o intervalo.</p>
+              </div>
+            </div>
+
+            <!-- Fila de agendados -->
+            <div id="scheduled-queue" style="display:none; margin-top:4px;">
+              <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:8px;">⏰ FILA DE AGENDADOS</div>
+              <div id="queue-list"></div>
+            </div>
+
+            <!-- Progress geral -->
+            <div id="upload-progress-wrap" style="display:none; margin-top:8px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-bottom:4px;">
+                <span id="upload-status-text">Enviando...</span>
+                <span id="upload-pct">0%</span>
+              </div>
+              <div style="background:var(--surface3); border-radius:20px; height:8px; overflow:hidden;">
+                <div id="upload-bar" style="height:100%; background:var(--accent); border-radius:20px; width:0%; transition:width .4s;"></div>
+              </div>
+            </div>
+
+            <!-- Botão principal -->
+            <div class="config-row" style="margin-top:8px;">
+              <div class="config-icon">📤</div>
+              <div class="config-info">
+                <h4 id="publish-btn-label">Publicar agora no Instagram</h4>
+                <p id="publish-btn-sub">Faz upload e publica todos os stories selecionados</p>
+              </div>
+              <button class="btn btn-primary" onclick="handlePublish()" style="font-size:13px; padding:9px 20px;" id="main-publish-btn">Publicar →</button>
+            </div>
+
+            <div id="publish-result" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:12px; margin-top:4px; border:1px solid var(--border);">
+              <p id="publish-result-msg" style="font-size:13px; color:var(--text);"></p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- GENERAL SETTINGS -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚙️</span>
+            <span class="panel-title">Configurações Gerais</span>
+          </div>
+          <div class="config-section">
+
+            <div class="config-row">
+              <div class="config-icon">⏰</div>
+              <div class="config-info">
+                <h4>Postagem automática</h4>
+                <p>Posta os stories no horário agendado automaticamente</p>
+              </div>
+              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🔔</div>
+              <div class="config-info">
+                <h4>Notificações de erros</h4>
+                <p>Receba alertas quando um story falhar ao postar</p>
+              </div>
+              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🔁</div>
+              <div class="config-info">
+                <h4>Retentar automaticamente</h4>
+                <p>Tenta novamente após 30min em caso de falha</p>
+              </div>
+              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🏷️</div>
+              <div class="config-info">
+                <h4>Nome da loja</h4>
+                <p>Aparece na barra lateral do sistema</p>
+              </div>
+              <input type="text" class="form-input" style="width:180px; padding:7px 10px; font-size:13px;" id="store-name-input" placeholder="Move Pé Calçados" oninput="updateStoreName(this.value)"/>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🕐</div>
+              <div class="config-info">
+                <h4>Horário padrão de postagem</h4>
+                <p>Usado quando nenhum horário é especificado</p>
+              </div>
+              <input type="time" class="form-input" value="09:00" style="width:100px; padding:7px 10px; font-size:13px;"/>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: METRICS -->
+      <div class="page" id="page-metrics">
+
+        <!-- Period selector -->
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span style="font-size:13px; font-weight:600; color:var(--text2)">Período:</span>
+          <div class="metric-period-tabs" id="main-period-tabs">
+            <button class="mpt active" onclick="setMainPeriod(this,'semana')">Esta semana</button>
+            <button class="mpt" onclick="setMainPeriod(this,'mes')">Este mês</button>
+            <button class="mpt" onclick="setMainPeriod(this,'mes_ant')">Mês anterior</button>
+          </div>
+          <span id="period-label" style="font-size:12px; color:var(--text2); margin-left:4px;">Março 2026</span>
+        </div>
+
+        <!-- KPI Cards Row 1: Stories -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
+          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">📱 Stories</span>
+          <div style="flex:1; height:1px; background:var(--border);"></div>
+        </div>
+        <div class="metrics-grid-top">
+          <div class="metric-card" style="animation-delay:0.0s; border-top: 2px solid var(--accent)">
+            <div class="mc-label">👁️ Visualizações</div>
+            <div class="mc-val" id="kpi-views" style="color:var(--accent2)">24.8k</div>
+            <div class="mc-delta up" id="kpi-views-d">▲ 18% vs período anterior</div>
+          </div>
+          <div class="metric-card" style="animation-delay:0.05s; border-top: 2px solid var(--green)">
+            <div class="mc-label">💬 Respostas</div>
+            <div class="mc-val" id="kpi-replies" style="color:var(--green)">312</div>
+            <div class="mc-delta up" id="kpi-replies-d">▲ 24% vs período anterior</div>
+          </div>
+          <div class="metric-card" style="animation-delay:0.1s; border-top: 2px solid var(--orange)">
+            <div class="mc-label">🔗 Cliques no Link</div>
+            <div class="mc-val" id="kpi-clicks" style="color:var(--orange)">847</div>
+            <div class="mc-delta up" id="kpi-clicks-d">▲ 11% vs período anterior</div>
+          </div>
+          <div class="metric-card" style="animation-delay:0.15s; border-top: 2px solid var(--accent3)">
+            <div class="mc-label">📤 Taxa de Saída</div>
+            <div class="mc-val" id="kpi-exit" style="color:var(--accent3)">14%</div>
+            <div class="mc-delta down" id="kpi-exit-d">▼ 3% vs período anterior</div>
+          </div>
+        </div>
+
+        <!-- KPI Cards Row 2: Perfil -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
+          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">🏠 Perfil</span>
+          <div style="flex:1; height:1px; background:var(--border);"></div>
+        </div>
+        <div class="metrics-grid-top">
+          <div class="metric-card" style="animation-delay:0.0s; border-top: 2px solid #f472b6">
+            <div class="mc-label">👥 Novos Seguidores</div>
+            <div class="mc-val" id="kpi-followers" style="color:#f472b6">+284</div>
+            <div class="mc-delta up" id="kpi-followers-d">▲ 31% vs mês anterior</div>
+            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Total: <strong style="color:var(--text)" id="kpi-total-followers">3.847</strong></div>
+          </div>
+          <div class="metric-card" style="animation-delay:0.05s; border-top: 2px solid #22d3ee">
+            <div class="mc-label">🔍 Visitas ao Perfil</div>
+            <div class="mc-val" id="kpi-profile" style="color:#22d3ee">1.2k</div>
+            <div class="mc-delta up" id="kpi-profile-d">▲ 22% vs mês anterior</div>
+            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Únicos no mês</div>
+          </div>
+          <div class="metric-card" style="animation-delay:0.1s; border-top: 2px solid #a3e635">
+            <div class="mc-label">✉️ Mensagens no Direct</div>
+            <div class="mc-val" id="kpi-direct" style="color:#a3e635">193</div>
+            <div class="mc-delta up" id="kpi-direct-d">▲ 38% vs mês anterior</div>
+            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Contatos novos</div>
+          </div>
+          <div class="metric-card" style="animation-delay:0.15s; border-top: 2px solid #fb7185">
+            <div class="mc-label">📊 Alcance Total</div>
+            <div class="mc-val" id="kpi-reach" style="color:#fb7185">8.4k</div>
+            <div class="mc-delta up" id="kpi-reach-d">▲ 14% vs mês anterior</div>
+            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Contas únicas</div>
+          </div>
+        </div>
+
+        <!-- Followers + Direct growth chart -->
+        <div class="metrics-grid-mid">
+          <div class="panel">
+            <div class="panel-header">
+              <span>📈</span>
+              <span class="panel-title">Crescimento Mensal do Perfil</span>
+              <div class="metric-period-tabs">
+                <button class="mpt active" onclick="setPeriod(this,'7d')">7d</button>
+                <button class="mpt" onclick="setPeriod(this,'14d')">14d</button>
+                <button class="mpt" onclick="setPeriod(this,'30d')">30d</button>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#f472b6"></div> Novos seguidores</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#22d3ee"></div> Visitas ao perfil</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#a3e635"></div> Mensagens Direct</div>
+              </div>
+              <canvas id="chart-growth" height="160"></canvas>
+            </div>
+          </div>
+
+          <!-- Top stories -->
+          <div class="panel">
+            <div class="panel-header">
+              <span>🏆</span>
+              <span class="panel-title">Top Stories</span>
+            </div>
+            <div class="top-story-list" id="top-story-list"></div>
+          </div>
+        </div>
+
+        <!-- Stories views chart + Category donut -->
+        <div class="metrics-grid-bot">
+          <div class="panel">
+            <div class="panel-header">
+              <span>👁️</span>
+              <span class="panel-title">Visualizações de Stories por Dia</span>
+            </div>
+            <div class="chart-wrap">
+              <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div> Visualizações</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Respostas</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Cliques</div>
+              </div>
+              <canvas id="chart-views" height="140"></canvas>
+            </div>
+          </div>
+
+          <!-- Category breakdown -->
+          <div class="panel">
+            <div class="panel-header">
+              <span>🎯</span>
+              <span class="panel-title">Engajamento por Categoria</span>
+            </div>
+            <div class="chart-wrap" style="display:flex; gap:24px; align-items:center;">
+              <canvas id="chart-donut" width="140" height="140" style="flex-shrink:0"></canvas>
+              <div id="donut-legend" style="display:flex; flex-direction:column; gap:10px; flex:1"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heatmap full width -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>🗓️</span>
+            <span class="panel-title">Melhores Horários para Postar</span>
+          </div>
+          <div class="heatmap-grid" id="heatmap-grid"></div>
+          <div style="padding:0 20px 14px; display:flex; align-items:center; gap:10px;">
+            <span style="font-size:11px; color:var(--text2)">Menos</span>
+            <div style="display:flex; gap:3px;">
+              <div style="width:14px;height:14px;border-radius:3px;background:var(--surface3)"></div>
+              <div style="width:14px;height:14px;border-radius:3px;background:rgba(108,99,255,0.2)"></div>
+              <div style="width:14px;height:14px;border-radius:3px;background:rgba(108,99,255,0.45)"></div>
+              <div style="width:14px;height:14px;border-radius:3px;background:rgba(108,99,255,0.7)"></div>
+              <div style="width:14px;height:14px;border-radius:3px;background:var(--accent)"></div>
+            </div>
+            <span style="font-size:11px; color:var(--text2)">Mais engajamento</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: Agendar Story -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal" style="max-width:480px; width:95%;">
+    <h2 id="modal-title-label">📅 Story</h2>
+
+    <div class="form-group">
+      <label class="form-label">Título</label>
+      <input type="text" class="form-input" placeholder="Ex: Nike Air Force — Lançamento" id="modal-title"/>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Data</label>
+        <input type="date" class="form-input" id="modal-date"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Horário</label>
+        <input type="time" class="form-input" value="09:00" id="modal-time"/>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:14px">
+      <label class="form-label">Categoria</label>
+      <select class="form-select" id="modal-cat">
+        <option value="promo">🔥 Promoção</option>
+        <option value="produto">👟 Produto</option>
+        <option value="dica">💡 Dica</option>
+        <option value="depoimento">⭐ Depoimento</option>
+        <option value="bastidores">🎬 Bastidores</option>
+      </select>
+    </div>
+
+    <!-- Upload zone com preview -->
+    <input type="file" id="modal-file-input" accept="image/*,video/*" style="display:none" onchange="handleModalFile(this)"/>
+    <div id="modal-upload-zone" class="upload-zone" style="padding:18px; margin-top:4px; cursor:pointer;" onclick="document.getElementById('modal-file-input').click()">
+      <div class="upload-icon" style="font-size:24px">🎥</div>
+      <p style="font-size:12px">Clique para adicionar vídeo ou imagem</p>
+    </div>
+    <!-- Preview do arquivo selecionado -->
+    <div id="modal-preview" style="display:none; margin-top:10px; position:relative; border-radius:10px; overflow:hidden; background:var(--surface2); border:1px solid var(--border);">
+      <img id="modal-preview-img" style="display:none; width:100%; max-height:200px; object-fit:cover;"/>
+      <video id="modal-preview-vid" style="display:none; width:100%; max-height:200px; object-fit:cover;" muted playsinline></video>
+      <div id="modal-preview-info" style="padding:8px 12px; display:flex; align-items:center; justify-content:space-between;">
+        <span id="modal-file-name" style="font-size:11px; color:var(--text2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;"></span>
+        <button onclick="clearModalFile()" style="background:var(--red); border:none; color:#fff; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:12px; line-height:1; flex-shrink:0;">✕</button>
+      </div>
+    </div>
+
+    <!-- Modo: Publicar agora ou Agendar -->
+    <div style="margin-top:14px;">
+      <label class="form-label">Modo de publicação</label>
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <button id="modal-mode-now" onclick="setModalMode('now')" style="flex:1; padding:9px; border-radius:8px; border:2px solid var(--purple); background:var(--purple); color:#fff; font-size:12px; font-weight:700; cursor:pointer; font-family:DM Sans,sans-serif;">⚡ Publicar agora</button>
+        <button id="modal-mode-sched" onclick="setModalMode('scheduled')" style="flex:1; padding:9px; border-radius:8px; border:2px solid var(--border); background:transparent; color:var(--text2); font-size:12px; font-weight:700; cursor:pointer; font-family:DM Sans,sans-serif;">⏰ Agendar</button>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveStory()">⚡ Publicar agora</button>
+    </div>
+
+    <!-- Status de publicação -->
+    <div id="modal-publish-status" style="display:none; margin-top:10px; padding:10px; border-radius:8px; background:var(--surface2); font-size:12px; color:var(--text2); text-align:center;"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast success" id="toast">
+  <span class="t-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Story agendado com sucesso!</span>
+</div>
+
+<!-- NOTIFICATION PERMISSION BANNER -->
+<div class="notif-banner" id="notif-banner">
+  <div class="notif-icon-wrap">🔔</div>
+  <div style="flex:1">
+    <div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:var(--text);">Ativar notificações</div>
+    <div style="font-size:11px;color:var(--text2);margin-top:3px;">Receba um alerta no celular quando cada story for postado para adicionar as enquetes.</div>
+  </div>
+  <button onclick="requestNotifPermission()" style="background:linear-gradient(135deg,#a3e635,#34d399);border:none;color:#0a0a0f;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap;">Ativar agora</button>
+  <button onclick="dismissNotifBanner()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:2px 6px;line-height:1;">×</button>
+</div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="install-banner" style="display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid rgba(108,99,255,0.4); border-radius:14px; padding:14px 20px; display:none; align-items:center; gap:14px; box-shadow:0 8px 40px rgba(0,0,0,0.6); z-index:300; min-width:340px; backdrop-filter:blur(12px);">
+  <div style="width:40px;height:40px;background:#111;border-radius:50%;border:2px solid #e5e5e5;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+    <span style="font-family:Syne,sans-serif;font-size:7px;font-weight:800;color:#fff;line-height:1;">MOVE PÉ</span>
+    <span style="font-family:Syne,sans-serif;font-size:5.5px;font-weight:700;color:#fff;line-height:1;">CALÇADOS</span>
+  </div>
+  <div style="flex:1;">
+    <div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:var(--text);">Instalar como App</div>
+    <div style="font-size:11px;color:var(--text2);margin-top:2px;">Fixar na área de trabalho sem navegador</div>
+  </div>
+  <button onclick="installApp()" style="background:linear-gradient(135deg,#6c63ff,#38bdf8);border:none;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Instalar</button>
+  <button onclick="dismissInstall()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:2px 4px;line-height:1;">×</button>
+</div>
+
+<script>
+// === STATE ===
+let currentWeekOffset = 0;
+let stories = [];
+let library = [];
+let logs = [];
+let currentFilter = 'todos';
+
+const EMOJIS = {
+  promo: '🔥', produto: '👟', dica: '💡', depoimento: '⭐', bastidores: '🎬'
+};
+
+const COLORS = {
+  promo: '#991b1b', produto: '#1e40af', dica: '#065f46', depoimento: '#854d0e', bastidores: '#581c87'
+};
+
+// === INIT ===
+function init() {
+  // Seed sample data
+  const today = new Date();
+
+  const sampleStories = [
+    { id:1, title:'Aviso Promoção', cat:'promo', date: getDateStr(today, 0), time:'09:00', status:'posted' },
+    { id:2, title:'Nike Air Force', cat:'produto', date: getDateStr(today, 0), time:'11:00', status:'posted' },
+    { id:3, title:'Brindes da Semana', cat:'promo', date: getDateStr(today, 0), time:'14:00', status:'posted' },
+    { id:4, title:'Nike Dunk Novo', cat:'produto', date: getDateStr(today, 1), time:'09:00', status:'scheduled' },
+    { id:5, title:'Dica Cuidar Tênis', cat:'dica', date: getDateStr(today, 1), time:'12:00', status:'scheduled' },
+    { id:6, title:'Depoimento Cliente', cat:'depoimento', date: getDateStr(today, 2), time:'09:00', status:'scheduled' },
+    { id:7, title:'Vans Caimu', cat:'produto', date: getDateStr(today, 2), time:'11:00', status:'error' },
+    { id:8, title:'Promoção Relâmpago', cat:'promo', date: getDateStr(today, 3), time:'09:00', status:'scheduled' },
+    { id:9, title:'Bastidores Loja', cat:'bastidores', date: getDateStr(today, 3), time:'15:00', status:'scheduled' },
+    { id:10, title:'Adidas Nova Linha', cat:'produto', date: getDateStr(today, 4), time:'09:00', status:'scheduled' },
+    { id:11, title:'Puma Lançamento', cat:'produto', date: getDateStr(today, 4), time:'11:00', status:'error' },
+    { id:12, title:'Fim de Semana Promo', cat:'promo', date: getDateStr(today, 5), time:'10:00', status:'scheduled' },
+    { id:13, title:'Chamada Final', cat:'promo', date: getDateStr(today, 6), time:'09:00', status:'error' },
+  ];
+
+  stories = sampleStories;
+
+  library = [
+    { id:1, title:'AF1 Branco', cat:'produto', emoji:'👟' },
+    { id:2, title:'Dunk Black', cat:'produto', emoji:'🖤' },
+    { id:3, title:'Promoção Jul', cat:'promo', emoji:'🔥' },
+    { id:4, title:'Vans Caimu', cat:'produto', emoji:'🛹' },
+    { id:5, title:'Dica Limpeza', cat:'dica', emoji:'🧼' },
+    { id:6, title:'Review Cliente', cat:'depoimento', emoji:'⭐' },
+    { id:7, title:'Adidas Boost', cat:'produto', emoji:'⚡' },
+    { id:8, title:'Puma X', cat:'produto', emoji:'🐆' },
+    { id:9, title:'Unboxing', cat:'bastidores', emoji:'📦' },
+    { id:10, title:'Kit Brinde', cat:'promo', emoji:'🎁' },
+    { id:11, title:'Streetwear Look', cat:'dica', emoji:'🎨' },
+    { id:12, title:'Depoimento Ana', cat:'depoimento', emoji:'💬' },
+  ];
+
+  logs = [
+    { type:'err', time:'17:12', msg:'Falha ao postar "Puma Lançamento" — Token expirado', tag:'Erro API' },
+    { type:'err', time:'16:44', msg:'Falha ao postar "Vans Caimu" — Arquivo corrompido', tag:'Arquivo' },
+    { type:'warn', time:'15:30', msg:'"Chamada Final" agendada mas sem mídia anexada', tag:'Atenção' },
+    { type:'ok', time:'14:01', msg:'Story "Brindes da Semana" postado com sucesso', tag:'Sucesso' },
+    { type:'ok', time:'11:03', msg:'Story "Nike Air Force" postado com sucesso', tag:'Sucesso' },
+    { type:'ok', time:'09:00', msg:'Story "Aviso Promoção" postado com sucesso', tag:'Sucesso' },
+    { type:'ok', time:'08:45', msg:'Sistema iniciado — 13 stories agendados', tag:'Sistema' },
+  ];
+
+  updateStats();
+  renderTimeline();
+  renderLibrary();
+  renderLogs();
+
+  const today2 = new Date();
+  document.getElementById('modal-date').value = getDateStr(today2, 0);
+  document.getElementById('upload-date').value = getDateStr(today2, 0);
+}
+
+function getDateStr(base, offsetDays) {
+  const d = new Date(base);
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().split('T')[0];
+}
+
+// === STATS ===
+function updateStats() {
+  const scheduled = stories.filter(s => s.status === 'scheduled').length;
+  const posted = stories.filter(s => s.status === 'posted').length;
+  const errors = stories.filter(s => s.status === 'error').length;
+  document.getElementById('stat-agendados').textContent = scheduled;
+  document.getElementById('stat-postados').textContent = posted;
+  document.getElementById('stat-erros').textContent = errors;
+  document.getElementById('stat-midias').textContent = library.length;
+  document.getElementById('error-badge').textContent = errors;
+}
+
+// === WEEK ===
+function getWeekDays(offset = 0) {
+  const today = new Date();
+  const day = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1) + (offset * 7));
+
+  return Array.from({length: 7}, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}
+
+function changeWeek(dir) {
+  currentWeekOffset += dir;
+  renderTimeline();
+}
+
+function goToday() {
+  currentWeekOffset = 0;
+  renderTimeline();
+}
+
+function renderTimeline() {
+  const days = getWeekDays(currentWeekOffset);
+  const today = new Date().toISOString().split('T')[0];
+
+  const dayNames = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+  // Update week range
+  const first = days[0], last = days[6];
+  document.getElementById('week-range').textContent =
+    `${String(first.getDate()).padStart(2,'0')}/${String(first.getMonth()+1).padStart(2,'0')} – ${String(last.getDate()).padStart(2,'0')}/${String(last.getMonth()+1).padStart(2,'0')}`;
+
+  const grid = document.getElementById('timeline-grid');
+  grid.innerHTML = '';
+
+  days.forEach((date, i) => {
+    const dateStr = date.toISOString().split('T')[0];
+    const isToday = dateStr === today;
+    const dayStories = stories.filter(s => s.date === dateStr);
+
+    const col = document.createElement('div');
+    col.className = 'day-col' + (isToday ? ' today' : '');
+
+    col.innerHTML = `
+      <div class="day-header-wrap">
+        <div class="day-header">
+          <div class="day-name">${dayNames[i]}</div>
+          <div class="day-date">${date.getDate()}</div>
+          <div class="day-count">${dayStories.length > 0 ? dayStories.length + ' stories' : 'Sem stories'}</div>
+        </div>
+        <button class="add-story-btn" onclick="openModalForDate('${dateStr}')" title="Adicionar story">+</button>
+      </div>
+    `;
+
+    dayStories.forEach(s => {
+      const card = document.createElement('div');
+      card.className = 'story-card';
+      card.onclick = () => showToast(`Story: ${s.title}`, EMOJIS[s.cat] || '📋');
+
+      const statusIcon = s.status === 'posted' ? '✓' : s.status === 'error' ? '!' : '⏰';
+      const statusClass = s.status;
+
+      // Thumb: foto/vídeo real ou gradiente de categoria
+      let thumbHtml = '';
+      if (s.previewUrl && !s.isVideo) {
+        thumbHtml = `<div class="story-thumb-placeholder" style="background:#000; padding:0; overflow:hidden;">
+          <img src="${s.previewUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"/>
+        </div>`;
+      } else if (s.previewUrl && s.isVideo) {
+        thumbHtml = `<div class="story-thumb-placeholder" style="background:#000; padding:0; overflow:hidden; position:relative;">
+          <video src="${s.previewUrl}" style="width:100%; height:100%; object-fit:cover; display:block;" muted playsinline></video>
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:22px; pointer-events:none;">▶</div>
+        </div>`;
+      } else {
+        thumbHtml = `<div class="story-thumb-placeholder" style="background:linear-gradient(160deg, ${COLORS[s.cat]}55, ${COLORS[s.cat]}22)">
+          <span style="font-size:10px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:.1em;">${s.cat}</span>
+        </div>`;
+      }
+
+      card.innerHTML = `
+        ${thumbHtml}
+        <div class="story-overlay">
+          <div class="story-label">${s.title}</div>
+          <div class="story-time">${s.time}</div>
+        </div>
+        <div class="story-status ${statusClass}">${statusIcon}</div>
+      `;
+      col.appendChild(card);
+    });
+
+    // Empty slot
+    const empty = document.createElement('div');
+    empty.className = 'empty-day';
+    empty.textContent = '+';
+    empty.onclick = () => openModalForDate(dateStr);
+    col.appendChild(empty);
+
+    grid.appendChild(col);
+  });
+}
+
+// === LIBRARY ===
+function renderLibrary(filter = 'todos') {
+  const grid = document.getElementById('library-grid');
+  grid.innerHTML = '';
+  const items = filter === 'todos' ? library : library.filter(l => l.cat === filter);
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'lib-item';
+    el.title = item.title;
+    el.onclick = () => showToast(`Mídia: ${item.title}`, item.emoji);
+    el.innerHTML = `<div class="lib-emoji">${item.emoji}</div>`;
+    grid.appendChild(el);
+  });
+
+  // Add button
+  const add = document.createElement('div');
+  add.className = 'lib-item';
+  add.style.border = '2px dashed var(--border2)';
+  add.innerHTML = `<div class="lib-emoji" style="font-size:24px; color:var(--border2)">+</div>`;
+  add.onclick = () => navigate(document.querySelector('[data-page="upload"]'));
+  grid.appendChild(add);
+}
+
+function filterLib(btn, cat) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = cat;
+  renderLibrary(cat);
+}
+
+// === LOGS ===
+function renderLogs() {
+  const list = document.getElementById('log-list');
+  list.innerHTML = '';
+  logs.forEach(log => {
+    list.innerHTML += `
+      <div class="log-item">
+        <div class="log-dot ${log.type}"></div>
+        <span class="log-time">${log.time}</span>
+        <span class="log-msg">${log.msg}</span>
+        <span class="log-tag ${log.type}">${log.tag}</span>
+      </div>
+    `;
+  });
+}
+
+function clearLogs() {
+  logs = logs.filter(l => l.type !== 'err' && l.type !== 'warn');
+  document.getElementById('error-badge').textContent = '0';
+  document.getElementById('stat-erros').textContent = '0';
+  renderLogs();
+  showToast('Logs limpos com sucesso', '🗑');
+}
+
+// === NAVIGATION ===
+function navigate(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  const page = el.dataset.page;
+  el.classList.add('active');
+  document.getElementById('page-' + page).classList.add('active');
+
+  const titles = {
+    timeline: 'Timeline da Semana',
+    upload: 'Upload de Mídia',
+    library: 'Biblioteca de Mídias',
+    metrics: 'Métricas de Visualização',
+    logs: 'Erros e Logs',
+    config: 'Configurações'
+  };
+  document.getElementById('page-title').textContent = titles[page] || page;
+  if (page === 'metrics') setTimeout(renderMetrics, 50);
+}
+
+// === MODAL ===
+let modalMode = 'now';
+let modalFile = null;
+
+function setModalMode(mode) {
+  modalMode = mode;
+  const btnNow = document.getElementById('modal-mode-now');
+  const btnSched = document.getElementById('modal-mode-sched');
+  const saveBtn = document.getElementById('modal-save-btn');
+  if (mode === 'now') {
+    btnNow.style.background = 'var(--purple)';
+    btnNow.style.borderColor = 'var(--purple)';
+    btnNow.style.color = '#fff';
+    btnSched.style.background = 'transparent';
+    btnSched.style.borderColor = 'var(--border)';
+    btnSched.style.color = 'var(--text2)';
+    saveBtn.textContent = '⚡ Publicar agora';
+  } else {
+    btnSched.style.background = 'var(--purple)';
+    btnSched.style.borderColor = 'var(--purple)';
+    btnSched.style.color = '#fff';
+    btnNow.style.background = 'transparent';
+    btnNow.style.borderColor = 'var(--border)';
+    btnNow.style.color = 'var(--text2)';
+    saveBtn.textContent = '✅ Agendar Story';
+  }
+}
+
+function handleModalFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  modalFile = file;
+  const isVideo = file.type.startsWith('video');
+  const preview = document.getElementById('modal-preview');
+  const img = document.getElementById('modal-preview-img');
+  const vid = document.getElementById('modal-preview-vid');
+  const name = document.getElementById('modal-file-name');
+  const zone = document.getElementById('modal-upload-zone');
+
+  zone.style.display = 'none';
+  preview.style.display = 'block';
+  name.textContent = file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
+
+  if (isVideo) {
+    img.style.display = 'none';
+    vid.style.display = 'block';
+    vid.src = URL.createObjectURL(file);
+  } else {
+    vid.style.display = 'none';
+    img.style.display = 'block';
+    img.src = URL.createObjectURL(file);
+  }
+}
+
+function clearModalFile() {
+  modalFile = null;
+  document.getElementById('modal-file-input').value = '';
+  document.getElementById('modal-preview').style.display = 'none';
+  document.getElementById('modal-upload-zone').style.display = 'flex';
+  document.getElementById('modal-preview-img').src = '';
+  document.getElementById('modal-preview-vid').src = '';
+}
+
+function openModal() {
+  modalMode = 'now';
+  modalFile = null;
+  clearModalFile();
+  setModalMode('now');
+  document.getElementById('modal-publish-status').style.display = 'none';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openModalForDate(dateStr) {
+  document.getElementById('modal-date').value = dateStr;
+  openModal();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+async function saveStory() {
+  const title = document.getElementById('modal-title').value || 'Novo Story';
+  const date = document.getElementById('modal-date').value;
+  const time = document.getElementById('modal-time').value;
+  const cat = document.getElementById('modal-cat').value;
+  const statusEl = document.getElementById('modal-publish-status');
+
+  if (!date) { showToast('Selecione uma data', '⚠️'); return; }
+
+  if (modalMode === 'now') {
+    // Publicar agora no Instagram
+    const token = getIGToken();
+    if (!token) { showToast('Configure o token do Instagram primeiro!', '⚠️'); return; }
+    if (!modalFile) { showToast('Adicione uma foto ou vídeo!', '⚠️'); return; }
+
+    const saveBtn = document.getElementById('modal-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ Publicando...';
+    statusEl.style.display = 'block';
+    statusEl.style.color = 'var(--text2)';
+    statusEl.textContent = '⏳ Fazendo upload...';
+
+    try {
+      const isVideo = modalFile.type.startsWith('video');
+      if (isVideo) statusEl.textContent = '⏳ Convertendo e enviando vídeo... (pode levar ~30s)';
+
+      const { url, type } = await uploadToCloudinary(modalFile, 0);
+      statusEl.textContent = '📤 Publicando no Instagram...';
+      await publishOneStory(url, type, token);
+
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = '✅ Publicado com sucesso no Instagram!';
+      showToast('Story publicado no Instagram!', '🚀');
+
+      // Salva na timeline como publicado
+      stories.push({ id: Date.now(), title, date, time, cat, status: 'published' });
+      renderTimeline(); updateStats();
+      logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" publicado no Instagram`, tag: 'Publicado' });
+      renderLogs();
+
+      setTimeout(() => closeModal(), 2000);
+    } catch (err) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = '❌ Erro: ' + err.message;
+      showToast('Erro ao publicar', '❌');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = '⚡ Publicar agora';
+    }
+
+  } else {
+    // Apenas agendar na timeline
+    const token = getIGToken();
+    if (!token) { showToast('Configure o token do Instagram primeiro!', '⚠️'); return; }
+    if (!modalFile) { showToast('Adicione uma foto ou vídeo para agendar!', '⚠️'); return; }
+
+    const fireAt = new Date(`${date}T${time}`);
+    if (fireAt <= new Date()) { showToast('O horário deve ser no futuro!', '⚠️'); return; }
+
+    const delay = fireAt.getTime() - Date.now();
+    const file = modalFile;
+    const jobId = Date.now();
+
+    let previewUrl = URL.createObjectURL(file);
+    const isVideo = file.type.startsWith('video');
+    const newStory = { id: jobId, title, date, time, cat, status: 'scheduled', previewUrl, isVideo };
+    stories.push(newStory);
+    renderTimeline(); updateStats();
+
+    // Envia agendamento para o servidor Render (funciona com PC desligado)
+    try {
+      const { url: mediaUrl, type: mediaType } = await uploadToCloudinary(file, 0);
+      const res = await fetch(`${SERVER_URL}/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, date, time, cat, mediaUrl, mediaType, token })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro no servidor');
+      scheduledJobs.push({ id: data.jobId, name: title, fireAt: data.fireAt });
+      logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" agendado no servidor para ${date} às ${time}`, tag: 'Agendado' });
+      renderLogs();
+    } catch(e) {
+      // Fallback: usa setTimeout local se o servidor falhar
+      const timeoutId = setTimeout(async () => {
+        try {
+          const { url, type } = await uploadToCloudinary(file, 0);
+          await publishOneStory(url, type, token);
+          const idx = stories.findIndex(s => s.id === jobId);
+          if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); }
+        } catch(err) {
+          const idx = stories.findIndex(s => s.id === jobId);
+          if (idx !== -1) { stories[idx].status = 'error'; renderTimeline(); }
+        }
+      }, delay);
+      scheduledJobs.push({ id: jobId, timeoutId, name: title, fireAt });
+      logs.unshift({ type: 'warn', time: new Date().toTimeString().slice(0,5), msg: `Servidor offline — agendado localmente: "${title}"`, tag: 'Local' });
+      renderLogs();
+    }
+
+    closeModal();
+    document.getElementById('modal-title').value = '';
+    showToast(`Story agendado para ${time}!`, '✅');
+    logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" agendado para ${date} às ${time}`, tag: 'Agendado' });
+    renderLogs();
+    if (notifPermission === 'granted') scheduleAllNotifications();
+  }
+}
+
+// === UPLOAD ===
+function addFromUpload() {
+  const title = document.getElementById('upload-title').value || 'Nova Mídia';
+  const cat = document.getElementById('upload-cat').value || 'produto';
+  const date = document.getElementById('upload-date').value;
+  const time = document.getElementById('upload-time').value;
+
+  const newLib = { id: Date.now(), title, cat, emoji: EMOJIS[cat] || '📋' };
+  library.push(newLib);
+
+  if (date) {
+    stories.push({ id: Date.now()+1, title, date, time, cat, status: 'scheduled' });
+  }
+
+  updateStats();
+  renderLibrary(currentFilter);
+  renderTimeline();
+  document.getElementById('upload-title').value = '';
+  showToast(`"${title}" adicionado à biblioteca!`, '✅');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  showToast('Arquivo recebido — configure os detalhes', '📂');
+}
+
+// === STORE NAME ===
+function updateStoreName(val) {
+  document.getElementById('sidebar-store-name').textContent = val || 'Stories Manager';
+}
+
+// === TOAST ===
+let toastTimer;
+function showToast(msg, icon = '✅') {
+  clearTimeout(toastTimer);
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast').classList.add('show');
+  toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 2800);
+}
+
+// === METRICS ===
+const METRIC_DATA = {
+  '7d': {
+    labels: ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+    views:  [3200, 4100, 2800, 5200, 4600, 3900, 1000],
+    replies:[120,  180,  90,   240,  210,  160,  40],
+    clicks: [280,  340,  200,  480,  390,  310,  80],
+  },
+  '14d': {
+    labels: ['S1','T1','Q1','Q2','S2','S3','D1','S4','T2','Q3','Q4','S5','S6','D2'],
+    views:  [2800,3600,2400,4200,3900,3100,900,3200,4100,2800,5200,4600,3900,1000],
+    replies:[100,160,80,210,190,130,35,120,180,90,240,210,160,40],
+    clicks: [240,310,160,400,350,260,65,280,340,200,480,390,310,80],
+  },
+  '30d': {
+    labels: ['01','03','05','07','09','11','13','15','17','19','21','23','25','27','29'],
+    views:  [2200,2800,3100,2400,3600,4200,3800,2900,4100,3700,2800,5200,4600,3900,1000],
+    replies:[80,110,130,90,155,195,170,115,185,162,105,240,210,160,40],
+    clicks: [190,240,270,190,300,380,320,230,355,300,200,480,390,310,80],
+  }
+};
+
+const GROWTH_DATA = {
+  '7d': {
+    labels: ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+    followers:[28,  41,  35,   52,  48,  39,  41],
+    profile:  [140, 180, 120,  240, 210, 160, 150],
+    direct:   [22,  31,  18,   44,  38,  28,  12],
+  },
+  '14d': {
+    labels: ['S1','T1','Q1','Q2','S2','S3','D1','S4','T2','Q3','Q4','S5','S6','D2'],
+    followers:[20,32,25,45,40,30,15,28,41,35,52,48,39,41],
+    profile:  [110,155,95,210,185,130,70,140,180,120,240,210,160,150],
+    direct:   [15,24,12,38,32,20,8,22,31,18,44,38,28,12],
+  },
+  '30d': {
+    labels: ['01','03','05','07','09','11','13','15','17','19','21','23','25','27','29'],
+    followers:[18,22,28,20,35,42,38,26,41,37,25,52,48,39,41],
+    profile:  [90,110,130,95,155,195,170,115,185,162,105,240,210,160,150],
+    direct:   [10,14,18,11,24,32,27,16,31,26,14,44,38,28,12],
+  }
+};
+
+const PERIOD_KPI = {
+  semana: { views:'24.8k', views_d:'▲ 18%', replies:'312', replies_d:'▲ 24%', clicks:'847', clicks_d:'▲ 11%', exit:'14%', exit_d:'▼ 3%', followers:'+71', followers_d:'▲ 12%', total:'3.847', profile:'298', profile_d:'▲ 9%', direct:'49', direct_d:'▲ 18%', reach:'2.1k', reach_d:'▲ 7%', label:'Semana atual' },
+  mes:    { views:'98.4k', views_d:'▲ 22%', replies:'1.24k', replies_d:'▲ 31%', clicks:'3.4k', clicks_d:'▲ 15%', exit:'13%', exit_d:'▼ 5%', followers:'+284', followers_d:'▲ 31%', total:'3.847', profile:'1.2k', profile_d:'▲ 22%', direct:'193', direct_d:'▲ 38%', reach:'8.4k', reach_d:'▲ 14%', label:'Março 2026' },
+  mes_ant:{ views:'80.7k', views_d:'▲ 8%',  replies:'947',  replies_d:'▲ 11%', clicks:'2.9k', clicks_d:'▲ 6%',  exit:'18%', exit_d:'▲ 2%', followers:'+217', followers_d:'▲ 19%', total:'3.563', profile:'983', profile_d:'▲ 12%', direct:'140', direct_d:'▲ 24%', reach:'7.3k', reach_d:'▲ 9%',  label:'Fevereiro 2026' },
+};
+
+let activePeriod = '7d';
+let activeMainPeriod = 'mes';
+
+function setMainPeriod(btn, period) {
+  document.querySelectorAll('#main-period-tabs .mpt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeMainPeriod = period;
+  const kpi = PERIOD_KPI[period];
+  document.getElementById('period-label').textContent = kpi.label;
+
+  document.getElementById('kpi-views').textContent = kpi.views;
+  document.getElementById('kpi-views-d').textContent = (kpi.views_d.startsWith('▲') ? '▲ ' : '▼ ') + kpi.views_d.slice(2) + ' vs período anterior';
+  document.getElementById('kpi-views-d').className = 'mc-delta ' + (kpi.views_d.startsWith('▲') ? 'up' : 'down');
+
+  document.getElementById('kpi-replies').textContent = kpi.replies;
+  document.getElementById('kpi-replies-d').textContent = kpi.replies_d + ' vs período anterior';
+  document.getElementById('kpi-replies-d').className = 'mc-delta ' + (kpi.replies_d.startsWith('▲') ? 'up' : 'down');
+
+  document.getElementById('kpi-clicks').textContent = kpi.clicks;
+  document.getElementById('kpi-clicks-d').textContent = kpi.clicks_d + ' vs período anterior';
+  document.getElementById('kpi-clicks-d').className = 'mc-delta ' + (kpi.clicks_d.startsWith('▲') ? 'up' : 'down');
+
+  document.getElementById('kpi-exit').textContent = kpi.exit;
+  document.getElementById('kpi-exit-d').textContent = kpi.exit_d + ' vs período anterior';
+  document.getElementById('kpi-exit-d').className = 'mc-delta ' + (kpi.exit_d.startsWith('▲') ? 'down' : 'up');
+
+  document.getElementById('kpi-followers').textContent = kpi.followers;
+  document.getElementById('kpi-followers-d').textContent = kpi.followers_d + ' vs mês anterior';
+  document.getElementById('kpi-followers-d').className = 'mc-delta ' + (kpi.followers_d.startsWith('▲') ? 'up' : 'down');
+  document.getElementById('kpi-total-followers').textContent = kpi.total;
+
+  document.getElementById('kpi-profile').textContent = kpi.profile;
+  document.getElementById('kpi-profile-d').textContent = kpi.profile_d + ' vs mês anterior';
+  document.getElementById('kpi-profile-d').className = 'mc-delta ' + (kpi.profile_d.startsWith('▲') ? 'up' : 'down');
+
+  document.getElementById('kpi-direct').textContent = kpi.direct;
+  document.getElementById('kpi-direct-d').textContent = kpi.direct_d + ' vs mês anterior';
+  document.getElementById('kpi-direct-d').className = 'mc-delta ' + (kpi.direct_d.startsWith('▲') ? 'up' : 'down');
+
+  document.getElementById('kpi-reach').textContent = kpi.reach;
+  document.getElementById('kpi-reach-d').textContent = kpi.reach_d + ' vs mês anterior';
+  document.getElementById('kpi-reach-d').className = 'mc-delta ' + (kpi.reach_d.startsWith('▲') ? 'up' : 'down');
+}
+
+function setPeriod(btn, period) {
+  // Find sibling tabs only within the same container
+  btn.parentElement.querySelectorAll('.mpt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activePeriod = period;
+  drawLineChart();
+  drawGrowthChart();
+}
+
+function renderMetrics() {
+  setMainPeriod(document.querySelector('#main-period-tabs .mpt.active') || document.querySelector('#main-period-tabs .mpt'), 'mes');
+  drawGrowthChart();
+  drawLineChart();
+  drawDonut();
+  renderTopStories();
+  renderHeatmap();
+}
+
+// Generic line chart draw function
+function drawMultiLineChart(canvasId, data, lines, height = 160) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.parentElement.clientWidth - 40;
+  canvas.width = W;
+  canvas.height = height;
+  ctx.clearRect(0, 0, W, height);
+
+  const PAD = { top: 10, right: 16, bottom: 30, left: 44 };
+  const chartW = W - PAD.left - PAD.right;
+  const chartH = height - PAD.top - PAD.bottom;
+
+  const allVals = lines.flatMap(l => data[l.key]);
+  const maxVal = Math.max(...allVals) * 1.18;
+  const n = data.labels.length;
+
+  function xPos(i) { return PAD.left + (i / (n - 1)) * chartW; }
+  function yPos(v) { return PAD.top + chartH - (v / maxVal) * chartH; }
+
+  // Grid
+  ctx.strokeStyle = '#2a2a3a'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = PAD.top + (i / 4) * chartH;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(W - PAD.right, y); ctx.stroke();
+    const val = Math.round(maxVal * (1 - i / 4));
+    ctx.fillStyle = '#5a5a80'; ctx.font = '10px DM Sans'; ctx.textAlign = 'right';
+    ctx.fillText(val >= 1000 ? (val/1000).toFixed(1)+'k' : val, PAD.left - 6, y + 3);
+  }
+
+  // X labels
+  ctx.fillStyle = '#5a5a80'; ctx.font = '10px DM Sans'; ctx.textAlign = 'center';
+  const step = n > 10 ? Math.ceil(n / 7) : 1;
+  data.labels.forEach((l, i) => {
+    if (i % step === 0 || i === n-1) ctx.fillText(l, xPos(i), height - 8);
+  });
+
+  lines.forEach(({ key, color, fill }) => {
+    const arr = data[key];
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(arr[0]));
+    arr.forEach((v, i) => { if (i > 0) ctx.lineTo(xPos(i), yPos(v)); });
+    ctx.lineTo(xPos(n-1), PAD.top + chartH);
+    ctx.lineTo(xPos(0), PAD.top + chartH);
+    ctx.closePath();
+    ctx.fillStyle = fill; ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(arr[0]));
+    arr.forEach((v, i) => { if (i > 0) ctx.lineTo(xPos(i), yPos(v)); });
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+
+    arr.forEach((v, i) => {
+      ctx.beginPath(); ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI*2);
+      ctx.fillStyle = color; ctx.fill();
+    });
+  });
+}
+
+function drawGrowthChart() {
+  const data = GROWTH_DATA[activePeriod];
+  drawMultiLineChart('chart-growth', data, [
+    { key:'followers', color:'#f472b6', fill:'rgba(244,114,182,0.08)' },
+    { key:'profile',   color:'#22d3ee', fill:'rgba(34,211,238,0.07)' },
+    { key:'direct',    color:'#a3e635', fill:'rgba(163,230,53,0.07)' },
+  ], 160);
+}
+
+function drawLineChart() {
+  const data = METRIC_DATA[activePeriod];
+  drawMultiLineChart('chart-views', data, [
+    { key:'clicks',  color:'#fb923c', fill:'rgba(251,146,60,0.06)' },
+    { key:'replies', color:'#34d399', fill:'rgba(52,211,153,0.07)' },
+    { key:'views',   color:'#a78bfa', fill:'rgba(167,139,250,0.1)' },
+  ], 140);
+}
+
+function drawDonut() {
+  const canvas = document.getElementById('chart-donut');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = 140, H = 140;
+  ctx.clearRect(0, 0, W, H);
+
+  const cats = [
+    { label: 'Produto',    val: 38, color: '#3b82f6' },
+    { label: 'Promoção',   val: 28, color: '#f97316' },
+    { label: 'Dica',       val: 17, color: '#34d399' },
+    { label: 'Depoimento', val: 10, color: '#fbbf24' },
+    { label: 'Bastidores', val: 7,  color: '#a78bfa' },
+  ];
+
+  const total = cats.reduce((s, c) => s + c.val, 0);
+  let startAngle = -Math.PI / 2;
+  const cx = 70, cy = 70, r = 54, inner = 32;
+
+  cats.forEach(cat => {
+    const angle = (cat.val / total) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, startAngle, startAngle + angle);
+    ctx.closePath(); ctx.fillStyle = cat.color; ctx.fill();
+    startAngle += angle;
+  });
+
+  ctx.beginPath(); ctx.arc(cx, cy, inner, 0, Math.PI * 2);
+  ctx.fillStyle = '#111118'; ctx.fill();
+
+  ctx.fillStyle = '#f0f0f8'; ctx.font = 'bold 15px Syne'; ctx.textAlign = 'center';
+  ctx.fillText('5', cx, cy - 1);
+  ctx.font = '9px DM Sans'; ctx.fillStyle = '#9898b8';
+  ctx.fillText('cats', cx, cx + 10);
+
+  const legend = document.getElementById('donut-legend');
+  legend.innerHTML = cats.map(c => `
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:10px;height:10px;border-radius:3px;background:${c.color};flex-shrink:0"></div>
+      <span style="font-size:12px;color:var(--text2);flex:1">${c.label}</span>
+      <span style="font-size:12px;font-weight:700;color:var(--text)">${c.val}%</span>
+    </div>
+  `).join('');
+}
+
+function renderTopStories() {
+  const top = [
+    { title:'Nike Air Force', cat:'produto', emoji:'👟', views: 4600, pct: 100 },
+    { title:'Promoção Relâmpago', cat:'promo', emoji:'🔥', views: 3900, pct: 85 },
+    { title:'Depoimento Cliente', cat:'depoimento', emoji:'⭐', views: 3200, pct: 70 },
+    { title:'Dica Cuidar Tênis', cat:'dica', emoji:'💡', views: 2800, pct: 61 },
+    { title:'Vans Caimu', cat:'produto', emoji:'🛹', views: 2400, pct: 52 },
+  ];
+
+  const ranks = ['gold','silver','bronze','',''];
+  const rankLabels = ['🥇','🥈','🥉','4','5'];
+
+  document.getElementById('top-story-list').innerHTML = top.map((s, i) => `
+    <div class="top-story-row">
+      <div class="ts-rank ${ranks[i]}">${rankLabels[i]}</div>
+      <div class="ts-emoji">${s.emoji}</div>
+      <div class="ts-info">
+        <div class="ts-title">${s.title}</div>
+        <div class="ts-cat">${s.cat}</div>
+      </div>
+      <div class="ts-bar-wrap">
+        <div class="ts-bar-bg"><div class="ts-bar-fill" style="width:${s.pct}%"></div></div>
+      </div>
+      <div class="ts-views">${(s.views/1000).toFixed(1)}k</div>
+    </div>
+  `).join('');
+}
+
+function renderHeatmap() {
+  const grid = document.getElementById('heatmap-grid');
+  grid.innerHTML = '';
+
+  const hours = ['6h','8h','10h','12h','14h','16h','18h','20h'];
+  const days  = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+
+  const data = [
+    [1,1,2,1,0,0,0],[2,2,3,2,1,1,0],[3,3,4,3,2,2,1],[3,4,4,4,3,3,1],
+    [2,3,3,4,3,2,1],[2,2,3,3,4,2,1],[1,2,2,3,3,2,0],[1,1,2,2,2,1,0],
+  ];
+
+  const intensities = [
+    'var(--surface3)','rgba(108,99,255,0.2)','rgba(108,99,255,0.45)',
+    'rgba(108,99,255,0.7)','var(--accent)',
+  ];
+  const engLabels = ['Baixo','Médio-baixo','Médio','Alto','Muito alto'];
+
+  grid.innerHTML += `<div></div>`;
+  days.forEach(d => { grid.innerHTML += `<div class="hm-day-label">${d}</div>`; });
+
+  hours.forEach((h, hi) => {
+    grid.innerHTML += `<div class="hm-label">${h}</div>`;
+    days.forEach((d, di) => {
+      const val = data[hi][di];
+      grid.innerHTML += `
+        <div class="hm-cell" style="background:${intensities[val]}">
+          <div class="hm-tooltip">${d} ${h} — ${engLabels[val]}</div>
+        </div>`;
+    });
+  });
+}
+
+// === NOTIFICATIONS ===
+let notifTimers = [];
+
+async function initNotifications() {
+  try {
+    if (!('Notification' in window)) { updateNotifStatus(false); return; }
+    if (Notification.permission === 'granted') {
+      updateNotifStatus(true);
+      scheduleAllNotifications();
+    } else if (Notification.permission === 'default') {
+      setTimeout(() => {
+        const b = document.getElementById('notif-banner');
+        if (b) b.classList.add('show');
+      }, 3000);
+    } else {
+      updateNotifStatus(false);
+    }
+  } catch(e) { console.log('Notif init error:', e); }
+}
+
+async function requestNotifPermission() {
+  try {
+    dismissNotifBanner();
+    const result = await Notification.requestPermission();
+    if (result === 'granted') {
+      updateNotifStatus(true);
+      scheduleAllNotifications();
+      showToast('Notificações ativadas!', '🔔');
+    } else {
+      updateNotifStatus(false);
+      showToast('Permissão negada', '⚠️');
+    }
+  } catch(e) { console.log('Notif permission error:', e); }
+}
+
+function dismissNotifBanner() {
+  const b = document.getElementById('notif-banner');
+  if (b) b.classList.remove('show');
+}
+
+function updateNotifStatus(active) {
+  const el = document.getElementById('notif-status');
+  const icon = document.getElementById('notif-status-icon');
+  const label = document.getElementById('notif-status-label');
+  if (!el) return;
+  if (active) {
+    el.className = 'notif-status on';
+    if (icon) icon.textContent = '🔔';
+    if (label) label.textContent = 'Notificações ativas';
+  } else {
+    el.className = 'notif-status off';
+    if (icon) icon.textContent = '🔕';
+    if (label) label.textContent = 'Notificações desativadas';
+  }
+}
+
+function scheduleAllNotifications() {
+  notifTimers.forEach(t => clearTimeout(t));
+  notifTimers = [];
+  const nowDate = new Date();
+  const upcoming = stories
+    .filter(s => s.status === 'scheduled')
+    .map(s => { const dt = new Date(`${s.date}T${s.time}:00`); return { ...s, dt }; })
+    .filter(s => s.dt > nowDate)
+    .sort((a, b) => a.dt - b.dt);
+
+  upcoming.forEach(s => {
+    const delay = s.dt - nowDate;
+    if (delay < 0 || delay > 7 * 24 * 60 * 60 * 1000) return;
+    notifTimers.push(setTimeout(() => fireNotification(s), delay));
+  });
+
+  updateNextStoryWidget(upcoming[0]);
+}
+
+function fireNotification(story) {
+  if (Notification.permission === 'granted') {
+    new Notification(`📱 Story postado! — ${story.title}`, {
+      body: `Abra o Instagram e adicione enquetes/stickers no story "${story.title}".`,
+      icon: './icons/icon-192x192.png',
+      requireInteraction: true
+    });
+  }
+  const idx = stories.findIndex(s => s.id === story.id);
+  if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); }
+  logs.unshift({ type:'ok', time: new Date().toTimeString().slice(0,5), msg:`Story "${story.title}" postado — adicione os stickers no Instagram`, tag:'Postado' });
+  renderLogs();
+  showToast(`Story "${story.title}" postado! Abra o Instagram. 📱`, '🔔');
+  setTimeout(scheduleAllNotifications, 1000);
+}
+
+function updateNextStoryWidget(next) {
+  const widget = document.getElementById('next-story-widget');
+  if (!widget) return;
+  if (!next) { widget.style.display = 'none'; return; }
+  widget.style.display = 'block';
+  const t = document.getElementById('nsw-title');
+  const tm = document.getElementById('nsw-time');
+  if (t) t.textContent = next.title;
+  const dt = next.dt;
+  const today = new Date();
+  const isToday = dt.toDateString() === today.toDateString();
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+  const isTomorrow = dt.toDateString() === tomorrow.toDateString();
+  const timeStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  const dayStr = isToday ? 'Hoje' : isTomorrow ? 'Amanhã' : dt.toLocaleDateString('pt-BR', { weekday:'short', day:'numeric' });
+  if (tm) tm.textContent = `${dayStr} às ${timeStr}`;
+}
+
+// === PWA: Service Worker ===
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('SW registrado'))
+      .catch(e => console.log('SW erro:', e));
+  });
+}
+
+// === PWA: Install prompt ===
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.style.display = 'flex';
+});
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    const banner = document.getElementById('install-banner');
+    if (banner) banner.style.display = 'none';
+  });
+}
+
+function dismissInstall() {
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.style.display = 'none';
+}
+
+// === START ===
+init();
+initNotifications();
+
+// =============================================
+// INSTAGRAM API INTEGRATION
+// =============================================
+
+const IG_USER_ID = '17841465204005610';
+const CLOUDINARY_CLOUD = 'duecmhuip';
+const CLOUDINARY_UPLOAD_PRESET = 'movepecalcados';
+const SERVER_URL = 'https://movepe-server.onrender.com';
+
+// Estado global
+let selectedFiles = [];      // Array de arquivos selecionados
+let publishMode = 'now';     // 'now' ou 'scheduled'
+let scheduledJobs = [];      // Fila de agendamentos ativos
+
+// ---- TOKEN ----
+function saveIGToken() {
+  const input = document.getElementById('ig-token-input');
+  const token = input ? input.value.trim() : '';
+  if (!token) { showToast('Cole o token antes de salvar', '⚠️'); return; }
+  localStorage.setItem('ig_access_token', token);
+  const msg = document.getElementById('token-saved-msg');
+  if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000); }
+  showToast('Token salvo com segurança!', '🔐');
+  input.value = '';
+}
+
+function getIGToken() {
+  return localStorage.getItem('ig_access_token') || '';
+}
+
+// ---- TESTE DE CONEXÃO ----
+async function testIGConnection() {
+  const token = getIGToken();
+  if (!token) { showToast('Salve o token primeiro!', '⚠️'); return; }
+  showToast('Testando conexão...', '🔄');
+  try {
+    const res = await fetch(`https://graph.facebook.com/v25.0/${IG_USER_ID}?fields=name,followers_count,username&access_token=${token}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const badge = document.getElementById('api-status-badge');
+    if (badge) { badge.textContent = '✓ Conectado'; badge.style.background = 'var(--green)'; badge.style.color = '#000'; }
+    const info = document.getElementById('ig-account-info');
+    const nameEl = document.getElementById('ig-account-name');
+    const followersEl = document.getElementById('ig-account-followers');
+    if (info) info.style.display = 'flex';
+    if (nameEl) nameEl.textContent = `@${data.username || 'movepestreet'}`;
+    if (followersEl) followersEl.textContent = `${data.followers_count ? data.followers_count.toLocaleString('pt-BR') : '2.600'} seguidores`;
+    showToast('Conectado com sucesso!', '✅');
+  } catch(e) {
+    showToast('Erro: ' + e.message, '❌');
+    const badge = document.getElementById('api-status-badge');
+    if (badge) { badge.textContent = '✗ Erro'; badge.style.background = 'var(--red)'; badge.style.color = '#fff'; }
+  }
+}
+
+// ---- MODO DE PUBLICAÇÃO ----
+function setPublishMode(mode) {
+  publishMode = mode;
+  const nowBtn = document.getElementById('mode-now-btn');
+  const schedBtn = document.getElementById('mode-sched-btn');
+  const schedOpts = document.getElementById('schedule-options');
+  const btnLabel = document.getElementById('publish-btn-label');
+  const btnSub = document.getElementById('publish-btn-sub');
+
+  if (mode === 'now') {
+    if (nowBtn) nowBtn.className = 'btn btn-primary';
+    if (schedBtn) schedBtn.className = 'btn';
+    if (schedOpts) schedOpts.style.display = 'none';
+    if (btnLabel) btnLabel.textContent = 'Publicar agora no Instagram';
+    if (btnSub) btnSub.textContent = 'Faz upload e publica todos os stories selecionados';
+  } else {
+    if (nowBtn) nowBtn.className = 'btn';
+    if (schedBtn) schedBtn.className = 'btn btn-primary';
+    if (schedOpts) schedOpts.style.display = 'block';
+    if (btnLabel) btnLabel.textContent = 'Agendar publicação';
+    if (btnSub) btnSub.textContent = 'Os stories serão publicados automaticamente no horário definido';
+    // Define data/hora padrão para agora + 1h
+    const d = new Date(); d.setHours(d.getHours() + 1);
+    const dateEl = document.getElementById('sched-date');
+    const timeEl = document.getElementById('sched-time');
+    if (dateEl) dateEl.value = d.toISOString().split('T')[0];
+    if (timeEl) timeEl.value = d.toTimeString().slice(0,5);
+  }
+}
+
+// ---- SELEÇÃO DE ARQUIVOS ----
+function handleFileSelect(input) {
+  if (input.files) addFiles(Array.from(input.files));
+}
+
+function handleFileDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').style.borderColor = 'var(--border2)';
+  if (e.dataTransfer.files) addFiles(Array.from(e.dataTransfer.files));
+}
+
+function addFiles(files) {
+  files.forEach(file => {
+    if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+      selectedFiles.push(file);
+    }
+  });
+  renderFilesList();
+  showToast(`${files.length} arquivo(s) adicionado(s)!`, '✅');
+}
+
+function renderFilesList() {
+  const list = document.getElementById('files-list');
+  const grid = document.getElementById('files-grid');
+  if (!list || !grid) return;
+  if (selectedFiles.length === 0) { list.style.display = 'none'; return; }
+  list.style.display = 'block';
+  grid.innerHTML = selectedFiles.map((file, i) => {
+    const isVideo = file.type.startsWith('video');
+    const url = URL.createObjectURL(file);
+    const size = (file.size/1024/1024).toFixed(1);
+    return `
+      <div id="file-card-${i}" style="position:relative; width:90px; background:var(--surface3); border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border);">
+        ${isVideo
+          ? `<div style="height:70px; display:flex; align-items:center; justify-content:center; font-size:28px; background:var(--surface2);">🎬</div>`
+          : `<img src="${url}" style="width:90px; height:70px; object-fit:cover;"/>`
+        }
+        <div style="padding:4px 6px;">
+          <div style="font-size:10px; color:var(--text2); overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${file.name}</div>
+          <div style="font-size:10px; color:var(--text3);">${size}MB</div>
+        </div>
+        <div id="file-status-${i}" style="position:absolute; top:4px; left:4px; font-size:10px; background:var(--surface); border-radius:4px; padding:2px 5px; display:none;"></div>
+        <button onclick="removeFile(${i})" style="position:absolute; top:3px; right:3px; background:var(--red); border:none; color:#fff; border-radius:50%; width:18px; height:18px; cursor:pointer; font-size:11px; line-height:1;">✕</button>
+      </div>`;
+  }).join('');
+}
+
+function removeFile(i) {
+  selectedFiles.splice(i, 1);
+  renderFilesList();
+}
+
+function clearAllFiles() {
+  selectedFiles = [];
+  renderFilesList();
+  const input = document.getElementById('file-input');
+  if (input) input.value = '';
+}
+
+// ---- UPLOAD PARA CLOUDINARY ----
+async function uploadToCloudinary(file, index) {
+  const isVideo = file.type.startsWith('video');
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('folder', 'movepecalcados');
+
+  const resourceType = isVideo ? 'video' : 'image';
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`;
+  const res = await fetch(url, { method: 'POST', body: formData });
+  const data = await res.json();
+  if (data.error) throw new Error('Cloudinary: ' + data.error.message);
+
+  let finalUrl = data.secure_url;
+
+  // Para vídeos: converte via URL transformation do Cloudinary
+  // Insere parâmetros de conversão H.264/AAC diretamente na URL
+  if (isVideo) {
+    // Transforma a URL para forçar H.264 baseline + AAC + mp4
+    // Ex: https://res.cloudinary.com/cloud/video/upload/ARQUIVO.mp4
+    // Vira: https://res.cloudinary.com/cloud/video/upload/vc_h264:baseline,ac_aac/ARQUIVO.mp4
+    finalUrl = data.secure_url.replace(
+      '/video/upload/',
+      '/video/upload/vc_h264:baseline,ac_aac,f_mp4/'
+    );
+  }
+
+  return { url: finalUrl, type: isVideo ? 'VIDEO' : 'IMAGE' };
+}
+
+// ---- PUBLICAR UM STORY NO INSTAGRAM ----
+async function publishOneStory(mediaUrl, mediaType, token) {
+  const param = mediaType === 'IMAGE'
+    ? `image_url=${encodeURIComponent(mediaUrl)}&media_type=STORIES`
+    : `video_url=${encodeURIComponent(mediaUrl)}&media_type=STORIES`;
+  const cRes = await fetch(`https://graph.facebook.com/v25.0/${IG_USER_ID}/media?${param}&access_token=${token}`, { method: 'POST' });
+  const cData = await cRes.json();
+  if (cData.error) throw new Error('Container: ' + cData.error.message);
+
+  // Para vídeos: aguarda mais tempo para o Instagram processar
+  if (mediaType === 'VIDEO') {
+    await new Promise(r => setTimeout(r, 20000));
+
+    // Verifica status do container até estar pronto
+    let status = '';
+    let attempts = 0;
+    while (status !== 'FINISHED' && attempts < 10) {
+      await new Promise(r => setTimeout(r, 3000));
+      const sRes = await fetch(`https://graph.facebook.com/v25.0/${cData.id}?fields=status_code&access_token=${token}`);
+      const sData = await sRes.json();
+      status = sData.status_code || '';
+      attempts++;
+      if (status === 'ERROR') throw new Error('Instagram rejeitou o vídeo. Tente um vídeo mais curto ou em formato MP4.');
+    }
+  }
+
+  const pRes = await fetch(`https://graph.facebook.com/v25.0/${IG_USER_ID}/media_publish?creation_id=${cData.id}&access_token=${token}`, { method: 'POST' });
+  const pData = await pRes.json();
+  if (pData.error) throw new Error('Publish: ' + pData.error.message);
+  return pData.id;
+}
+
+// ---- HANDLER PRINCIPAL ----
+function handlePublish() {
+  if (publishMode === 'now') {
+    uploadAndPublishAll();
+  } else {
+    scheduleStories();
+  }
+}
+
+// ---- PUBLICAR AGORA (MÚLTIPLOS) ----
+async function uploadAndPublishAll() {
+  const token = getIGToken();
+  if (!token) { showToast('Configure o token do Instagram primeiro!', '⚠️'); return; }
+  if (selectedFiles.length === 0) { showToast('Selecione pelo menos um arquivo!', '⚠️'); return; }
+
+  const progressWrap = document.getElementById('upload-progress-wrap');
+  const bar = document.getElementById('upload-bar');
+  const pct = document.getElementById('upload-pct');
+  const statusText = document.getElementById('upload-status-text');
+  const resultDiv = document.getElementById('publish-result');
+  const resultMsg = document.getElementById('publish-result-msg');
+
+  if (progressWrap) progressWrap.style.display = 'block';
+  if (resultDiv) resultDiv.style.display = 'block';
+  if (bar) { bar.style.background = 'var(--accent)'; bar.style.width = '0%'; }
+
+  let successCount = 0;
+  const total = selectedFiles.length;
+
+  for (let i = 0; i < total; i++) {
+    const file = selectedFiles[i];
+    const fileStatus = document.getElementById(`file-status-${i}`);
+    try {
+      // Status visual no card
+      if (fileStatus) { fileStatus.style.display = 'block'; fileStatus.style.background = 'var(--orange)'; fileStatus.textContent = '⏳'; }
+      if (statusText) statusText.textContent = `Enviando ${i+1}/${total}: ${file.name}`;
+      if (resultMsg) {
+        resultMsg.style.color = 'var(--text)';
+        resultMsg.textContent = file.type.startsWith('video')
+          ? `⏳ Convertendo e enviando vídeo ${i+1}/${total}... (pode levar ~30s)`
+          : `⏳ Fazendo upload de "${file.name}"...`;
+      }
+
+      // Upload Cloudinary
+      const { url, type } = await uploadToCloudinary(file, i);
+      const progress = Math.round(((i + 0.5) / total) * 100);
+      if (bar) bar.style.width = progress + '%';
+      if (pct) pct.textContent = progress + '%';
+
+      // Publicar Instagram
+      if (resultMsg) resultMsg.textContent = `📤 Publicando story ${i+1}/${total} no Instagram...`;
+      await publishOneStory(url, type, token);
+
+      if (fileStatus) { fileStatus.style.background = 'var(--green)'; fileStatus.textContent = '✅'; }
+      successCount++;
+
+      // Intervalo entre stories se não for o último
+      if (i < total - 1) {
+        if (resultMsg) resultMsg.textContent = `✅ Story ${i+1} publicado! Aguardando 5s antes do próximo...`;
+        await new Promise(r => setTimeout(r, 5000));
+      }
+    } catch(e) {
+      if (fileStatus) { fileStatus.style.background = 'var(--red)'; fileStatus.textContent = '❌'; }
+      if (resultMsg) { resultMsg.style.color = 'var(--red)'; resultMsg.textContent = `❌ Erro no arquivo ${i+1}: ${e.message}`; }
+    }
+  }
+
+  if (bar) bar.style.width = '100%';
+  if (pct) pct.textContent = '100%';
+  if (resultMsg) {
+    resultMsg.style.color = successCount === total ? 'var(--green)' : 'var(--orange)';
+    resultMsg.textContent = `🎉 ${successCount}/${total} stories publicados com sucesso no Instagram!`;
+  }
+  showToast(`${successCount}/${total} stories publicados!`, '🎉');
+}
+
+// ---- AGENDAR STORIES ----
+function scheduleStories() {
+  const token = getIGToken();
+  if (!token) { showToast('Configure o token do Instagram primeiro!', '⚠️'); return; }
+  if (selectedFiles.length === 0) { showToast('Selecione pelo menos um arquivo!', '⚠️'); return; }
+
+  const dateEl = document.getElementById('sched-date');
+  const timeEl = document.getElementById('sched-time');
+  const intervalEl = document.getElementById('sched-interval');
+
+  if (!dateEl?.value || !timeEl?.value) { showToast('Defina a data e horário!', '⚠️'); return; }
+
+  const baseTime = new Date(`${dateEl.value}T${timeEl.value}`);
+  if (baseTime <= new Date()) { showToast('O horário deve ser no futuro!', '⚠️'); return; }
+
+  const intervalMin = parseInt(intervalEl?.value || '0');
+  const files = [...selectedFiles];
+
+  // Usa servidor Render para agendamentos permanentes
+  files.forEach(async (file, i) => {
+    const fireAt = new Date(baseTime.getTime() + i * intervalMin * 60000);
+    const jobId = Date.now() + i;
+    try {
+      showToast(`⏳ Enviando arquivo ${i+1}/${files.length} para o servidor...`, '⏳');
+      const { url: mediaUrl, type: mediaType } = await uploadToCloudinary(file, i);
+      const res = await fetch(`${SERVER_URL}/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: file.name,
+          date: dateEl.value,
+          time: new Date(fireAt).toTimeString().slice(0,5),
+          cat: 'produto',
+          mediaUrl, mediaType, token
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro no servidor');
+      scheduledJobs.push({ id: data.jobId, name: file.name, fireAt: data.fireAt });
+      showToast(`Story ${i+1} agendado no servidor!`, '✅');
+    } catch(e) {
+      // Fallback local
+      const delay = fireAt.getTime() - Date.now();
+      const timeoutId = setTimeout(async () => {
+        try {
+          const { url, type } = await uploadToCloudinary(file, i);
+          await publishOneStory(url, type, token);
+          removeFromQueue(jobId);
+        } catch(err) { showToast(`Erro: ${err.message}`, '❌'); }
+      }, delay);
+      scheduledJobs.push({ id: jobId, timeoutId, name: file.name, fireAt });
+      showToast(`Servidor offline — agendado localmente: ${file.name}`, '⚠️');
+    }
+  });
+
+  renderQueue();
+  clearAllFiles();
+  showToast(`${files.length} stories agendados!`, '⏰');
+
+  const resultDiv = document.getElementById('publish-result');
+  const resultMsg = document.getElementById('publish-result-msg');
+  if (resultDiv) resultDiv.style.display = 'block';
+  if (resultMsg) {
+    resultMsg.style.color = 'var(--green)';
+    resultMsg.textContent = `✅ ${files.length} stories agendados com sucesso! Veja a fila abaixo.`;
+  }
+}
+
+function renderQueue() {
+  const queueDiv = document.getElementById('scheduled-queue');
+  const queueList = document.getElementById('queue-list');
+  if (!queueDiv || !queueList) return;
+  if (scheduledJobs.length === 0) { queueDiv.style.display = 'none'; return; }
+  queueDiv.style.display = 'block';
+  queueList.innerHTML = scheduledJobs.map(job => {
+    const timeStr = job.fireAt.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    return `
+      <div style="display:flex; align-items:center; gap:10px; background:var(--surface2); border-radius:var(--radius-sm); padding:10px 12px; margin-bottom:6px; border:1px solid var(--border);">
+        <span style="font-size:16px;">⏰</span>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:600; color:var(--text);">${job.name}</div>
+          <div style="font-size:11px; color:var(--accent2);">${timeStr}</div>
+        </div>
+        <button onclick="cancelJob(${job.id})" style="background:none; border:1px solid var(--red); color:var(--red); border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer;">Cancelar</button>
+      </div>`;
+  }).join('');
+}
+
+function removeFromQueue(jobId) {
+  scheduledJobs = scheduledJobs.filter(j => j.id !== jobId);
+  renderQueue();
+}
+
+function cancelJob(jobId) {
+  const job = scheduledJobs.find(j => j.id === jobId);
+  if (job) { clearTimeout(job.timeoutId); showToast(`Agendamento de "${job.name}" cancelado`, '🗑️'); }
+  removeFromQueue(jobId);
+}
+
+function clearMediaSelection() { clearAllFiles(); }
+
+// Ao carregar
+window.addEventListener('load', () => {
+  const token = getIGToken();
+  if (token) {
+    const badge = document.getElementById('api-status-badge');
+    if (badge) { badge.textContent = 'Token salvo'; badge.style.color = 'var(--accent2)'; }
+  }
+  setPublishMode('now');
+});
+
+
+</script>
+</body>
+</html>
