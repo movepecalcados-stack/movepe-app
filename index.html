@@ -1169,12 +1169,31 @@ canvas { display: block; }
 
   /* Ajusta header */
   .page-header {
-    padding: 14px 16px 10px;
+    padding: 10px 12px 8px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    align-items: center;
   }
 
-  .page-title { font-size: 20px; }
+  .page-title { font-size: 17px; }
+
+  /* Stats menores e compactos */
+  .stats-bar {
+    gap: 6px;
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .stat-num { font-size: 16px; }
+  .stat-label { font-size: 8px; }
+
+  /* Botão Organizar Semana menor */
+  .page-header .btn-primary {
+    font-size: 11px;
+    padding: 7px 12px;
+    white-space: nowrap;
+  }
 
   /* Timeline grid scroll horizontal no celular */
   #timeline-grid {
@@ -1209,13 +1228,6 @@ canvas { display: block; }
     align-items: flex-end;
   }
 
-  /* Stats no header menores */
-  .stats-bar {
-    gap: 10px;
-  }
-
-  .stat-num { font-size: 18px; }
-  .stat-label { font-size: 9px; }
 }
 
 /* Barra mobile — escondida no desktop */
