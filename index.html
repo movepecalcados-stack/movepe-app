@@ -1159,7 +1159,15 @@ canvas { display: block; }
 
   /* Conteúdo ocupa tudo menos a barra inferior */
   .main-content {
-    padding-bottom: 120px;
+    padding-bottom: 200px;
+  }
+
+  /* Botão publicar sempre visível no celular */
+  #main-publish-btn {
+    position: sticky;
+    bottom: 75px;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(108,99,255,0.4);
   }
 
   /* Barra de navegação inferior */
