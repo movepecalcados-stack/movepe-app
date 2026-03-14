@@ -1522,6 +1522,17 @@ canvas { display: block; }
 
               <!-- Opções de agendamento -->
               <div id="schedule-options" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+
+                <!-- Blocos rápidos -->
+                <div style="margin-bottom:14px;">
+                  <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:8px;">⚡ BLOCOS RÁPIDOS</label>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button onclick="setQuickBlock('07:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">🌅 Manhã 7:00</button>
+                    <button onclick="setQuickBlock('11:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">☀️ Meio-dia 11:00</button>
+                    <button onclick="setQuickBlock('19:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">🌙 Noite 19:00</button>
+                  </div>
+                </div>
+
                 <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
                   <div>
                     <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">DATA</label>
@@ -1534,15 +1545,15 @@ canvas { display: block; }
                   <div>
                     <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">INTERVALO ENTRE STORIES</label>
                     <select id="sched-interval" class="form-input" style="padding:8px 10px; font-size:13px;">
-                      <option value="0">Todos juntos</option>
+                      <option value="10" selected>10 minutos</option>
+                      <option value="15">15 minutos</option>
                       <option value="30">30 minutos</option>
-                      <option value="60" selected>1 hora</option>
+                      <option value="60">1 hora</option>
                       <option value="120">2 horas</option>
-                      <option value="180">3 horas</option>
                     </select>
                   </div>
                 </div>
-                <p style="font-size:11px; color:var(--text2); margin-top:8px;">💡 Se selecionar vários arquivos com intervalo, cada um será postado no horário definido + o intervalo.</p>
+                <p style="font-size:11px; color:var(--text2); margin-top:8px;">💡 Com 10 minutos de intervalo, 7 stories são publicados em 1 hora e 10 minutos.</p>
               </div>
             </div>
 
@@ -1564,13 +1575,13 @@ canvas { display: block; }
             </div>
 
             <!-- Botão principal -->
-            <div class="config-row" style="margin-top:8px;">
+            <div class="config-row" style="margin-top:8px; flex-wrap:wrap; gap:10px;">
               <div class="config-icon">📤</div>
-              <div class="config-info">
+              <div class="config-info" style="min-width:0; flex:1;">
                 <h4 id="publish-btn-label">Publicar agora no Instagram</h4>
                 <p id="publish-btn-sub">Faz upload e publica todos os stories selecionados</p>
               </div>
-              <button class="btn btn-primary" onclick="handlePublish()" style="font-size:13px; padding:9px 20px;" id="main-publish-btn">Publicar →</button>
+              <button class="btn btn-primary" onclick="handlePublish()" style="font-size:13px; padding:9px 20px; width:100%; margin-top:4px;" id="main-publish-btn">Publicar →</button>
             </div>
 
             <div id="publish-result" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:12px; margin-top:4px; border:1px solid var(--border);">
@@ -2939,6 +2950,16 @@ async function testIGConnection() {
 }
 
 // ---- MODO DE PUBLICAÇÃO ----
+function setQuickBlock(time) {
+  // Define a data como hoje
+  const today = new Date().toISOString().split('T')[0];
+  const dateEl = document.getElementById('sched-date');
+  const timeEl = document.getElementById('sched-time');
+  if (dateEl) dateEl.value = today;
+  if (timeEl) timeEl.value = time;
+  showToast(`Bloco ${time} selecionado! Selecione os arquivos e clique Agendar.`, '⏰');
+}
+
 function setPublishMode(mode) {
   publishMode = mode;
   const nowBtn = document.getElementById('mode-now-btn');
@@ -3148,8 +3169,8 @@ async function uploadAndPublishAll() {
 
       // Intervalo entre stories se não for o último
       if (i < total - 1) {
-        if (resultMsg) resultMsg.textContent = `✅ Story ${i+1} publicado! Aguardando 5s antes do próximo...`;
-        await new Promise(r => setTimeout(r, 5000));
+        if (resultMsg) resultMsg.textContent = `✅ Story ${i+1} publicado! Aguardando 35s antes do próximo...`;
+        await new Promise(r => setTimeout(r, 35000));
       }
     } catch(e) {
       if (fileStatus) { fileStatus.style.background = 'var(--red)'; fileStatus.textContent = '❌'; }
