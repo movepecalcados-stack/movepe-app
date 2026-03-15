@@ -2063,6 +2063,80 @@ function getDateStr(base, offsetDays) {
 }
 
 // === STATS ===
+function deleteStory(event, id) {
+  event.stopPropagation();
+  if (!confirm('Deletar este story agendado?')) return;
+  stories = stories.filter(s => s.id !== id);
+  saveData();
+  renderTimeline();
+  updateStats();
+  showToast('Story removido!', '🗑️');
+}
+
+let editingStoryId = null;
+
+function editStory(event, id) {
+  event.stopPropagation();
+  const s = stories.find(s => s.id === id);
+  if (!s) return;
+
+  editingStoryId = id;
+
+  // Preenche o modal com os dados do story
+  document.getElementById('modal-title').value = s.title || '';
+  document.getElementById('modal-date').value = s.date || '';
+  document.getElementById('modal-time').value = s.time || '';
+  document.getElementById('modal-cat').value = s.cat || 'produto';
+  document.getElementById('modal-title-label').textContent = '✏️ Editar Story';
+
+  // Mostra preview se tiver
+  if (s.previewUrl) {
+    const preview = document.getElementById('modal-preview');
+    const img = document.getElementById('modal-preview-img');
+    const zone = document.getElementById('modal-upload-zone');
+    const name = document.getElementById('modal-file-name');
+    preview.style.display = 'block';
+    zone.style.display = 'none';
+    img.style.display = 'block';
+    img.src = s.previewUrl;
+    name.textContent = s.isVideo ? '🎬 Vídeo agendado' : '🖼️ Imagem agendada';
+  }
+
+  // Muda botão para salvar edição
+  setModalMode('scheduled');
+  const saveBtn = document.getElementById('modal-save-btn');
+  saveBtn.textContent = '💾 Salvar edição';
+  saveBtn.onclick = saveEditStory;
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function saveEditStory() {
+  const title = document.getElementById('modal-title').value || 'Novo Story';
+  const date = document.getElementById('modal-date').value;
+  const time = document.getElementById('modal-time').value;
+  const cat = document.getElementById('modal-cat').value;
+
+  if (!date) { showToast('Selecione uma data', '⚠️'); return; }
+
+  const idx = stories.findIndex(s => s.id === editingStoryId);
+  if (idx !== -1) {
+    stories[idx] = { ...stories[idx], title, date, time, cat };
+    saveData();
+    renderTimeline();
+    updateStats();
+    showToast('Story atualizado!', '✅');
+  }
+
+  // Restaura botão original
+  const saveBtn = document.getElementById('modal-save-btn');
+  saveBtn.textContent = '✅ Agendar Story';
+  saveBtn.onclick = saveStory;
+  editingStoryId = null;
+  document.getElementById('modal-title-label').textContent = '📅 Story';
+  closeModal();
+}
+
 function updateStats() {
   const scheduled = stories.filter(s => s.status === 'scheduled').length;
   const posted = stories.filter(s => s.status === 'posted').length;
@@ -2135,7 +2209,7 @@ function renderTimeline() {
     dayStories.forEach(s => {
       const card = document.createElement('div');
       card.className = 'story-card';
-      card.onclick = () => showToast(`Story: ${s.title}`, EMOJIS[s.cat] || '📋');
+      card.style.position = 'relative';
 
       const statusIcon = s.status === 'posted' ? '✓' : s.status === 'error' ? '!' : '⏰';
       const statusClass = s.status;
@@ -2147,7 +2221,6 @@ function renderTimeline() {
           <img src="${s.previewUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"/>
         </div>`;
       } else if (s.isVideo && s.previewUrl) {
-        // Thumbnail do vídeo (frame capturado)
         thumbHtml = `<div class="story-thumb-placeholder" style="background:#000; padding:0; overflow:hidden; position:relative;">
           <img src="${s.previewUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"/>
           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:32px; height:32px; background:rgba(0,0,0,0.6); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; pointer-events:none;">▶</div>
@@ -2171,6 +2244,10 @@ function renderTimeline() {
           <div class="story-time">${s.time}</div>
         </div>
         <div class="story-status ${statusClass}">${statusIcon}</div>
+        ${s.status !== 'posted' ? `
+          <button onclick="deleteStory(event, ${s.id})" style="position:absolute; top:5px; left:5px; background:rgba(220,38,38,0.85); border:none; color:#fff; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:1; display:flex; align-items:center; justify-content:center; z-index:10;">✕</button>
+          <button onclick="editStory(event, ${s.id})" style="position:absolute; top:5px; right:28px; background:rgba(108,99,255,0.85); border:none; color:#fff; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:1; display:flex; align-items:center; justify-content:center; z-index:10;">✏️</button>
+        ` : ''}
       `;
       col.appendChild(card);
     });
