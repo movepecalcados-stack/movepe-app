@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
@@ -1951,53 +1951,70 @@ const COLORS = {
   promo: '#991b1b', produto: '#1e40af', dica: '#065f46', depoimento: '#854d0e', bastidores: '#581c87'
 };
 
+// === SALVAR / CARREGAR localStorage ===
+function saveData() {
+  try {
+    // Salva stories — preserva previewUrl se for base64, remove se for blob
+    const storiesToSave = stories.map(s => ({
+      ...s,
+      previewUrl: s.previewUrl && s.previewUrl.startsWith('data:') ? s.previewUrl : null
+    }));
+    localStorage.setItem('movepe_stories', JSON.stringify(storiesToSave));
+    localStorage.setItem('movepe_logs', JSON.stringify(logs.slice(0, 50)));
+    localStorage.setItem('movepe_library', JSON.stringify(library));
+  } catch(e) { console.warn('Erro ao salvar:', e); }
+}
+
+// Converte arquivo para base64 para salvar no localStorage
+function fileToBase64(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadData() {
+  try {
+    const s = localStorage.getItem('movepe_stories');
+    const l = localStorage.getItem('movepe_logs');
+    const lib = localStorage.getItem('movepe_library');
+    if (s) stories = JSON.parse(s);
+    if (l) logs = JSON.parse(l);
+    if (lib) library = JSON.parse(lib);
+    return !!(s || l || lib);
+  } catch(e) { return false; }
+}
+
 // === INIT ===
 function init() {
-  // Seed sample data
   const today = new Date();
+  const hasData = loadData();
 
-  const sampleStories = [
-    { id:1, title:'Aviso Promoção', cat:'promo', date: getDateStr(today, 0), time:'09:00', status:'posted' },
-    { id:2, title:'Nike Air Force', cat:'produto', date: getDateStr(today, 0), time:'11:00', status:'posted' },
-    { id:3, title:'Brindes da Semana', cat:'promo', date: getDateStr(today, 0), time:'14:00', status:'posted' },
-    { id:4, title:'Nike Dunk Novo', cat:'produto', date: getDateStr(today, 1), time:'09:00', status:'scheduled' },
-    { id:5, title:'Dica Cuidar Tênis', cat:'dica', date: getDateStr(today, 1), time:'12:00', status:'scheduled' },
-    { id:6, title:'Depoimento Cliente', cat:'depoimento', date: getDateStr(today, 2), time:'09:00', status:'scheduled' },
-    { id:7, title:'Vans Caimu', cat:'produto', date: getDateStr(today, 2), time:'11:00', status:'error' },
-    { id:8, title:'Promoção Relâmpago', cat:'promo', date: getDateStr(today, 3), time:'09:00', status:'scheduled' },
-    { id:9, title:'Bastidores Loja', cat:'bastidores', date: getDateStr(today, 3), time:'15:00', status:'scheduled' },
-    { id:10, title:'Adidas Nova Linha', cat:'produto', date: getDateStr(today, 4), time:'09:00', status:'scheduled' },
-    { id:11, title:'Puma Lançamento', cat:'produto', date: getDateStr(today, 4), time:'11:00', status:'error' },
-    { id:12, title:'Fim de Semana Promo', cat:'promo', date: getDateStr(today, 5), time:'10:00', status:'scheduled' },
-    { id:13, title:'Chamada Final', cat:'promo', date: getDateStr(today, 6), time:'09:00', status:'error' },
-  ];
+  if (!hasData) {
+    // Dados de exemplo apenas na primeira vez
+    stories = [
+      { id:1, title:'Aviso Promoção', cat:'promo', date: getDateStr(today, 0), time:'09:00', status:'posted' },
+      { id:2, title:'Nike Air Force', cat:'produto', date: getDateStr(today, 0), time:'11:00', status:'posted' },
+      { id:3, title:'Brindes da Semana', cat:'promo', date: getDateStr(today, 0), time:'14:00', status:'posted' },
+      { id:4, title:'Nike Dunk Novo', cat:'produto', date: getDateStr(today, 1), time:'09:00', status:'scheduled' },
+      { id:5, title:'Dica Cuidar Tênis', cat:'dica', date: getDateStr(today, 1), time:'12:00', status:'scheduled' },
+      { id:6, title:'Vizzano', cat:'produto', date: getDateStr(today, 2), time:'11:00', status:'scheduled' },
+    ];
 
-  stories = sampleStories;
+    library = [
+      { id:1, title:'AF1 Branco', cat:'produto', emoji:'👟' },
+      { id:2, title:'Dunk Black', cat:'produto', emoji:'🖤' },
+      { id:3, title:'Promoção Jul', cat:'promo', emoji:'🔥' },
+    ];
 
-  library = [
-    { id:1, title:'AF1 Branco', cat:'produto', emoji:'👟' },
-    { id:2, title:'Dunk Black', cat:'produto', emoji:'🖤' },
-    { id:3, title:'Promoção Jul', cat:'promo', emoji:'🔥' },
-    { id:4, title:'Vans Caimu', cat:'produto', emoji:'🛹' },
-    { id:5, title:'Dica Limpeza', cat:'dica', emoji:'🧼' },
-    { id:6, title:'Review Cliente', cat:'depoimento', emoji:'⭐' },
-    { id:7, title:'Adidas Boost', cat:'produto', emoji:'⚡' },
-    { id:8, title:'Puma X', cat:'produto', emoji:'🐆' },
-    { id:9, title:'Unboxing', cat:'bastidores', emoji:'📦' },
-    { id:10, title:'Kit Brinde', cat:'promo', emoji:'🎁' },
-    { id:11, title:'Streetwear Look', cat:'dica', emoji:'🎨' },
-    { id:12, title:'Depoimento Ana', cat:'depoimento', emoji:'💬' },
-  ];
+    logs = [
+      { type:'ok', time:'08:45', msg:'Sistema iniciado', tag:'Sistema' },
+    ];
 
-  logs = [
-    { type:'err', time:'17:12', msg:'Falha ao postar "Puma Lançamento" — Token expirado', tag:'Erro API' },
-    { type:'err', time:'16:44', msg:'Falha ao postar "Vans Caimu" — Arquivo corrompido', tag:'Arquivo' },
-    { type:'warn', time:'15:30', msg:'"Chamada Final" agendada mas sem mídia anexada', tag:'Atenção' },
-    { type:'ok', time:'14:01', msg:'Story "Brindes da Semana" postado com sucesso', tag:'Sucesso' },
-    { type:'ok', time:'11:03', msg:'Story "Nike Air Force" postado com sucesso', tag:'Sucesso' },
-    { type:'ok', time:'09:00', msg:'Story "Aviso Promoção" postado com sucesso', tag:'Sucesso' },
-    { type:'ok', time:'08:45', msg:'Sistema iniciado — 13 stories agendados', tag:'Sistema' },
-  ];
+    saveData();
+  }
 
   updateStats();
   renderTimeline();
@@ -2347,7 +2364,7 @@ async function saveStory() {
 
       // Salva na timeline como publicado
       stories.push({ id: Date.now(), title, date, time, cat, status: 'published' });
-      renderTimeline(); updateStats();
+      renderTimeline(); updateStats(); saveData();
       logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" publicado no Instagram`, tag: 'Publicado' });
       renderLogs();
 
@@ -2374,11 +2391,17 @@ async function saveStory() {
     const file = modalFile;
     const jobId = Date.now();
 
-    let previewUrl = URL.createObjectURL(file);
     const isVideo = file.type.startsWith('video');
+    // Salva preview em base64 para persistir após F5
+    let previewUrl = null;
+    if (!isVideo) {
+      previewUrl = await fileToBase64(file);
+    } else {
+      previewUrl = URL.createObjectURL(file); // vídeo fica só em memória
+    }
     const newStory = { id: jobId, title, date, time, cat, status: 'scheduled', previewUrl, isVideo };
     stories.push(newStory);
-    renderTimeline(); updateStats();
+    renderTimeline(); updateStats(); saveData();
 
     // Envia agendamento para o servidor Render (funciona com PC desligado)
     try {
@@ -2400,7 +2423,7 @@ async function saveStory() {
           const { url, type } = await uploadToCloudinary(file, 0);
           await publishOneStory(url, type, token);
           const idx = stories.findIndex(s => s.id === jobId);
-          if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); }
+          if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); saveData(); }
         } catch(err) {
           const idx = stories.findIndex(s => s.id === jobId);
           if (idx !== -1) { stories[idx].status = 'error'; renderTimeline(); }
@@ -2840,7 +2863,7 @@ function fireNotification(story) {
     });
   }
   const idx = stories.findIndex(s => s.id === story.id);
-  if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); }
+  if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); saveData(); }
   logs.unshift({ type:'ok', time: new Date().toTimeString().slice(0,5), msg:`Story "${story.title}" postado — adicione os stickers no Instagram`, tag:'Postado' });
   renderLogs();
   showToast(`Story "${story.title}" postado! Abra o Instagram. 📱`, '🔔');
@@ -3217,6 +3240,17 @@ function scheduleStories() {
   files.forEach(async (file, i) => {
     const fireAt = new Date(baseTime.getTime() + i * intervalMin * 60000);
     const jobId = Date.now() + i;
+    const fireDate = fireAt.toISOString().split('T')[0];
+    const fireTime = fireAt.toTimeString().slice(0,5);
+    const isVideo = file.type.startsWith('video');
+
+    // Adiciona na timeline imediatamente
+    let previewUrl = null;
+    if (!isVideo) previewUrl = await fileToBase64(file);
+    const newStory = { id: jobId, title: file.name, date: fireDate, time: fireTime, cat: 'produto', status: 'scheduled', previewUrl, isVideo };
+    stories.push(newStory);
+    renderTimeline(); updateStats(); saveData();
+
     try {
       showToast(`⏳ Enviando arquivo ${i+1}/${files.length} para o servidor...`, '⏳');
       const { url: mediaUrl, type: mediaType } = await uploadToCloudinary(file, i);
@@ -3225,8 +3259,8 @@ function scheduleStories() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: file.name,
-          date: dateEl.value,
-          time: new Date(fireAt).toTimeString().slice(0,5),
+          date: fireDate,
+          time: fireTime,
           cat: 'produto',
           mediaUrl, mediaType, token
         })
