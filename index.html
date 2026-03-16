@@ -1652,6 +1652,25 @@ canvas { display: block; }
               <input type="time" class="form-input" value="09:00" style="width:100px; padding:7px 10px; font-size:13px;"/>
             </div>
 
+            <div class="config-row">
+              <div class="config-icon">💾</div>
+              <div class="config-info">
+                <h4>Backup dos agendamentos</h4>
+                <p>Exporta todos os stories agendados em arquivo JSON</p>
+              </div>
+              <button class="btn" onclick="exportBackup()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬇️ Exportar backup</button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">📤</div>
+              <div class="config-info">
+                <h4>Restaurar backup</h4>
+                <p>Importa stories de um arquivo de backup</p>
+              </div>
+              <input type="file" id="backup-import-input" accept=".json" style="display:none" onchange="importBackup(this)"/>
+              <button class="btn" onclick="document.getElementById('backup-import-input').click()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬆️ Importar backup</button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1992,6 +2011,16 @@ canvas { display: block; }
   </div>
 </nav>
 
+<!-- TOKEN EXPIRY BANNER -->
+<div id="token-expiry-banner" style="display:none; position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:400; background:rgba(234,179,8,0.15); border:1px solid var(--orange); border-radius:12px; padding:12px 20px; display:none; align-items:center; gap:12px; box-shadow:0 4px 20px rgba(0,0,0,0.4); backdrop-filter:blur(12px); min-width:300px; max-width:90vw;">
+  <span style="font-size:20px;">⚠️</span>
+  <div style="flex:1;">
+    <div style="font-size:13px; font-weight:700; color:var(--text);">Token do Instagram expira em <span id="token-days-left" style="color:var(--orange);">?</span></div>
+    <div style="font-size:11px; color:var(--text2);">Renove em developers.facebook.com antes de perder os agendamentos</div>
+  </div>
+  <button onclick="document.getElementById('token-expiry-banner').style.display='none'" style="background:none; border:none; color:var(--text2); cursor:pointer; font-size:18px;">×</button>
+</div>
+
 <!-- NOTIFICATION PERMISSION BANNER -->
 <div class="notif-banner" id="notif-banner">
   <div class="notif-icon-wrap">🔔</div>
@@ -2136,6 +2165,76 @@ function init() {
   const today2 = new Date();
   document.getElementById('modal-date').value = getDateStr(today2, 0);
   document.getElementById('upload-date').value = getDateStr(today2, 0);
+
+  // Verifica expiração do token
+  checkTokenExpiry();
+
+  // Atualiza contadores regressivos a cada minuto
+  setInterval(updateCountdowns, 60000);
+  updateCountdowns();
+}
+
+function updateCountdowns() {
+  const now = new Date();
+  document.querySelectorAll('.story-countdown').forEach(el => {
+    const fireAt = new Date(el.dataset.fireat);
+    const diff = fireAt - now;
+    if (diff <= 0) { el.textContent = '🔴 Agora!'; return; }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    if (h > 24) {
+      const d = Math.floor(h / 24);
+      el.textContent = `⏱ ${d}d ${h % 24}h`;
+    } else if (h > 0) {
+      el.textContent = `⏱ ${h}h ${m}m`;
+    } else {
+      el.textContent = `⏱ ${m}min`;
+    }
+  });
+}
+
+function exportBackup() {
+  const backup = {
+    exportedAt: new Date().toISOString(),
+    stories: stories.map(s => ({ ...s, previewUrl: null })), // remove preview para arquivo menor
+    logs: logs.slice(0, 30)
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `movepe-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup exportado com sucesso!', '💾');
+}
+
+function importBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const backup = JSON.parse(e.target.result);
+      if (!backup.stories) throw new Error('Arquivo inválido');
+      const existing = stories.map(s => s.id);
+      let added = 0;
+      backup.stories.forEach(s => {
+        if (!existing.includes(s.id)) {
+          stories.push(s);
+          added++;
+        }
+      });
+      saveData();
+      renderTimeline();
+      updateStats();
+      showToast(`${added} stories restaurados do backup!`, '✅');
+    } catch(e) {
+      showToast('Erro ao importar: arquivo inválido', '❌');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
 function getDateStr(base, offsetDays) {
@@ -2283,7 +2382,7 @@ async function confirmWeekSchedule() {
       const res = await fetch(`${SERVER_URL}/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: file.name, date, time, cat: 'produto', mediaUrl, mediaType, token })
+        body: JSON.stringify({ title: file.name, date, time, cat: guessCategoryFromFilename(file.name), mediaUrl, mediaType, token })
       });
       const data = await res.json();
       if (res.ok) {
@@ -2486,6 +2585,7 @@ function renderTimeline() {
         <div class="story-overlay">
           <div class="story-label">${s.title}</div>
           <div class="story-time">${s.time}</div>
+          ${s.status === 'scheduled' ? `<div class="story-countdown" data-fireat="${s.date}T${s.time}:00" style="font-size:9px; color:rgba(255,255,255,0.7); margin-top:2px;"></div>` : ''}
         </div>
         <div class="story-status ${statusClass}">${statusIcon}</div>
         ${s.status !== 'posted' ? `
@@ -2714,7 +2814,7 @@ async function saveStory() {
 
       const { url, type } = await uploadToCloudinary(modalFile, 0);
       statusEl.textContent = '📤 Publicando no Instagram...';
-      await publishOneStory(url, type, token);
+      await publishWithRetry(url, type, token);
 
       statusEl.style.color = 'var(--green)';
       statusEl.textContent = '✅ Publicado com sucesso no Instagram!';
@@ -2779,7 +2879,7 @@ async function saveStory() {
       const timeoutId = setTimeout(async () => {
         try {
           const { url, type } = await uploadToCloudinary(file, 0);
-          await publishOneStory(url, type, token);
+          await publishWithRetry(url, type, token);
           const idx = stories.findIndex(s => s.id === jobId);
           if (idx !== -1) { stories[idx].status = 'posted'; renderTimeline(); updateStats(); saveData(); }
         } catch(err) {
@@ -3303,14 +3403,66 @@ function saveIGToken() {
   const token = input ? input.value.trim() : '';
   if (!token) { showToast('Cole o token antes de salvar', '⚠️'); return; }
   localStorage.setItem('ig_access_token', token);
+  // Salva a data de quando o token foi salvo (expira em 60 dias)
+  localStorage.setItem('ig_token_saved_at', Date.now().toString());
   const msg = document.getElementById('token-saved-msg');
   if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000); }
   showToast('Token salvo com segurança!', '🔐');
   input.value = '';
+  checkTokenExpiry();
 }
 
 function getIGToken() {
   return localStorage.getItem('ig_access_token') || '';
+}
+
+// Verifica expiração do token e mostra alerta
+function checkTokenExpiry() {
+  const savedAt = parseInt(localStorage.getItem('ig_token_saved_at') || '0');
+  if (!savedAt) return;
+  const daysLeft = Math.floor((60 * 24 * 60 * 60 * 1000 - (Date.now() - savedAt)) / (24 * 60 * 60 * 1000));
+  const banner = document.getElementById('token-expiry-banner');
+  const daysEl = document.getElementById('token-days-left');
+  if (!banner) return;
+  if (daysLeft <= 7 && daysLeft >= 0) {
+    banner.style.display = 'flex';
+    if (daysEl) daysEl.textContent = daysLeft === 0 ? 'HOJE' : `${daysLeft} dia${daysLeft !== 1 ? 's' : ''}`;
+    banner.style.background = daysLeft <= 2 ? 'rgba(220,38,38,0.15)' : 'rgba(234,179,8,0.15)';
+    banner.style.borderColor = daysLeft <= 2 ? 'var(--red)' : 'var(--orange)';
+  } else if (daysLeft < 0) {
+    banner.style.display = 'flex';
+    if (daysEl) daysEl.textContent = 'EXPIRADO';
+    banner.style.background = 'rgba(220,38,38,0.15)';
+    banner.style.borderColor = 'var(--red)';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// Categoria automática por nome do arquivo
+function guessCategoryFromFilename(filename) {
+  const name = filename.toLowerCase();
+  if (name.includes('promo') || name.includes('desconto') || name.includes('oferta') || name.includes('sale')) return 'promo';
+  if (name.includes('dica') || name.includes('tip') || name.includes('tutorial') || name.includes('como')) return 'dica';
+  if (name.includes('depo') || name.includes('cliente') || name.includes('avalia')) return 'depoimento';
+  if (name.includes('basti') || name.includes('nos') || name.includes('equipe') || name.includes('loja')) return 'bastidores';
+  return 'produto'; // padrão
+}
+
+// Publicar com retry automático (2 tentativas)
+async function publishWithRetry(mediaUrl, mediaType, token, maxRetries = 2) {
+  let lastError;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await publishOneStory(mediaUrl, mediaType, token);
+    } catch(e) {
+      lastError = e;
+      if (attempt < maxRetries) {
+        await new Promise(r => setTimeout(r, 10000)); // aguarda 10s antes de tentar novamente
+      }
+    }
+  }
+  throw lastError;
 }
 
 // ---- TESTE DE CONEXÃO ----
@@ -3551,7 +3703,7 @@ async function uploadAndPublishAll() {
 
       // Publicar Instagram
       if (resultMsg) resultMsg.textContent = `📤 Publicando story ${i+1}/${total} no Instagram...`;
-      await publishOneStory(url, type, token);
+      await publishWithRetry(url, type, token);
 
       if (fileStatus) { fileStatus.style.background = 'var(--green)'; fileStatus.textContent = '✅'; }
       successCount++;
@@ -3634,7 +3786,7 @@ function scheduleStories() {
       const timeoutId = setTimeout(async () => {
         try {
           const { url, type } = await uploadToCloudinary(file, i);
-          await publishOneStory(url, type, token);
+          await publishWithRetry(url, type, token);
           removeFromQueue(jobId);
         } catch(err) { showToast(`Erro: ${err.message}`, '❌'); }
       }, delay);
