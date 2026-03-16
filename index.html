@@ -1347,7 +1347,7 @@ canvas { display: block; }
         <div class="stat-chip red"><span class="val" id="stat-erros">3</span><span class="lbl">Erros</span></div>
         <div class="stat-chip orange"><span class="val" id="stat-midias">0</span><span class="lbl">Mídias</span></div>
       </div>
-      <button class="btn btn-primary" onclick="openModal()">✨ Organizar Semana</button>
+      <button class="btn btn-primary" onclick="openWeekModal()">✨ Organizar Semana</button>
     </header>
 
     <!-- CONTENT -->
@@ -1885,6 +1885,88 @@ canvas { display: block; }
   </div>
 </div>
 
+<!-- MODAL: ORGANIZAR SEMANA -->
+<div class="modal-overlay" id="week-modal-overlay" onclick="closeWeekModalOutside(event)" style="z-index:500;">
+  <div class="modal" id="week-modal" style="max-width:520px; width:95%; max-height:90vh; overflow-y:auto;">
+    <h2>✨ Organizar Semana</h2>
+    <p style="font-size:13px; color:var(--text2); margin-top:4px;">Selecione até 21 vídeos/fotos e o sistema distribui automaticamente nos 3 blocos da semana.</p>
+
+    <!-- Configuração dos blocos -->
+    <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
+      <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
+        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">⏰ Horários de publicação</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+          <div>
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌅 MANHÃ</label>
+            <input type="time" id="week-time-1" value="07:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+          </div>
+          <div>
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">☀️ MEIO-DIA</label>
+            <input type="time" id="week-time-2" value="11:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+          </div>
+          <div>
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌙 NOITE</label>
+            <input type="time" id="week-time-3" value="19:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+          </div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+          <label style="font-size:10px; color:var(--text2);">INTERVALO ENTRE STORIES:</label>
+          <select id="week-interval" class="form-input" style="padding:4px 8px; font-size:12px; flex:1;">
+            <option value="10" selected>10 minutos</option>
+            <option value="15">15 minutos</option>
+            <option value="20">20 minutos</option>
+            <option value="30">30 minutos</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Data de início -->
+      <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
+        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">📅 Semana</div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div style="flex:1;">
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">DATA DE INÍCIO</label>
+            <input type="date" id="week-start-date" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">DIAS DA SEMANA</label>
+            <select id="week-days" class="form-input" style="padding:6px 8px; font-size:12px;">
+              <option value="7">7 dias (Seg-Dom)</option>
+              <option value="5">5 dias (Seg-Sex)</option>
+              <option value="1">Só hoje</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload dos arquivos -->
+      <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
+        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">📁 Arquivos <span id="week-file-count" style="color:var(--accent2);">(0 selecionados)</span></div>
+        <input type="file" id="week-file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleWeekFiles(this)"/>
+        <div onclick="document.getElementById('week-file-input').click()" style="border:2px dashed var(--border); border-radius:8px; padding:16px; text-align:center; cursor:pointer; color:var(--text2); font-size:12px;">
+          📂 Clique para selecionar os arquivos da semana
+        </div>
+        <!-- Preview dos arquivos -->
+        <div id="week-files-preview" style="display:none; margin-top:10px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+      </div>
+
+      <!-- Preview do agendamento -->
+      <div id="week-schedule-preview" style="display:none; background:var(--surface2); border-radius:10px; padding:12px; border:1px solid rgba(108,99,255,0.3);">
+        <div style="font-size:12px; font-weight:700; color:var(--accent2); margin-bottom:8px;">📋 Prévia do agendamento</div>
+        <div id="week-schedule-list" style="font-size:11px; color:var(--text2); max-height:150px; overflow-y:auto; display:flex; flex-direction:column; gap:4px;"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; display:flex; gap:8px;">
+      <button class="btn btn-ghost" onclick="closeWeekModal()" style="flex:1;">Cancelar</button>
+      <button class="btn" onclick="previewWeekSchedule()" style="flex:1; background:var(--surface3); color:var(--text);">👁️ Prévia</button>
+      <button class="btn btn-primary" onclick="confirmWeekSchedule()" style="flex:1;" id="week-confirm-btn">✨ Agendar semana</button>
+    </div>
+
+    <div id="week-status" style="display:none; margin-top:10px; padding:10px; border-radius:8px; background:var(--surface2); font-size:12px; color:var(--text2); text-align:center;"></div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast success" id="toast">
   <span class="t-icon" id="toast-icon">✅</span>
@@ -2060,6 +2142,168 @@ function getDateStr(base, offsetDays) {
   const d = new Date(base);
   d.setDate(d.getDate() + offsetDays);
   return d.toISOString().split('T')[0];
+}
+
+// === ORGANIZAR SEMANA ===
+let weekFiles = [];
+
+function openWeekModal() {
+  weekFiles = [];
+  document.getElementById('week-file-count').textContent = '(0 selecionados)';
+  document.getElementById('week-files-preview').style.display = 'none';
+  document.getElementById('week-files-preview').innerHTML = '';
+  document.getElementById('week-schedule-preview').style.display = 'none';
+  document.getElementById('week-status').style.display = 'none';
+  // Define data de início como hoje
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('week-start-date').value = today;
+  document.getElementById('week-modal-overlay').classList.add('open');
+}
+
+function closeWeekModal() {
+  document.getElementById('week-modal-overlay').classList.remove('open');
+}
+
+function closeWeekModalOutside(e) {
+  if (e.target === document.getElementById('week-modal-overlay')) closeWeekModal();
+}
+
+function handleWeekFiles(input) {
+  weekFiles = Array.from(input.files);
+  const count = weekFiles.length;
+  document.getElementById('week-file-count').textContent = `(${count} selecionado${count !== 1 ? 's' : ''})`;
+
+  const preview = document.getElementById('week-files-preview');
+  preview.style.display = 'flex';
+  preview.innerHTML = weekFiles.map((f, i) => {
+    const isVid = f.type.startsWith('video');
+    const size = (f.size/1024/1024).toFixed(1);
+    return `<div style="background:var(--surface); border-radius:6px; padding:4px 8px; font-size:10px; color:var(--text2); border:1px solid var(--border); display:flex; align-items:center; gap:4px;">
+      <span>${isVid ? '🎬' : '🖼️'}</span>
+      <span style="max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.name}</span>
+      <span style="color:var(--text3);">${size}MB</span>
+    </div>`;
+  }).join('');
+
+  // Gera prévia automática
+  previewWeekSchedule();
+}
+
+function getWeekSchedule() {
+  const startDate = document.getElementById('week-start-date').value;
+  const time1 = document.getElementById('week-time-1').value;
+  const time2 = document.getElementById('week-time-2').value;
+  const time3 = document.getElementById('week-time-3').value;
+  const intervalMin = parseInt(document.getElementById('week-interval').value);
+  const days = parseInt(document.getElementById('week-days').value);
+
+  if (!startDate || weekFiles.length === 0) return [];
+
+  const slots = [];
+  for (let d = 0; d < days; d++) {
+    const date = new Date(startDate + 'T12:00:00');
+    date.setDate(date.getDate() + d);
+    const dateStr = date.toISOString().split('T')[0];
+    [time1, time2, time3].forEach(time => {
+      slots.push({ date: dateStr, time });
+    });
+  }
+
+  // Distribui os arquivos nos slots
+  const schedule = [];
+  weekFiles.forEach((file, i) => {
+    if (i >= slots.length * 7) return; // máximo 7 por slot
+    // Distribui: slot 0 = arquivo 0-6, slot 1 = arquivo 7-13, etc.
+    const slotIndex = Math.floor(i / 7);
+    const posInSlot = i % 7;
+    if (slotIndex >= slots.length) return;
+    const slot = slots[slotIndex];
+    const [h, m] = slot.time.split(':').map(Number);
+    const fireTime = new Date(`${slot.date}T${slot.time}:00`);
+    fireTime.setMinutes(fireTime.getMinutes() + posInSlot * intervalMin);
+    schedule.push({
+      file,
+      date: slot.date,
+      time: fireTime.toTimeString().slice(0, 5)
+    });
+  });
+
+  return schedule;
+}
+
+function previewWeekSchedule() {
+  const schedule = getWeekSchedule();
+  if (schedule.length === 0) return;
+
+  const previewDiv = document.getElementById('week-schedule-preview');
+  const listDiv = document.getElementById('week-schedule-list');
+
+  previewDiv.style.display = 'block';
+  listDiv.innerHTML = schedule.map((s, i) => `
+    <div style="display:flex; gap:8px; align-items:center; padding:3px 0; border-bottom:1px solid var(--border);">
+      <span style="color:var(--accent2); font-weight:700; min-width:20px;">${i+1}.</span>
+      <span style="background:var(--surface); padding:2px 6px; border-radius:4px; font-size:10px;">${s.date}</span>
+      <span style="color:var(--green); font-weight:700;">${s.time}</span>
+      <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${s.file.name}</span>
+    </div>
+  `).join('');
+}
+
+async function confirmWeekSchedule() {
+  const token = getIGToken();
+  if (!token) { showToast('Configure o token do Instagram primeiro!', '⚠️'); return; }
+  if (weekFiles.length === 0) { showToast('Selecione os arquivos!', '⚠️'); return; }
+
+  const schedule = getWeekSchedule();
+  if (schedule.length === 0) { showToast('Configure os horários!', '⚠️'); return; }
+
+  const btn = document.getElementById('week-confirm-btn');
+  const statusEl = document.getElementById('week-status');
+  btn.disabled = true;
+  btn.textContent = '⏳ Agendando...';
+  statusEl.style.display = 'block';
+
+  let success = 0;
+  for (let i = 0; i < schedule.length; i++) {
+    const { file, date, time } = schedule[i];
+    statusEl.textContent = `⏳ Processando ${i+1}/${schedule.length}: ${file.name}`;
+    try {
+      const isVideo = file.type.startsWith('video');
+      let previewUrl = null;
+      if (!isVideo) previewUrl = await fileToBase64(file);
+      else previewUrl = await videoToThumbnail(file);
+
+      const jobId = Date.now() + i;
+      const newStory = { id: jobId, title: file.name, date, time, cat: 'produto', status: 'scheduled', previewUrl, isVideo };
+      stories.push(newStory);
+      renderTimeline(); updateStats(); saveData();
+
+      // Envia para o servidor
+      const { url: mediaUrl, type: mediaType } = await uploadToCloudinary(file, i);
+      const res = await fetch(`${SERVER_URL}/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: file.name, date, time, cat: 'produto', mediaUrl, mediaType, token })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        scheduledJobs.push({ id: data.jobId, name: file.name, fireAt: data.fireAt });
+        success++;
+      }
+    } catch(e) {
+      console.error('Erro ao agendar:', file.name, e);
+    }
+  }
+
+  statusEl.style.color = 'var(--green)';
+  statusEl.textContent = `✅ ${success}/${schedule.length} stories agendados com sucesso!`;
+  showToast(`${success} stories agendados para a semana!`, '🚀');
+  logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Semana organizada: ${success} stories agendados`, tag: 'Semana' });
+  renderLogs(); saveData();
+
+  btn.disabled = false;
+  btn.textContent = '✨ Agendar semana';
+  setTimeout(() => closeWeekModal(), 3000);
 }
 
 // === STATS ===
