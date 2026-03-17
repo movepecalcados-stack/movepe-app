@@ -2298,34 +2298,34 @@ function getWeekSchedule() {
 
   if (!startDate || weekFiles.length === 0) return [];
 
-  const slots = [];
+  // Blocos do dia: manhã, tarde, noite — cada um com 7 stories
+  const blocks = [time1, time2, time3];
+  const storiesPerBlock = 7;
+
+  const schedule = [];
+  let fileIndex = 0;
+
   for (let d = 0; d < days; d++) {
     const date = new Date(startDate + 'T12:00:00');
     date.setDate(date.getDate() + d);
     const dateStr = date.toISOString().split('T')[0];
-    [time1, time2, time3].forEach(time => {
-      slots.push({ date: dateStr, time });
-    });
-  }
 
-  // Distribui os arquivos nos slots
-  const schedule = [];
-  weekFiles.forEach((file, i) => {
-    if (i >= slots.length * 7) return; // máximo 7 por slot
-    // Distribui: slot 0 = arquivo 0-6, slot 1 = arquivo 7-13, etc.
-    const slotIndex = Math.floor(i / 7);
-    const posInSlot = i % 7;
-    if (slotIndex >= slots.length) return;
-    const slot = slots[slotIndex];
-    const [h, m] = slot.time.split(':').map(Number);
-    const fireTime = new Date(`${slot.date}T${slot.time}:00`);
-    fireTime.setMinutes(fireTime.getMinutes() + posInSlot * intervalMin);
-    schedule.push({
-      file,
-      date: slot.date,
-      time: fireTime.toTimeString().slice(0, 5)
-    });
-  });
+    for (let b = 0; b < blocks.length; b++) {
+      for (let s = 0; s < storiesPerBlock; s++) {
+        if (fileIndex >= weekFiles.length) break;
+        const fireTime = new Date(`${dateStr}T${blocks[b]}:00`);
+        fireTime.setMinutes(fireTime.getMinutes() + s * intervalMin);
+        schedule.push({
+          file: weekFiles[fileIndex],
+          date: dateStr,
+          time: fireTime.toTimeString().slice(0, 5)
+        });
+        fileIndex++;
+      }
+    }
+
+    if (fileIndex >= weekFiles.length) break;
+  }
 
   return schedule;
 }
@@ -2350,11 +2350,14 @@ function previewWeekSchedule() {
 
 async function confirmWeekSchedule() {
   const token = getIGToken();
-  if (!token) { showToast('Configure o token do Instagram primeiro!', '⚠️'); return; }
-  if (weekFiles.length === 0) { showToast('Selecione os arquivos!', '⚠️'); return; }
+  if (!token) { showToast('Configure o token do Instagram primeiro em ⚙️ Config!', '⚠️'); return; }
+  if (weekFiles.length === 0) { showToast('Selecione os arquivos primeiro!', '⚠️'); return; }
 
   const schedule = getWeekSchedule();
-  if (schedule.length === 0) { showToast('Configure os horários!', '⚠️'); return; }
+  if (schedule.length === 0) { showToast('Nenhum arquivo para agendar. Verifique a data e os arquivos!', '⚠️'); return; }
+
+  // Confirma com o usuário
+  if (!confirm(`Agendar ${schedule.length} stories para a semana?`)) return;
 
   const btn = document.getElementById('week-confirm-btn');
   const statusEl = document.getElementById('week-status');
@@ -2843,7 +2846,12 @@ async function saveStory() {
     if (!modalFile) { showToast('Adicione uma foto ou vídeo para agendar!', '⚠️'); return; }
 
     const fireAt = new Date(`${date}T${time}`);
-    if (fireAt <= new Date()) { showToast('O horário deve ser no futuro!', '⚠️'); return; }
+    if (fireAt <= new Date()) { showToast('O horário deve ser no futuro! Escolha um horário maior que agora.', '⚠️'); return; }
+
+    const saveBtn = document.getElementById('modal-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ Agendando...';
+    if (statusEl) { statusEl.style.display = 'block'; statusEl.style.color = 'var(--text2)'; statusEl.textContent = '⏳ Processando arquivo...'; }
 
     const delay = fireAt.getTime() - Date.now();
     const file = modalFile;
@@ -2898,6 +2906,8 @@ async function saveStory() {
     logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" agendado para ${date} às ${time}`, tag: 'Agendado' });
     renderLogs();
     if (notifPermission === 'granted') scheduleAllNotifications();
+    const saveBtn2 = document.getElementById('modal-save-btn');
+    if (saveBtn2) { saveBtn2.disabled = false; saveBtn2.textContent = '✅ Agendar Story'; }
   }
 }
 
