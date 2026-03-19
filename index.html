@@ -2371,26 +2371,60 @@ async function confirmWeekSchedule() {
   statusEl.style.display = 'block';
 
   let success = 0;
-  for (let i = 0; i < schedule.length; i++) {
-    const { file, date, time } = schedule[i];
-    statusEl.textContent = `⏳ Processando ${i+1}/${schedule.length}: ${file.name}`;
+
+  // Passo 1: Faz upload de cada arquivo único uma vez só (economiza tempo)
+  statusEl.textContent = '⏳ Fazendo upload dos arquivos...';
+  const uploadedFiles = {};
+  const uniqueFiles = [...new Set(schedule.map(s => s.file))];
+  for (let i = 0; i < uniqueFiles.length; i++) {
+    const file = uniqueFiles[i];
+    statusEl.textContent = `⏳ Upload ${i+1}/${uniqueFiles.length}: ${file.name}`;
     try {
       const isVideo = file.type.startsWith('video');
       let previewUrl = null;
       if (!isVideo) previewUrl = await fileToBase64(file);
       else previewUrl = await videoToThumbnail(file);
 
+      const { url: mediaUrl, type: mediaType } = await uploadToCloudinary(file, i);
+      uploadedFiles[file.name] = { mediaUrl, mediaType, previewUrl, isVideo };
+    } catch(e) {
+      console.error('Erro no upload:', file.name, e);
+    }
+  }
+
+  // Passo 2: Agenda cada story em cada dia
+  for (let i = 0; i < schedule.length; i++) {
+    const { file, date, time } = schedule[i];
+    const uploaded = uploadedFiles[file.name];
+    if (!uploaded) continue;
+
+    statusEl.textContent = `⏳ Agendando ${i+1}/${schedule.length}: ${date} ${time}`;
+
+    try {
       const jobId = Date.now() + i;
-      const newStory = { id: jobId, title: file.name, date, time, cat: 'produto', status: 'scheduled', previewUrl, isVideo };
+      const cat = guessCategoryFromFilename(file.name);
+
+      // Adiciona na timeline
+      const newStory = {
+        id: jobId,
+        title: file.name,
+        date, time, cat,
+        status: 'scheduled',
+        previewUrl: uploaded.previewUrl,
+        isVideo: uploaded.isVideo
+      };
       stories.push(newStory);
-      renderTimeline(); updateStats(); saveData();
 
       // Envia para o servidor
-      const { url: mediaUrl, type: mediaType } = await uploadToCloudinary(file, i);
       const res = await fetch(`${SERVER_URL}/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: file.name, date, time, cat: guessCategoryFromFilename(file.name), mediaUrl, mediaType, token })
+        body: JSON.stringify({
+          title: file.name, date, time, cat,
+          mediaUrl: uploaded.mediaUrl,
+          mediaType: uploaded.mediaType,
+          token
+        })
       });
       const data = await res.json();
       if (res.ok) {
@@ -2398,9 +2432,12 @@ async function confirmWeekSchedule() {
         success++;
       }
     } catch(e) {
-      console.error('Erro ao agendar:', file.name, e);
+      console.error('Erro ao agendar:', file.name, date, time, e);
     }
   }
+
+  // Atualiza timeline com todos os dias de uma vez
+  renderTimeline(); updateStats(); saveData();
 
   statusEl.style.color = 'var(--green)';
   statusEl.textContent = `✅ ${success}/${schedule.length} stories agendados com sucesso!`;
