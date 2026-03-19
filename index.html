@@ -1364,6 +1364,8 @@ canvas { display: block; }
           </div>
           <button class="today-btn" onclick="goToday()">Hoje</button>
           <button class="select-btn" onclick="showToast('Modo seleção ativado', '✅')">⊞ Modo seleção</button>
+          <button onclick="clearWeekStories()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--red); background:transparent; color:var(--red); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Limpar semana</button>
+          <button onclick="clearAllScheduled()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Limpar tudo</button>
         </div>
 
         <div class="timeline-grid" id="timeline-grid"></div>
@@ -2448,6 +2450,28 @@ async function confirmWeekSchedule() {
   btn.disabled = false;
   btn.textContent = '✨ Agendar semana';
   setTimeout(() => closeWeekModal(), 3000);
+}
+
+// === LIMPAR STORIES ===
+function clearWeekStories() {
+  // Pega os dias da semana atual visível
+  const days = getWeekDays(currentWeekOffset);
+  const weekDates = days.map(d => d.toISOString().split('T')[0]);
+  const count = stories.filter(s => s.status === 'scheduled' && weekDates.includes(s.date)).length;
+  if (count === 0) { showToast('Nenhum story agendado nesta semana!', '⚠️'); return; }
+  if (!confirm(`Remover ${count} stories agendados desta semana?`)) return;
+  stories = stories.filter(s => !(s.status === 'scheduled' && weekDates.includes(s.date)));
+  saveData(); renderTimeline(); updateStats();
+  showToast(`${count} stories removidos!`, '🗑️');
+}
+
+function clearAllScheduled() {
+  const count = stories.filter(s => s.status === 'scheduled').length;
+  if (count === 0) { showToast('Nenhum story agendado!', '⚠️'); return; }
+  if (!confirm(`Remover TODOS os ${count} stories agendados?\n\nIsso não cancela os jobs no servidor.`)) return;
+  stories = stories.filter(s => s.status !== 'scheduled');
+  saveData(); renderTimeline(); updateStats();
+  showToast(`${count} stories removidos!`, '🗑️');
 }
 
 // === STATS ===
