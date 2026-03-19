@@ -1913,19 +1913,23 @@ canvas { display: block; }
     <!-- Configuração dos blocos -->
     <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
       <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
-        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">⏰ Horários de publicação</div>
+        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px;">⏰ Horários de publicação</div>
+        <div style="font-size:11px; color:var(--text2); margin-bottom:10px;">Escolha os horários dos 3 blocos diários — cada bloco publica 7 stories</div>
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
           <div>
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌅 MANHÃ</label>
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌅 BLOCO 1</label>
             <input type="time" id="week-time-1" value="07:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+            <div style="font-size:9px; color:var(--text3); margin-top:2px;">Stories 1 a 7</div>
           </div>
           <div>
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">☀️ MEIO-DIA</label>
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">☀️ BLOCO 2</label>
             <input type="time" id="week-time-2" value="11:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+            <div style="font-size:9px; color:var(--text3); margin-top:2px;">Stories 8 a 14</div>
           </div>
           <div>
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌙 NOITE</label>
+            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌙 BLOCO 3</label>
             <input type="time" id="week-time-3" value="19:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
+            <div style="font-size:9px; color:var(--text3); margin-top:2px;">Stories 15 a 21</div>
           </div>
         </div>
         <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
@@ -1936,6 +1940,9 @@ canvas { display: block; }
             <option value="20">20 minutos</option>
             <option value="30">30 minutos</option>
           </select>
+        </div>
+        <div style="margin-top:8px; font-size:10px; color:var(--accent2); background:rgba(108,99,255,0.1); padding:6px 10px; border-radius:6px;">
+          💡 Com 10 min de intervalo e 7 stories por bloco, cada bloco dura 1h10min
         </div>
       </div>
 
@@ -2298,33 +2305,31 @@ function getWeekSchedule() {
 
   if (!startDate || weekFiles.length === 0) return [];
 
-  // Blocos do dia: manhã, tarde, noite — cada um com 7 stories
+  // Cada dia recebe os mesmos arquivos nos 3 blocos
+  // Os arquivos são repetidos por dia (mesmos vídeos todos os dias)
   const blocks = [time1, time2, time3];
   const storiesPerBlock = 7;
-
   const schedule = [];
-  let fileIndex = 0;
 
   for (let d = 0; d < days; d++) {
     const date = new Date(startDate + 'T12:00:00');
     date.setDate(date.getDate() + d);
     const dateStr = date.toISOString().split('T')[0];
 
+    // Distribui os arquivos nos 3 blocos do dia
+    let fileIndex = 0;
     for (let b = 0; b < blocks.length; b++) {
-      for (let s = 0; s < storiesPerBlock; s++) {
-        if (fileIndex >= weekFiles.length) break;
+      const blockFiles = weekFiles.slice(b * storiesPerBlock, (b + 1) * storiesPerBlock);
+      for (let s = 0; s < blockFiles.length; s++) {
         const fireTime = new Date(`${dateStr}T${blocks[b]}:00`);
         fireTime.setMinutes(fireTime.getMinutes() + s * intervalMin);
         schedule.push({
-          file: weekFiles[fileIndex],
+          file: blockFiles[s],
           date: dateStr,
           time: fireTime.toTimeString().slice(0, 5)
         });
-        fileIndex++;
       }
     }
-
-    if (fileIndex >= weekFiles.length) break;
   }
 
   return schedule;
@@ -3413,13 +3418,23 @@ function saveIGToken() {
   const token = input ? input.value.trim() : '';
   if (!token) { showToast('Cole o token antes de salvar', '⚠️'); return; }
   localStorage.setItem('ig_access_token', token);
-  // Salva a data de quando o token foi salvo (expira em 60 dias)
   localStorage.setItem('ig_token_saved_at', Date.now().toString());
   const msg = document.getElementById('token-saved-msg');
   if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000); }
-  showToast('Token salvo com segurança!', '🔐');
+  showToast('Token salvo! Sincronizando com servidor...', '🔐');
   input.value = '';
   checkTokenExpiry();
+
+  // Envia o token novo para o servidor Render
+  fetch(`${SERVER_URL}/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token })
+  }).then(() => {
+    showToast('Token sincronizado com o servidor! ✅', '☁️');
+  }).catch(() => {
+    console.warn('Servidor offline — token salvo apenas localmente');
+  });
 }
 
 function getIGToken() {
