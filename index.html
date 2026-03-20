@@ -2178,6 +2178,17 @@ function init() {
   // Verifica expiração do token
   checkTokenExpiry();
 
+  // Sincroniza token com servidor ao iniciar
+  const savedToken = getIGToken();
+  if (savedToken) {
+    fetch(`${SERVER_URL}/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: savedToken })
+    }).then(() => console.log('✅ Token sincronizado com servidor'))
+      .catch(() => console.warn('⚠️ Servidor offline ao sincronizar token'));
+  }
+
   // Atualiza contadores regressivos a cada minuto
   setInterval(updateCountdowns, 60000);
   updateCountdowns();
@@ -2911,7 +2922,7 @@ async function saveStory() {
       showToast('Story publicado no Instagram!', '🚀');
 
       // Salva na timeline como publicado
-      stories.push({ id: Date.now(), title, date, time, cat, status: 'published' });
+      stories.push({ id: Date.now(), title, date, time, cat, status: 'posted' });
       renderTimeline(); updateStats(); saveData();
       logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" publicado no Instagram`, tag: 'Publicado' });
       renderLogs();
