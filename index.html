@@ -3712,13 +3712,12 @@ async function uploadToCloudinary(file, index) {
 
   let finalUrl = data.secure_url;
 
+  // Remove espaços da URL (causam erro no Instagram)
+  finalUrl = finalUrl.replace(/ /g, '%20');
+
   // Para vídeos: converte via URL transformation do Cloudinary
-  // Insere parâmetros de conversão H.264/AAC diretamente na URL
   if (isVideo) {
-    // Transforma a URL para forçar H.264 baseline + AAC + mp4
-    // Ex: https://res.cloudinary.com/cloud/video/upload/ARQUIVO.mp4
-    // Vira: https://res.cloudinary.com/cloud/video/upload/vc_h264:baseline,ac_aac/ARQUIVO.mp4
-    finalUrl = data.secure_url.replace(
+    finalUrl = finalUrl.replace(
       '/video/upload/',
       '/video/upload/vc_h264:baseline,ac_aac,f_mp4/'
     );
