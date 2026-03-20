@@ -2056,6 +2056,12 @@ canvas { display: block; }
 </div>
 
 <script>
+// === CONSTANTS ===
+const IG_USER_ID = '17841465204005610';
+const CLOUDINARY_CLOUD = 'duecmhuip';
+const CLOUDINARY_UPLOAD_PRESET = 'movepecalcados';
+const SERVER_URL = 'https://movepe-server.onrender.com';
+
 // === STATE ===
 let currentWeekOffset = 0;
 let stories = [];
@@ -3495,10 +3501,7 @@ initNotifications();
 // INSTAGRAM API INTEGRATION
 // =============================================
 
-const IG_USER_ID = '17841465204005610';
-const CLOUDINARY_CLOUD = 'duecmhuip';
-const CLOUDINARY_UPLOAD_PRESET = 'movepecalcados';
-const SERVER_URL = 'https://movepe-server.onrender.com';
+// Constants moved to top of script
 
 // Estado global
 let selectedFiles = [];      // Array de arquivos selecionados
