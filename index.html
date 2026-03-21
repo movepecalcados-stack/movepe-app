@@ -1147,35 +1147,65 @@ canvas { display: block; }
 
 /* ===== MOBILE RESPONSIVO ===== */
 @media (max-width: 768px) {
-  /* Esconde sidebar lateral no celular */
+  /* Sidebar compacta com só ícones no celular */
   .sidebar {
-    display: none;
+    width: 58px !important;
+    min-width: 58px !important;
+    padding: 12px 0 0;
+    overflow: visible;
   }
 
-  /* App ocupa tela toda */
-  .app {
-    flex-direction: column;
+  .sidebar-logo {
+    padding: 0 6px 12px;
   }
 
-  /* Conteúdo ocupa tudo menos a barra inferior */
-  .main-content {
-    padding-bottom: 200px;
+  .logo-circle {
+    width: 42px;
+    height: 42px;
   }
 
-  /* Botão publicar sempre visível no celular */
+  .logo-line1 { font-size: 7px; }
+  .logo-line2 { font-size: 5px; }
+  .sidebar-logo p { display: none; }
+
+  .nav-item {
+    padding: 10px 0;
+    margin: 0 4px;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+  }
+
+  .nav-item span:not(.nav-icon):not(.badge) { display: none; }
+  .nav-icon { font-size: 20px; width: auto; }
+
+  .badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 8px;
+    padding: 1px 4px;
+    min-width: 14px;
+  }
+
+  .sidebar-bottom { padding: 8px 4px; }
+  .sidebar-bottom .nav-item span:not(.nav-icon) { display: none; }
+
+  /* Esconde barra inferior */
+  #mobile-nav { display: none !important; }
+
+  /* Conteúdo com padding adequado */
+  .main-content { padding-bottom: 20px; }
+
+  /* Botão publicar sticky */
   #main-publish-btn {
     position: sticky;
-    bottom: 75px;
+    bottom: 12px;
     z-index: 100;
     box-shadow: 0 4px 20px rgba(108,99,255,0.4);
   }
 
-  /* Barra de navegação inferior */
-  #mobile-nav {
-    display: flex !important;
-  }
-
-  /* Ajusta header */
+  /* Header compacto */
   .page-header {
     padding: 10px 12px 8px;
     flex-wrap: wrap;
@@ -1185,7 +1215,7 @@ canvas { display: block; }
 
   .page-title { font-size: 17px; }
 
-  /* Stats menores e compactos */
+  /* Stats menores */
   .stats-bar {
     gap: 6px;
     order: 3;
@@ -1203,7 +1233,7 @@ canvas { display: block; }
     white-space: nowrap;
   }
 
-  /* Timeline grid scroll horizontal no celular */
+  /* Timeline scroll horizontal */
   #timeline-grid {
     display: flex;
     flex-direction: row;
@@ -1211,11 +1241,13 @@ canvas { display: block; }
     gap: 10px;
     padding-bottom: 10px;
     scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
   }
 
   .day-col {
-    min-width: 140px;
+    min-width: 130px;
     scroll-snap-align: start;
+    flex-shrink: 0;
   }
 
   /* Modal ocupa tela toda no celular */
@@ -1351,16 +1383,27 @@ canvas { display: block; }
       <!-- PAGE: TIMELINE -->
       <div class="page active" id="page-timeline">
 
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <!-- Controles principais -->
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <div class="week-nav">
             <button class="nav-btn" onclick="changeWeek(-1)">‹</button>
             <span class="week-range" id="week-range">--/-- – --/--</span>
             <button class="nav-btn" onclick="changeWeek(1)">›</button>
           </div>
           <button class="today-btn" onclick="goToday()">Hoje</button>
-          <button class="select-btn" onclick="showToast('Modo seleção ativado', '✅')">⊞ Modo seleção</button>
-          <button onclick="clearWeekStories()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--red); background:transparent; color:var(--red); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Limpar semana</button>
-          <button onclick="clearAllScheduled()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Limpar tudo</button>
+          <button onclick="clearWeekStories()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--red); background:transparent; color:var(--red); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Semana</button>
+          <button onclick="clearAllScheduled()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Tudo</button>
+        </div>
+
+        <!-- Filtro por categoria -->
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <span style="font-size:11px; color:var(--text3); font-weight:600;">Filtrar:</span>
+          <button onclick="setCatFilter('todos', this)" class="cat-filter-btn active" style="padding:4px 10px; border-radius:20px; border:1px solid var(--accent); background:rgba(108,99,255,0.15); color:var(--accent2); font-size:11px; font-weight:600; cursor:pointer;">Todos</button>
+          <button onclick="setCatFilter('promo', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🔥 Promoção</button>
+          <button onclick="setCatFilter('produto', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">👟 Produto</button>
+          <button onclick="setCatFilter('dica', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">💡 Dica</button>
+          <button onclick="setCatFilter('depoimento', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">⭐ Depoimento</button>
+          <button onclick="setCatFilter('bastidores', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🎬 Bastidores</button>
         </div>
 
         <!-- Status do servidor em tempo real -->
@@ -1370,8 +1413,8 @@ canvas { display: block; }
             <span style="font-size:12px; color:var(--text2);" id="server-status-text">Verificando servidor...</span>
           </div>
           <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
-            <span style="font-size:12px; color:var(--text2);">Jobs agendados no servidor: <strong id="server-jobs-count" style="color:var(--accent2);">--</strong></span>
-            <button onclick="checkServerStatus()" style="padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🔄 Atualizar</button>
+            <span style="font-size:12px; color:var(--text2);">Agendados: <strong id="server-jobs-count" style="color:var(--accent2);">--</strong></span>
+            <button onclick="checkServerStatus()" style="padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🔄</button>
           </div>
         </div>
 
@@ -2927,6 +2970,22 @@ function goToday() {
   renderTimeline();
 }
 
+let currentCatFilter = 'todos';
+
+function setCatFilter(cat, btn) {
+  currentCatFilter = cat;
+  // Atualiza botões
+  document.querySelectorAll('.cat-filter-btn').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--text2)';
+  });
+  btn.style.background = 'rgba(108,99,255,0.15)';
+  btn.style.borderColor = 'var(--accent)';
+  btn.style.color = 'var(--accent2)';
+  renderTimeline();
+}
+
 function renderTimeline() {
   const days = getWeekDays(currentWeekOffset);
   const today = new Date().toISOString().split('T')[0];
@@ -2945,7 +3004,7 @@ function renderTimeline() {
   days.forEach((date, i) => {
     const dateStr = date.toISOString().split('T')[0];
     const isToday = dateStr === today;
-    const dayStories = stories.filter(s => s.date === dateStr);
+    const dayStories = stories.filter(s => s.date === dateStr && (currentCatFilter === 'todos' || s.cat === currentCatFilter));
 
     const col = document.createElement('div');
     col.className = 'day-col' + (isToday ? ' today' : '');
