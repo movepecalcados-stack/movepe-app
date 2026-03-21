@@ -1629,6 +1629,319 @@ canvas { display: block; }
       <!-- PAGE: METRICS -->
       <div class="page" id="page-metrics">
 
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-size:18px; font-weight:700; color:var(--text);">📊 Métricas do Instagram</div>
+            <div style="font-size:12px; color:var(--text2); margin-top:2px;">Dados reais da conta @movepestreet</div>
+          </div>
+          <button onclick="loadRealMetrics()" style="padding:8px 16px; border-radius:8px; border:1px solid var(--accent); background:rgba(108,99,255,0.1); color:var(--accent2); font-size:12px; font-weight:700; cursor:pointer;">🔄 Atualizar dados</button>
+        </div>
+
+        <!-- Status de carregamento -->
+        <div id="metrics-loading" style="display:none; text-align:center; padding:20px; color:var(--text2); font-size:13px;">
+          ⏳ Carregando dados do Instagram...
+        </div>
+
+        <div id="metrics-error" style="display:none; background:rgba(220,38,38,0.1); border:1px solid var(--red); border-radius:10px; padding:14px; font-size:13px; color:var(--red);">
+        </div>
+
+        <!-- KPIs do perfil -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
+          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">🏠 Perfil</span>
+          <div style="flex:1; height:1px; background:var(--border);"></div>
+          <span id="metrics-updated" style="font-size:10px; color:var(--text3);"></span>
+        </div>
+        <div class="metrics-grid-top">
+          <div class="metric-card" style="border-top: 2px solid #f472b6">
+            <div class="mc-label">👥 Seguidores</div>
+            <div class="mc-val" id="m-followers" style="color:#f472b6">--</div>
+            <div class="mc-delta" id="m-followers-d" style="color:var(--text3);">Carregando...</div>
+          </div>
+          <div class="metric-card" style="border-top: 2px solid #22d3ee">
+            <div class="mc-label">🔍 Visitas ao Perfil</div>
+            <div class="mc-val" id="m-profile-views" style="color:#22d3ee">--</div>
+            <div class="mc-delta" id="m-profile-views-d" style="color:var(--text3);">Últimos 30 dias</div>
+          </div>
+          <div class="metric-card" style="border-top: 2px solid var(--accent)">
+            <div class="mc-label">👁️ Alcance</div>
+            <div class="mc-val" id="m-reach" style="color:var(--accent2)">--</div>
+            <div class="mc-delta" id="m-reach-d" style="color:var(--text3);">Últimos 30 dias</div>
+          </div>
+          <div class="metric-card" style="border-top: 2px solid var(--green)">
+            <div class="mc-label">📣 Impressões</div>
+            <div class="mc-val" id="m-impressions" style="color:var(--green)">--</div>
+            <div class="mc-delta" id="m-impressions-d" style="color:var(--text3);">Últimos 30 dias</div>
+          </div>
+        </div>
+
+        <!-- Stories postados -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
+          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">📱 Stories recentes</span>
+          <div style="flex:1; height:1px; background:var(--border);"></div>
+        </div>
+
+        <div id="stories-metrics-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px;">
+          <div style="text-align:center; padding:20px; color:var(--text3); font-size:12px; grid-column:1/-1;">
+            Clique em "Atualizar dados" para ver os stories
+          </div>
+        </div>
+
+        <!-- Info sobre dados -->
+        <div style="background:var(--surface2); border-radius:10px; padding:12px 16px; border:1px solid var(--border); font-size:11px; color:var(--text2); line-height:1.6;">
+          ℹ️ <strong style="color:var(--text)">Sobre as métricas:</strong> Stories expiram após 24h no Instagram. A API fornece dados dos últimos stories publicados via esta ferramenta. Visualizações e alcance são dados reais da sua conta @movepestreet.
+        </div>
+
+      </div>
+
+      <!-- PAGE: LOGS -->
+      <div class="page" id="page-logs">
+        <div class="panel">
+          <div class="panel-header">
+            <span>📋</span>
+            <span class="panel-title">Logs do Sistema</span>
+            <button class="btn btn-ghost" style="padding:6px 12px; font-size:12px;" onclick="clearLogs()">🗑 Limpar</button>
+          </div>
+          <div class="log-list" id="log-list"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: CONFIG -->
+      <div class="page" id="page-config">
+
+        <!-- API CONNECTION PANEL -->
+        <div class="panel" id="api-panel">
+          <div class="panel-header">
+            <span>📸</span>
+            <span class="panel-title">Conexão Instagram API</span>
+            <span id="api-status-badge" style="margin-left:auto; font-size:11px; padding:3px 10px; border-radius:20px; background:var(--surface3); color:var(--text2);">Não conectado</span>
+          </div>
+          <div class="config-section">
+
+            <div style="background:var(--surface2); border-radius:var(--radius-sm); padding:14px; margin-bottom:8px; border:1px solid var(--border);">
+              <p style="font-size:12px; color:var(--text2); line-height:1.6;">
+                🔐 Cole abaixo o <strong style="color:var(--text)">Token de Acesso</strong> gerado no Explorador da Graph API. O token fica salvo <strong style="color:var(--text)">apenas no seu dispositivo</strong> e nunca é enviado para nenhum servidor externo.
+              </p>
+            </div>
+
+            <div class="config-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
+              <label style="font-size:12px; font-weight:600; color:var(--text2);">Token de Acesso</label>
+              <div style="display:flex; gap:8px; width:100%;">
+                <input type="password" id="ig-token-input" class="form-input" style="flex:1; padding:9px 12px; font-size:13px;" placeholder="Cole o token aqui..."/>
+                <button class="btn btn-primary" onclick="saveIGToken()" style="white-space:nowrap;">Salvar token</button>
+              </div>
+              <p id="token-saved-msg" style="font-size:12px; color:var(--green); display:none;">✅ Token salvo com sucesso!</p>
+            </div>
+
+            <div class="config-row" style="margin-top:4px;">
+              <div class="config-icon">🔍</div>
+              <div class="config-info">
+                <h4>Testar conexão</h4>
+                <p>Verifica se o token está válido e a conta está acessível</p>
+              </div>
+              <button class="btn" onclick="testIGConnection()" style="font-size:12px; padding:7px 14px;">Testar</button>
+            </div>
+
+            <div id="ig-account-info" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:14px; border:1px solid var(--green); margin-top:4px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:42px; height:42px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px;">📷</div>
+                <div>
+                  <div id="ig-account-name" style="font-size:14px; font-weight:700; color:var(--text);">—</div>
+                  <div id="ig-account-followers" style="font-size:12px; color:var(--text2); margin-top:2px;">—</div>
+                </div>
+                <div style="margin-left:auto; background:var(--green); color:#000; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ Conectado</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PUBLISH STORY PANEL -->
+        <div class="panel" id="publish-panel">
+          <div class="panel-header">
+            <span>🚀</span>
+            <span class="panel-title">Publicar Stories no Instagram</span>
+          </div>
+          <div class="config-section">
+
+            <!-- Upload zone múltiplos arquivos -->
+            <div id="upload-zone" onclick="document.getElementById('file-input').click()"
+              style="border:2px dashed var(--border2); border-radius:var(--radius); padding:28px; text-align:center; cursor:pointer; transition:.2s; background:var(--surface2);"
+              ondragover="event.preventDefault(); this.style.borderColor='var(--accent)'"
+              ondragleave="this.style.borderColor='var(--border2)'"
+              ondrop="handleFileDrop(event)">
+              <div style="font-size:36px; margin-bottom:8px;">📁</div>
+              <div style="font-size:14px; font-weight:600; color:var(--text);">Clique ou arraste as fotos/vídeos aqui</div>
+              <div style="font-size:12px; color:var(--text2); margin-top:4px;">JPG, PNG, MP4 • Vários arquivos de uma vez • Máx 100MB cada</div>
+              <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleFileSelect(this)"/>
+            </div>
+
+            <!-- Lista de arquivos selecionados -->
+            <div id="files-list" style="display:none; margin-top:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:12px; font-weight:600; color:var(--text2);">ARQUIVOS SELECIONADOS</span>
+                <button onclick="clearAllFiles()" style="background:none; border:none; color:var(--red); font-size:12px; cursor:pointer;">Limpar tudo</button>
+              </div>
+              <div id="files-grid" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+            </div>
+
+            <!-- Modo de publicação -->
+            <div style="background:var(--surface2); border-radius:var(--radius-sm); padding:14px; border:1px solid var(--border); margin-top:4px;">
+              <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:10px;">MODO DE PUBLICAÇÃO</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button id="mode-now-btn" class="btn btn-primary" onclick="setPublishMode('now')" style="font-size:12px; padding:8px 16px;">⚡ Publicar agora</button>
+                <button id="mode-sched-btn" class="btn" onclick="setPublishMode('scheduled')" style="font-size:12px; padding:8px 16px;">⏰ Agendar</button>
+              </div>
+
+              <!-- Opções de agendamento -->
+              <div id="schedule-options" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+
+                <!-- Blocos rápidos -->
+                <div style="margin-bottom:14px;">
+                  <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:8px;">⚡ BLOCOS RÁPIDOS</label>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button onclick="setQuickBlock('07:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">🌅 Manhã 7:00</button>
+                    <button onclick="setQuickBlock('11:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">☀️ Meio-dia 11:00</button>
+                    <button onclick="setQuickBlock('19:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">🌙 Noite 19:00</button>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+                  <div>
+                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">DATA</label>
+                    <input type="date" id="sched-date" class="form-input" style="padding:8px 10px; font-size:13px;"/>
+                  </div>
+                  <div>
+                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">HORÁRIO</label>
+                    <input type="time" id="sched-time" class="form-input" style="padding:8px 10px; font-size:13px;"/>
+                  </div>
+                  <div>
+                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">INTERVALO ENTRE STORIES</label>
+                    <select id="sched-interval" class="form-input" style="padding:8px 10px; font-size:13px;">
+                      <option value="10" selected>10 minutos</option>
+                      <option value="15">15 minutos</option>
+                      <option value="30">30 minutos</option>
+                      <option value="60">1 hora</option>
+                      <option value="120">2 horas</option>
+                    </select>
+                  </div>
+                </div>
+                <p style="font-size:11px; color:var(--text2); margin-top:8px;">💡 Com 10 minutos de intervalo, 7 stories são publicados em 1 hora e 10 minutos.</p>
+              </div>
+            </div>
+
+            <!-- Fila de agendados -->
+            <div id="scheduled-queue" style="display:none; margin-top:4px;">
+              <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:8px;">⏰ FILA DE AGENDADOS</div>
+              <div id="queue-list"></div>
+            </div>
+
+            <!-- Progress geral -->
+            <div id="upload-progress-wrap" style="display:none; margin-top:8px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-bottom:4px;">
+                <span id="upload-status-text">Enviando...</span>
+                <span id="upload-pct">0%</span>
+              </div>
+              <div style="background:var(--surface3); border-radius:20px; height:8px; overflow:hidden;">
+                <div id="upload-bar" style="height:100%; background:var(--accent); border-radius:20px; width:0%; transition:width .4s;"></div>
+              </div>
+            </div>
+
+            <!-- Botão principal -->
+            <div class="config-row" style="margin-top:8px; flex-wrap:wrap; gap:10px;">
+              <div class="config-icon">📤</div>
+              <div class="config-info" style="min-width:0; flex:1;">
+                <h4 id="publish-btn-label">Publicar agora no Instagram</h4>
+                <p id="publish-btn-sub">Faz upload e publica todos os stories selecionados</p>
+              </div>
+              <button class="btn btn-primary" onclick="handlePublish()" style="font-size:13px; padding:9px 20px; width:100%; margin-top:4px;" id="main-publish-btn">Publicar →</button>
+            </div>
+
+            <div id="publish-result" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:12px; margin-top:4px; border:1px solid var(--border);">
+              <p id="publish-result-msg" style="font-size:13px; color:var(--text);"></p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- GENERAL SETTINGS -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚙️</span>
+            <span class="panel-title">Configurações Gerais</span>
+          </div>
+          <div class="config-section">
+
+            <div class="config-row">
+              <div class="config-icon">⏰</div>
+              <div class="config-info">
+                <h4>Postagem automática</h4>
+                <p>Posta os stories no horário agendado automaticamente</p>
+              </div>
+              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🔔</div>
+              <div class="config-info">
+                <h4>Notificações de erros</h4>
+                <p>Receba alertas quando um story falhar ao postar</p>
+              </div>
+              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🔁</div>
+              <div class="config-info">
+                <h4>Retentar automaticamente</h4>
+                <p>Tenta novamente após 30min em caso de falha</p>
+              </div>
+              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🏷️</div>
+              <div class="config-info">
+                <h4>Nome da loja</h4>
+                <p>Aparece na barra lateral do sistema</p>
+              </div>
+              <input type="text" class="form-input" style="width:180px; padding:7px 10px; font-size:13px;" id="store-name-input" placeholder="Move Pé Calçados" oninput="updateStoreName(this.value)"/>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">🕐</div>
+              <div class="config-info">
+                <h4>Horário padrão de postagem</h4>
+                <p>Usado quando nenhum horário é especificado</p>
+              </div>
+              <input type="time" class="form-input" value="09:00" style="width:100px; padding:7px 10px; font-size:13px;"/>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">💾</div>
+              <div class="config-info">
+                <h4>Backup dos agendamentos</h4>
+                <p>Exporta todos os stories agendados em arquivo JSON</p>
+              </div>
+              <button class="btn" onclick="exportBackup()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬇️ Exportar backup</button>
+            </div>
+
+            <div class="config-row">
+              <div class="config-icon">📤</div>
+              <div class="config-info">
+                <h4>Restaurar backup</h4>
+                <p>Importa stories de um arquivo de backup</p>
+              </div>
+              <input type="file" id="backup-import-input" accept=".json" style="display:none" onchange="importBackup(this)"/>
+              <button class="btn" onclick="document.getElementById('backup-import-input').click()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬆️ Importar backup</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: METRICS -->
+      <div class="page" id="page-metrics">
+
         <!-- Period selector -->
         <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
           <span style="font-size:13px; font-weight:600; color:var(--text2)">Período:</span>
@@ -3140,12 +3453,92 @@ function setPeriod(btn, period) {
 }
 
 function renderMetrics() {
-  setMainPeriod(document.querySelector('#main-period-tabs .mpt.active') || document.querySelector('#main-period-tabs .mpt'), 'mes');
-  drawGrowthChart();
-  drawLineChart();
-  drawDonut();
-  renderTopStories();
-  renderHeatmap();
+  loadRealMetrics();
+}
+
+async function loadRealMetrics() {
+  const token = getIGToken();
+  if (!token) {
+    document.getElementById('metrics-error').style.display = 'block';
+    document.getElementById('metrics-error').textContent = '⚠️ Configure o token do Instagram em ⚙️ Config primeiro!';
+    return;
+  }
+
+  const loading = document.getElementById('metrics-loading');
+  const error = document.getElementById('metrics-error');
+  loading.style.display = 'block';
+  error.style.display = 'none';
+
+  try {
+    // Busca dados do perfil
+    const profileRes = await fetch(`https://graph.facebook.com/v25.0/${IG_USER_ID}?fields=name,username,followers_count,media_count&access_token=${token}`);
+    const profile = await profileRes.json();
+    if (profile.error) throw new Error(profile.error.message);
+
+    document.getElementById('m-followers').textContent = profile.followers_count?.toLocaleString('pt-BR') || '--';
+    document.getElementById('m-followers-d').textContent = `${profile.media_count || 0} publicações no total`;
+
+    // Busca insights do perfil (alcance e impressões)
+    try {
+      const insightRes = await fetch(`https://graph.facebook.com/v25.0/${IG_USER_ID}/insights?metric=reach,impressions,profile_views&period=days_28&access_token=${token}`);
+      const insights = await insightRes.json();
+      if (insights.data) {
+        insights.data.forEach(metric => {
+          const val = metric.values?.slice(-1)[0]?.value || 0;
+          if (metric.name === 'reach') {
+            document.getElementById('m-reach').textContent = val > 1000 ? (val/1000).toFixed(1)+'k' : val;
+          }
+          if (metric.name === 'impressions') {
+            document.getElementById('m-impressions').textContent = val > 1000 ? (val/1000).toFixed(1)+'k' : val;
+          }
+          if (metric.name === 'profile_views') {
+            document.getElementById('m-profile-views').textContent = val > 1000 ? (val/1000).toFixed(1)+'k' : val;
+          }
+        });
+      }
+    } catch(e) {
+      document.getElementById('m-reach').textContent = 'N/D';
+      document.getElementById('m-impressions').textContent = 'N/D';
+      document.getElementById('m-profile-views').textContent = 'N/D';
+    }
+
+    // Busca stories/mídias recentes
+    const mediaRes = await fetch(`https://graph.facebook.com/v25.0/${IG_USER_ID}/media?fields=id,media_type,thumbnail_url,media_url,timestamp,like_count,comments_count&limit=12&access_token=${token}`);
+    const media = await mediaRes.json();
+
+    const grid = document.getElementById('stories-metrics-grid');
+    if (media.data && media.data.length > 0) {
+      grid.innerHTML = media.data.map(item => {
+        const date = new Date(item.timestamp).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+        const time = new Date(item.timestamp).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+        const thumb = item.thumbnail_url || item.media_url || '';
+        const isVideo = item.media_type === 'VIDEO';
+        return `<div style="background:var(--surface2); border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+          <div style="position:relative; height:120px; background:#000;">
+            ${thumb ? `<img src="${thumb}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'"/>` : ''}
+            ${isVideo ? '<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:20px;">🎬</div>' : ''}
+          </div>
+          <div style="padding:8px;">
+            <div style="font-size:10px; color:var(--text2);">${date} às ${time}</div>
+            <div style="font-size:11px; color:var(--text); margin-top:4px; display:flex; gap:8px;">
+              <span>❤️ ${item.like_count || 0}</span>
+              <span>💬 ${item.comments_count || 0}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    } else {
+      grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text3); font-size:12px; grid-column:1/-1;">Nenhuma mídia encontrada</div>';
+    }
+
+    document.getElementById('metrics-updated').textContent = `Atualizado: ${new Date().toLocaleTimeString('pt-BR')}`;
+    loading.style.display = 'none';
+
+  } catch(e) {
+    loading.style.display = 'none';
+    error.style.display = 'block';
+    error.textContent = `❌ Erro ao carregar métricas: ${e.message}`;
+  }
 }
 
 // Generic line chart draw function
