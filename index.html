@@ -1880,6 +1880,15 @@ canvas { display: block; }
               <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
             </div>
 
+                        <div class="config-row">
+              <div class="config-icon">🔔</div>
+              <div class="config-info">
+                <h4>Notificações no celular</h4>
+                <p>Receba alertas quando um story for publicado</p>
+              </div>
+              <button onclick="requestNotifPermission()" style="padding:7px 14px; border-radius:8px; border:1px solid var(--green); background:rgba(52,211,153,0.1); color:var(--green); font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;">🔔 Ativar notificações</button>
+            </div>
+
             <div class="config-row">
               <div class="config-icon">🔔</div>
               <div class="config-info">
@@ -2455,6 +2464,10 @@ function init() {
   // Verifica status do servidor
   checkServerStatus();
   setInterval(checkServerStatus, 120000); // atualiza a cada 2 minutos
+
+  // Verifica stories publicados pelo servidor a cada 2 minutos
+  pollServerForPublished();
+  setInterval(pollServerForPublished, 120000);
 
   // Atualiza contadores regressivos a cada minuto
   setInterval(updateCountdowns, 60000);
@@ -3802,10 +3815,11 @@ function scheduleAllNotifications() {
 
 function fireNotification(story) {
   if (Notification.permission === 'granted') {
-    new Notification(`📱 Story postado! — ${story.title}`, {
+    new Notification(`✅ Story postado! — ${story.title}`, {
       body: `Abra o Instagram e adicione enquetes/stickers no story "${story.title}".`,
       icon: './icons/icon-192x192.png',
-      requireInteraction: true
+      requireInteraction: true,
+      tag: `story-${story.id}`
     });
   }
   const idx = stories.findIndex(s => s.id === story.id);
@@ -3814,6 +3828,41 @@ function fireNotification(story) {
   renderLogs();
   showToast(`Story "${story.title}" postado! Abra o Instagram. 📱`, '🔔');
   setTimeout(scheduleAllNotifications, 1000);
+}
+
+// Verifica servidor periodicamente para detectar stories publicados
+async function pollServerForPublished() {
+  try {
+    const res = await fetch(`${SERVER_URL}/jobs`);
+    const jobs = await res.json();
+    let changed = false;
+    jobs.forEach(job => {
+      if (job.status === 'published') {
+        const story = stories.find(s =>
+          s.title === job.title &&
+          s.date === job.date &&
+          s.time === job.time &&
+          s.status === 'scheduled'
+        );
+        if (story) {
+          story.status = 'posted';
+          changed = true;
+          // Dispara notificação
+          if (Notification.permission === 'granted') {
+            new Notification(`✅ Story postado! — ${job.title}`, {
+              body: `Publicado às ${job.time}. Abra o Instagram e adicione stickers!`,
+              icon: './icons/icon-192x192.png',
+              requireInteraction: true,
+              tag: `story-${job.id}`
+            });
+          }
+          logs.unshift({ type:'ok', time: new Date().toTimeString().slice(0,5), msg:`Story "${job.title}" publicado pelo servidor`, tag:'Postado' });
+          showToast(`✅ Story "${job.title}" publicado!`, '🔔');
+        }
+      }
+    });
+    if (changed) { renderTimeline(); updateStats(); saveData(); renderLogs(); }
+  } catch(e) {}
 }
 
 function updateNextStoryWidget(next) {
