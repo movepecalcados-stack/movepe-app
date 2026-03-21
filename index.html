@@ -425,7 +425,7 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
   position: relative;
   aspect-ratio: 9/14;
   background: var(--surface2);
@@ -433,11 +433,17 @@ body {
   min-height: 110px;
 }
 
-.story-card:hover {
+.story-card[draggable="true"]:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 12px 32px rgba(0,0,0,0.5);
   border-color: var(--accent);
   z-index: 2;
+}
+
+.story-card[draggable="true"]:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 .story-thumb {
@@ -3025,6 +3031,23 @@ function renderTimeline() {
       card.className = 'story-card';
       card.style.position = 'relative';
 
+      // Drag and drop — só para stories agendados
+      if (s.status === 'scheduled') {
+        card.draggable = true;
+        card.style.cursor = 'grab';
+        card.dataset.storyId = s.id;
+
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('storyId', s.id);
+          e.dataTransfer.setData('fromDate', s.date);
+          card.style.opacity = '0.5';
+        });
+
+        card.addEventListener('dragend', () => {
+          card.style.opacity = '1';
+        });
+      }
+
       const statusIcon = s.status === 'posted' ? '✓' : s.status === 'error' ? '!' : '⏰';
       const statusClass = s.status;
 
@@ -3073,6 +3096,35 @@ function renderTimeline() {
     empty.textContent = '+';
     empty.onclick = () => openModalForDate(dateStr);
     col.appendChild(empty);
+
+    // Drag and drop na coluna
+    col.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      col.style.background = 'rgba(108,99,255,0.08)';
+      col.style.borderRadius = '12px';
+    });
+
+    col.addEventListener('dragleave', () => {
+      col.style.background = '';
+    });
+
+    col.addEventListener('drop', (e) => {
+      e.preventDefault();
+      col.style.background = '';
+      const storyId = parseInt(e.dataTransfer.getData('storyId'));
+      const fromDate = e.dataTransfer.getData('fromDate');
+      if (!storyId || fromDate === dateStr) return;
+
+      const story = stories.find(s => s.id === storyId);
+      if (!story || story.status === 'posted') return;
+
+      // Move o story para o novo dia mantendo o horário
+      story.date = dateStr;
+      saveData();
+      renderTimeline();
+      updateStats();
+      showToast(`Story movido para ${dateStr}!`, '📅');
+    });
 
     grid.appendChild(col);
   });
