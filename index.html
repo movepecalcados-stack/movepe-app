@@ -1299,12 +1299,7 @@ canvas { display: block; }
       <div class="nav-item active" data-page="timeline" onclick="navigate(this)">
         <span class="nav-icon">📅</span> Timeline
       </div>
-      <div class="nav-item" data-page="upload" onclick="navigate(this)">
-        <span class="nav-icon">⬆️</span> Upload
-      </div>
-      <div class="nav-item" data-page="library" onclick="navigate(this)">
-        <span class="nav-icon">🖼️</span> Biblioteca
-      </div>
+
       <div class="nav-item" data-page="metrics" onclick="navigate(this)">
         <span class="nav-icon">📊</span> Métricas
         <span class="badge green">New</span>
@@ -1368,68 +1363,22 @@ canvas { display: block; }
           <button onclick="clearAllScheduled()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Limpar tudo</button>
         </div>
 
+        <!-- Status do servidor em tempo real -->
+        <div id="server-status-bar" style="display:flex; align-items:center; gap:10px; background:var(--surface2); border-radius:10px; padding:10px 16px; border:1px solid var(--border); flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div id="server-dot" style="width:8px; height:8px; border-radius:50%; background:var(--text3);"></div>
+            <span style="font-size:12px; color:var(--text2);" id="server-status-text">Verificando servidor...</span>
+          </div>
+          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+            <span style="font-size:12px; color:var(--text2);">Jobs agendados no servidor: <strong id="server-jobs-count" style="color:var(--accent2);">--</strong></span>
+            <button onclick="checkServerStatus()" style="padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🔄 Atualizar</button>
+          </div>
+        </div>
+
         <div class="timeline-grid" id="timeline-grid"></div>
       </div>
 
-      <!-- PAGE: UPLOAD -->
-      <div class="page" id="page-upload">
-        <div class="panel">
-          <div class="panel-header">
-            <span>⬆️</span>
-            <span class="panel-title">Fazer Upload de Stories</span>
-          </div>
-          <div style="padding:20px; display:flex; flex-direction:column; gap:16px;">
-            <div class="upload-zone" onclick="showToast('Selecione os arquivos', '📂')" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
-              <div class="upload-icon">📁</div>
-              <p>Arraste os arquivos aqui ou clique para selecionar</p>
-              <span>Suporta: MP4, MOV, JPG, PNG — máx. 30MB por arquivo</span>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Título / Descrição</label>
-              <input type="text" class="form-input" placeholder="Ex: Nike Air Force — Promoção semana 11" id="upload-title"/>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-              <div class="form-group" style="margin-bottom:0">
-                <label class="form-label">Data de postagem</label>
-                <input type="date" class="form-input" id="upload-date"/>
-              </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label class="form-label">Horário</label>
-                <input type="time" class="form-input" value="09:00" id="upload-time"/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Categoria</label>
-              <select class="form-select" id="upload-cat">
-                <option value="">Selecione uma categoria</option>
-                <option value="promo">🔥 Promoção</option>
-                <option value="produto">👟 Produto</option>
-                <option value="dica">💡 Dica</option>
-                <option value="depoimento">⭐ Depoimento</option>
-                <option value="bastidores">🎬 Bastidores</option>
-              </select>
-            </div>
-            <button class="btn btn-primary" style="align-self:flex-start" onclick="addFromUpload()">➕ Adicionar à Biblioteca</button>
-          </div>
-        </div>
-      </div>
 
-      <!-- PAGE: LIBRARY -->
-      <div class="page" id="page-library">
-        <div class="panel">
-          <div class="panel-header">
-            <span>🖼️</span>
-            <span class="panel-title">Biblioteca de Mídias</span>
-            <div class="tabs">
-              <button class="tab active" onclick="filterLib(this,'todos')">Todos</button>
-              <button class="tab" onclick="filterLib(this,'promo')">Promoções</button>
-              <button class="tab" onclick="filterLib(this,'produto')">Produtos</button>
-              <button class="tab" onclick="filterLib(this,'dica')">Dicas</button>
-            </div>
-          </div>
-          <div class="library-grid" id="library-grid"></div>
-        </div>
-      </div>
 
       <!-- PAGE: LOGS -->
       <div class="page" id="page-logs">
@@ -2006,12 +1955,7 @@ canvas { display: block; }
   <div class="mob-nav-item active" data-page="timeline" onclick="navigateMobile(this)">
     <span>📅</span><span>Timeline</span>
   </div>
-  <div class="mob-nav-item" data-page="upload" onclick="navigateMobile(this)">
-    <span>⬆️</span><span>Upload</span>
-  </div>
-  <div class="mob-nav-item" data-page="library" onclick="navigateMobile(this)">
-    <span>🖼️</span><span>Biblioteca</span>
-  </div>
+
   <div class="mob-nav-item" data-page="metrics" onclick="navigateMobile(this)">
     <span>📊</span><span>Métricas</span>
   </div>
@@ -2195,9 +2139,44 @@ function init() {
       .catch(() => console.warn('⚠️ Servidor offline ao sincronizar token'));
   }
 
+  // Verifica status do servidor
+  checkServerStatus();
+  setInterval(checkServerStatus, 120000); // atualiza a cada 2 minutos
+
   // Atualiza contadores regressivos a cada minuto
   setInterval(updateCountdowns, 60000);
   updateCountdowns();
+}
+
+async function checkServerStatus() {
+  const dot = document.getElementById('server-dot');
+  const text = document.getElementById('server-status-text');
+  const count = document.getElementById('server-jobs-count');
+  try {
+    const res = await fetch(`${SERVER_URL}`);
+    const data = await res.json();
+    dot.style.background = 'var(--green)';
+    text.textContent = 'Servidor online ✓';
+    count.textContent = data.jobs || 0;
+
+    // Atualiza status dos jobs na timeline
+    const jobsRes = await fetch(`${SERVER_URL}/jobs`);
+    const jobs = await jobsRes.json();
+    jobs.forEach(job => {
+      if (job.status === 'published') {
+        const story = stories.find(s => s.title === job.title && s.date === job.date && s.time === job.time);
+        if (story && story.status !== 'posted') {
+          story.status = 'posted';
+          saveData();
+          renderTimeline();
+        }
+      }
+    });
+  } catch(e) {
+    dot.style.background = 'var(--red)';
+    text.textContent = 'Servidor offline ⚠️';
+    count.textContent = '--';
+  }
 }
 
 function updateCountdowns() {
