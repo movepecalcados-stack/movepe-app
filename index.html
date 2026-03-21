@@ -2987,6 +2987,10 @@ async function saveStory() {
       logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" agendado no servidor para ${date} às ${time}`, tag: 'Agendado' });
       renderLogs();
     } catch(e) {
+      // Mostra erro visível
+      showToast(`Servidor: ${e.message} — usando agendamento local`, '⚠️');
+      logs.unshift({ type: 'warn', time: new Date().toTimeString().slice(0,5), msg: `Erro servidor: ${e.message}`, tag: 'Erro' });
+      renderLogs();
       // Fallback: usa setTimeout local se o servidor falhar
       const timeoutId = setTimeout(async () => {
         try {
@@ -3000,8 +3004,6 @@ async function saveStory() {
         }
       }, delay);
       scheduledJobs.push({ id: jobId, timeoutId, name: title, fireAt });
-      logs.unshift({ type: 'warn', time: new Date().toTimeString().slice(0,5), msg: `Servidor offline — agendado localmente: "${title}"`, tag: 'Local' });
-      renderLogs();
     }
 
     closeModal();
