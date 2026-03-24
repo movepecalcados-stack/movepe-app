@@ -2383,6 +2383,7 @@ let stories = [];
 let library = [];
 let logs = [];
 let currentFilter = 'todos';
+let scheduledJobs = [];      // Fila de agendamentos ativos
 
 const EMOJIS = {
   promo: '🔥', produto: '👟', dica: '💡', depoimento: '⭐', bastidores: '🎬'
@@ -3127,6 +3128,7 @@ function renderTimeline() {
 // === LIBRARY ===
 function renderLibrary(filter = 'todos') {
   const grid = document.getElementById('library-grid');
+  if (!grid) return;
   grid.innerHTML = '';
   const items = filter === 'todos' ? library : library.filter(l => l.cat === filter);
 
@@ -4034,7 +4036,6 @@ initNotifications();
 // Estado global
 let selectedFiles = [];      // Array de arquivos selecionados
 let publishMode = 'now';     // 'now' ou 'scheduled'
-let scheduledJobs = [];      // Fila de agendamentos ativos
 
 // ---- TOKEN ----
 function saveIGToken() {
