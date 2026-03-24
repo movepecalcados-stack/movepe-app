@@ -4241,32 +4241,30 @@ function clearAllFiles() {
 
 // ---- UPLOAD PARA CLOUDINARY ----
 async function uploadToCloudinary(file, index) {
-  const isVideo = file.type.startsWith('video');
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('folder', 'movepecalcados');
-
-  const resourceType = isVideo ? 'video' : 'image';
-  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`;
-  const res = await fetch(url, { method: 'POST', body: formData });
-  const data = await res.json();
-  if (data.error) throw new Error('Cloudinary: ' + data.error.message);
-
-  let finalUrl = data.secure_url;
-
-  // Remove espaços da URL (causam erro no Instagram)
-  finalUrl = finalUrl.replace(/ /g, '%20');
-
-  // Para vídeos: converte via URL transformation do Cloudinary
-  if (isVideo) {
-    finalUrl = finalUrl.replace(
-      '/video/upload/',
-      '/video/upload/vc_h264:baseline,ac_aac,f_mp4/'
-    );
-  }
-
-  return { url: finalUrl, type: isVideo ? 'VIDEO' : 'IMAGE' };
+  // Converte arquivo para base64 e envia pelo servidor Railway (evita CORS)
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const res = await fetch(`${SERVER_URL}/upload`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileData: e.target.result,
+            fileType: file.type,
+            fileName: file.name
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro no upload');
+        resolve({ url: data.url, type: data.type });
+      } catch(err) {
+        reject(err);
+      }
+    };
+    reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+    reader.readAsDataURL(file);
+  });
 }
 
 // ---- PUBLICAR UM STORY NO INSTAGRAM ----
