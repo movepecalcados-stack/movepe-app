@@ -2831,39 +2831,33 @@ async function clearWeekStories() {
   if (toDelete.length === 0) { showToast('Nenhum story agendado nesta semana!', '⚠️'); return; }
   if (!confirm(`Remover ${toDelete.length} stories agendados desta semana?`)) return;
 
-  // Cancela no servidor também
-  const token = getIGToken();
-  for (const s of toDelete) {
-    const job = scheduledJobs.find(j => j.name === s.title && j.fireAt && j.fireAt.startsWith(s.date));
-    if (job) {
-      try {
-        await fetch(`${SERVER_URL}/jobs/${job.id}`, { method: 'DELETE' });
-        scheduledJobs = scheduledJobs.filter(j => j.id !== job.id);
-      } catch(e) { console.warn('Erro ao cancelar job:', e); }
-    }
-  }
-
+  // Remove da timeline primeiro
   stories = stories.filter(s => !(s.status === 'scheduled' && weekDates.includes(s.date)));
   saveData(); renderTimeline(); updateStats();
   showToast(`${toDelete.length} stories removidos!`, '🗑️');
+
+  // Cancela no servidor em background (sem travar a UI)
+  try {
+    await fetch(`${SERVER_URL}/jobs`, { method: 'DELETE' });
+    scheduledJobs = [];
+  } catch(e) { console.warn('Erro ao cancelar jobs no servidor:', e); }
 }
 
 async function clearAllScheduled() {
   const count = stories.filter(s => s.status === 'scheduled').length;
   if (count === 0) { showToast('Nenhum story agendado!', '⚠️'); return; }
-  if (!confirm(`Remover TODOS os ${count} stories agendados e cancelar no servidor?`)) return;
+  if (!confirm(`Remover TODOS os ${count} stories agendados?`)) return;
 
-  // Cancela todos os jobs no servidor
-  for (const job of [...scheduledJobs]) {
-    try {
-      await fetch(`${SERVER_URL}/jobs/${job.id}`, { method: 'DELETE' });
-    } catch(e) { console.warn('Erro ao cancelar job:', e); }
-  }
-  scheduledJobs = [];
-
+  // Remove da timeline primeiro
   stories = stories.filter(s => s.status !== 'scheduled');
+  scheduledJobs = [];
   saveData(); renderTimeline(); updateStats();
-  showToast(`${count} stories cancelados no servidor e removidos!`, '🗑️');
+  showToast(`${count} stories removidos!`, '🗑️');
+
+  // Cancela no servidor em background
+  try {
+    await fetch(`${SERVER_URL}/jobs`, { method: 'DELETE' });
+  } catch(e) { console.warn('Erro ao cancelar jobs no servidor:', e); }
 }
 
 // === STATS ===
