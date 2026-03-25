@@ -3,3172 +3,1044 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Move Pé Calçados — Stories Manager</title>
-<link rel="manifest" href="./manifest.json"/>
-<meta name="theme-color" content="#0a0a0f"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Move Pé Stories"/>
-<link rel="apple-touch-icon" href="./icons/icon-192x192.png"/>
-<link rel="icon" type="image/png" href="./icons/favicon.ico"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<meta name="theme-color" content="#0a0a0f"/>
+<title>Move Pé Calçados — Stories Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface2: #1a1a24;
-  --surface3: #22222f;
-  --border: #2a2a3a;
-  --border2: #333345;
-  --accent: #6c63ff;
-  --accent2: #a78bfa;
-  --accent3: #38bdf8;
-  --green: #34d399;
-  --orange: #fb923c;
-  --red: #f87171;
-  --text: #f0f0f8;
-  --text2: #9898b8;
-  --text3: #555577;
-  --radius: 14px;
-  --radius-sm: 8px;
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--surface:#13131a;--surface2:#1a1a24;--surface3:#22222f;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#f0f0f5;--text2:#9090a8;--text3:#55556a;
+  --accent:#6c63ff;--accent2:#a59fff;
+  --green:#34d399;--red:#f87171;--orange:#fb923c;--yellow:#fbbf24;
+  --radius:12px;--radius-sm:8px;
 }
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* LAYOUT */
-.app { display: flex; height: 100vh; overflow: hidden; }
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.app{display:flex;height:100vh;overflow:hidden}
 
 /* SIDEBAR */
-.sidebar {
-  width: 220px;
-  min-width: 220px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 24px 0 0;
-  overflow-y: auto;
-}
-
-#sidebar-nav {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-bottom: 8px;
-}
-
-.sidebar-logo {
-  padding: 0 20px 24px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo-circle {
-  width: 82px;
-  height: 82px;
-  background: #111;
-  border-radius: 50%;
-  border: 3px solid #e5e5e5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  box-shadow: 0 0 0 1px #444, 0 4px 18px rgba(0,0,0,0.5);
-  flex-shrink: 0;
-}
-
-.logo-line1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
-
-.logo-line2 {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.06em;
-  line-height: 1;
-}
-
-.sidebar-logo p {
-  font-size: 11px;
-  color: var(--text2);
-  margin-top: 2px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 20px;
-  margin: 0 8px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.18s;
-  font-size: 13.5px;
-  color: var(--text2);
-  font-weight: 500;
-  position: relative;
-}
-
-.nav-item:hover { background: var(--surface2); color: var(--text); }
-.nav-item.active { background: rgba(108,99,255,0.15); color: var(--accent2); }
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 3px; height: 20px;
-  background: var(--accent);
-  border-radius: 0 3px 3px 0;
-}
-
-.nav-icon { font-size: 16px; width: 20px; text-align: center; }
-
-.badge {
-  margin-left: auto;
-  background: var(--red);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 20px;
-  min-width: 18px;
-  text-align: center;
-}
-
-.badge.green { background: var(--green); }
-.badge.accent { background: var(--accent); }
-
-.sidebar-bottom {
-  padding: 12px 8px 12px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.status-dot {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: rgba(52,211,153,0.08);
-  border: 1px solid rgba(52,211,153,0.2);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  color: var(--green);
-  font-weight: 500;
-}
-
-.dot-pulse {
-  width: 7px; height: 7px;
-  background: var(--green);
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-  flex-shrink: 0;
-}
-
-@keyframes pulse {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
+.sidebar{width:220px;min-width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0 0;overflow-y:auto;flex-shrink:0}
+.sidebar-logo{padding:0 16px 20px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.logo-circle{width:72px;height:72px;background:#111;border-radius:50%;border:2px solid #e5e5e5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.logo-line1{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;letter-spacing:.04em}
+.logo-line2{font-family:'Syne',sans-serif;font-size:8px;font-weight:700;color:#fff;letter-spacing:.06em}
+.sidebar-logo p{font-size:11px;color:var(--text2)}
+nav{flex:1;display:flex;flex-direction:column;gap:2px;padding:0 8px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2);font-weight:500;transition:all .18s;position:relative}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(108,99,255,0.15);color:var(--accent2)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--accent);border-radius:0 3px 3px 0}
+.badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center}
+.sidebar-bottom{padding:12px 8px;border-top:1px solid var(--border)}
+.status-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);font-size:11px;color:var(--text2)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
 
 /* MAIN */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg);
-}
-
-/* TOPBAR */
-.topbar {
-  padding: 20px 28px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: var(--surface);
-}
-
-.topbar-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  flex: 1;
-}
-
-.topbar-stats {
-  display: flex;
-  gap: 20px;
-}
-
-.stat-chip {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-}
-
-.stat-chip .val {
-  font-family: 'Syne', sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.stat-chip .lbl {
-  font-size: 10px;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.stat-chip.blue .val { color: var(--accent2); }
-.stat-chip.green .val { color: var(--green); }
-.stat-chip.red .val { color: var(--red); }
-.stat-chip.orange .val { color: var(--orange); }
-
-.btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s;
-  border: none;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent3));
-  color: white;
-  box-shadow: 0 4px 16px rgba(108,99,255,0.3);
-}
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(108,99,255,0.4); }
-
-.btn-ghost {
-  background: var(--surface2);
-  color: var(--text2);
-  border: 1px solid var(--border2);
-}
-.btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface3); }
-
-/* CONTENT */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.content::-webkit-scrollbar { width: 5px; }
-.content::-webkit-scrollbar-track { background: transparent; }
-.content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-/* WEEK NAVIGATOR */
-.week-nav {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.week-nav .week-range {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  min-width: 140px;
-  text-align: center;
-}
-
-.nav-btn {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text2);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  transition: all 0.15s;
-}
-.nav-btn:hover { background: var(--surface3); color: var(--text); }
-
-.today-btn {
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: rgba(108,99,255,0.12);
-  border: 1px solid rgba(108,99,255,0.3);
-  color: var(--accent2);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-}
-.today-btn:hover { background: rgba(108,99,255,0.2); }
-
-.select-btn {
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text2);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-}
-.select-btn:hover { color: var(--text); }
-
-/* TIMELINE GRID */
-.timeline-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px;
-}
-
-.day-col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.day-header {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 14px 12px;
-}
-
-.day-header .day-name {
-  font-size: 12px;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-}
-
-.day-header .day-date {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--text);
-  line-height: 1.1;
-  margin-top: 4px;
-}
-
-.day-header .day-count {
-  font-size: 12px;
-  color: var(--text2);
-  margin-top: 4px;
-  font-weight: 500;
-}
-
-.day-col.today .day-header {
-  background: rgba(108,99,255,0.15);
-  border-color: rgba(108,99,255,0.45);
-  box-shadow: 0 0 0 1px rgba(108,99,255,0.2);
-}
-
-.day-col.today .day-header .day-date { color: var(--accent2); }
-
-.add-story-btn {
-  position: absolute;
-  top: 10px; right: 10px;
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background: rgba(108,99,255,0.6);
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
-  line-height: 1;
-}
-.add-story-btn:hover { background: var(--accent); transform: scale(1.1); }
-
-.day-header-wrap {
-  position: relative;
-}
-
-/* STORY CARDS */
-.story-card {
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-  position: relative;
-  aspect-ratio: 9/14;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  min-height: 110px;
-}
-
-.story-card[draggable="true"]:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-  border-color: var(--accent);
-  z-index: 2;
-}
-
-.story-card[draggable="true"]:active {
-  cursor: grabbing;
-  transform: scale(0.95);
-  opacity: 0.8;
-}
-
-.story-thumb {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.story-thumb-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  background: linear-gradient(135deg, var(--surface2), var(--surface3));
-}
-
-.story-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
-  padding: 24px 10px 9px;
-}
-
-.story-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.92);
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.story-time {
-  font-size: 10px;
-  color: rgba(255,255,255,0.55);
-  margin-top: 2px;
-}
-
-.story-status {
-  position: absolute;
-  top: 7px; right: 7px;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
-
-.story-status.posted { background: rgba(52,211,153,0.95); }
-.story-status.scheduled { background: rgba(108,99,255,0.95); }
-.story-status.error { background: rgba(248,113,113,0.95); }
-
-.empty-day {
-  aspect-ratio: 9/14;
-  min-height: 110px;
-  border-radius: var(--radius);
-  border: 2px dashed var(--border2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 22px;
-  color: var(--border2);
-  cursor: pointer;
-  transition: all 0.18s;
-}
-.empty-day:hover { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.06); }
-.empty-day::after { content: 'Adicionar'; font-size: 10px; font-weight: 600; letter-spacing: .04em; font-family: 'DM Sans', sans-serif; }
-
-/* SECTION PANELS */
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.panel-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.panel-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  flex: 1;
-}
-
-/* LIBRARY GRID */
-.library-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 10px;
-  padding: 16px 20px;
-}
-
-.lib-item {
-  aspect-ratio: 9/16;
-  border-radius: 8px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-}
-
-.lib-item:hover { border-color: var(--accent); transform: scale(1.03); }
-
-.lib-item .lib-emoji {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  background: linear-gradient(135deg, var(--surface2), var(--surface3));
-}
-
-/* MODAL */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-.modal-overlay.open {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 18px;
-  width: 460px;
-  max-width: 95vw;
-  padding: 28px;
-  transform: translateY(20px) scale(0.97);
-  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-}
-
-.modal-overlay.open .modal {
-  transform: translateY(0) scale(1);
-}
-
-.modal h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 6px;
-  display: block;
-}
-
-.form-input, .form-select {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  color: var(--text);
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-.form-input:focus, .form-select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
-}
-
-.form-select option { background: var(--surface2); }
-
-.upload-zone {
-  border: 2px dashed var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 28px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.upload-zone:hover { border-color: var(--accent); background: rgba(108,99,255,0.05); }
-.upload-zone .upload-icon { font-size: 32px; margin-bottom: 8px; }
-.upload-zone p { font-size: 13px; color: var(--text2); }
-.upload-zone span { font-size: 11px; color: var(--text2); opacity: 0.6; margin-top: 4px; display: block; }
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 22px;
-  justify-content: flex-end;
-}
-
-/* TABS */
-.tabs {
-  display: flex;
-  gap: 2px;
-  background: var(--surface2);
-  padding: 3px;
-  border-radius: var(--radius-sm);
-}
-
-.tab {
-  padding: 7px 16px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  color: var(--text2);
-  border: none;
-  background: transparent;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.tab.active {
-  background: var(--surface3);
-  color: var(--text);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;gap:8px}
+.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+.stats{display:flex;gap:16px}
+.stat{text-align:center}
+.stat-n{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.stat-l{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
+.stat-n.blue{color:#60a5fa}.stat-n.green{color:var(--green)}.stat-n.red{color:var(--red)}.stat-n.orange{color:var(--orange)}
+.btn-week{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--radius-sm);background:var(--accent);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .18s}
+.btn-week:hover{opacity:.85}
+.content{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
 
 /* PAGES */
-.page { display: none; }
-.page.active { display: flex; flex-direction: column; gap: 20px; }
+.page{display:none}.page.active{display:flex;flex-direction:column;gap:16px}
 
-/* LOGS */
-.log-list { padding: 12px 20px; display: flex; flex-direction: column; gap: 6px; }
+/* TIMELINE */
+.tl-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.week-nav{display:flex;align-items:center;gap:8px;background:var(--surface2);border-radius:var(--radius-sm);padding:4px 8px;border:1px solid var(--border)}
+.nav-btn{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0 4px;line-height:1}
+.nav-btn:hover{color:var(--text)}
+.week-range{font-size:13px;font-weight:600;color:var(--text);min-width:120px;text-align:center}
+.today-btn{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer}
+.today-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.cat-filters{display:flex;gap:6px;flex-wrap:wrap}
+.cf-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;transition:all .18s}
+.cf-btn.active{border-color:var(--accent);background:rgba(108,99,255,0.15);color:var(--accent2)}
+.bs-bar{display:flex;align-items:center;gap:10px;background:rgba(108,99,255,0.08);border-radius:10px;padding:10px 16px;border:1px solid rgba(108,99,255,0.25);flex-wrap:wrap}
+.bs-bar a{padding:6px 14px;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+.timeline-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.day-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.day-header{background:var(--surface2);border-radius:var(--radius-sm);padding:8px 10px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px}
+.day-col.today .day-header{border-color:rgba(108,99,255,0.5);background:rgba(108,99,255,0.08)}
+.day-name{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
+.day-date{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.day-col.today .day-date{color:var(--accent2)}
+.day-count{font-size:10px;color:var(--text3)}
+.story-card{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:transform .15s,box-shadow .15s;aspect-ratio:9/14;min-height:100px}
+.story-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4);border-color:var(--accent)}
+.story-thumb{width:100%;height:100%;object-fit:cover;display:block}
+.story-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));padding:6px 8px}
+.story-label{font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.story-time{font-size:9px;color:rgba(255,255,255,0.6)}
+.story-status{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.story-status.scheduled{background:var(--orange);color:#fff}
+.story-status.posted{background:var(--green);color:#000}
+.story-status.error{background:var(--red);color:#fff}
+.story-actions{position:absolute;top:5px;left:5px;display:flex;gap:4px}
+.action-btn{width:20px;height:20px;border-radius:50%;border:none;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.action-btn.del{background:rgba(248,113,113,0.9);color:#fff}
+.action-btn.edit{background:rgba(108,99,255,0.9);color:#fff}
+.add-slot{border-radius:10px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text3);cursor:pointer;transition:all .18s;min-height:60px}
+.add-slot:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,99,255,0.05)}
+.clear-btns{display:flex;gap:8px}
+.clear-btn{padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;font-size:11px;font-weight:600;cursor:pointer}
+.clear-btn.red{border-color:var(--red);color:var(--red)}
+.clear-btn.gray{color:var(--text2)}
 
-.log-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: var(--surface2);
-  border-radius: var(--radius-sm);
-  font-size: 12.5px;
-}
+/* PANEL */
+.panel{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.panel-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.panel-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.panel-body{padding:18px}
 
-.log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.log-dot.ok { background: var(--green); }
-.log-dot.err { background: var(--red); }
-.log-dot.warn { background: var(--orange); }
-.log-time { color: var(--text2); font-size: 11px; min-width: 50px; }
-.log-msg { flex: 1; color: var(--text); }
-.log-tag {
-  font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600;
-}
-.log-tag.ok { background: rgba(52,211,153,0.15); color: var(--green); }
-.log-tag.err { background: rgba(248,113,113,0.15); color: var(--red); }
-.log-tag.warn { background: rgba(251,146,60,0.15); color: var(--orange); }
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px}
+.form-input,.form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.form-input:focus,.form-select:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;color:var(--text2);font-size:13px;transition:all .18s}
+.upload-zone:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,99,255,0.05)}
+.preview-box{border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2);border:1px solid var(--border);margin-top:10px}
+.preview-box img,.preview-box video{width:100%;max-height:200px;object-fit:cover;display:block}
+.preview-info{padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text2)}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.btn{padding:9px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s}
+.btn:hover{border-color:var(--border2);color:var(--text)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.85}
+
+/* WEEK MODAL */
+.week-modal .modal{max-width:540px}
+.time-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.time-block{background:var(--surface2);border-radius:8px;padding:10px;border:1px solid var(--border)}
+.time-block label{font-size:10px;color:var(--text2);display:block;margin-bottom:4px;font-weight:600}
+.time-block small{font-size:9px;color:var(--text3)}
+.files-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.file-chip{background:var(--surface2);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--text2);border:1px solid var(--border);display:flex;align-items:center;gap:4px}
+.schedule-preview{background:var(--surface2);border-radius:10px;padding:12px;border:1px solid rgba(108,99,255,0.3);max-height:180px;overflow-y:auto}
+.schedule-row{display:flex;gap:8px;align-items:center;padding:3px 0;border-bottom:1px solid var(--border);font-size:11px}
+.status-msg{padding:10px;border-radius:8px;background:var(--surface2);font-size:12px;color:var(--text2);text-align:center;margin-top:10px}
 
 /* CONFIG */
-.config-section {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
+.config-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.config-row:last-child{border-bottom:none}
+.config-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.config-info{flex:1}
+.config-info h4{font-size:13px;font-weight:600;color:var(--text)}
+.config-info p{font-size:11px;color:var(--text2);margin-top:2px}
 
-.config-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  background: var(--surface2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-
-.config-icon { font-size: 20px; width: 32px; text-align: center; }
-
-.config-info { flex: 1; }
-.config-info h4 { font-size: 13.5px; font-weight: 600; color: var(--text); }
-.config-info p { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-.toggle {
-  width: 40px; height: 22px;
-  background: var(--border2);
-  border-radius: 20px;
-  cursor: pointer;
-  position: relative;
-  transition: background 0.2s;
-  border: none;
-  flex-shrink: 0;
-}
-.toggle.on { background: var(--accent); }
-.toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px; left: 3px;
-  width: 16px; height: 16px;
-  background: white;
-  border-radius: 50%;
-  transition: left 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-.toggle.on::after { left: 21px; }
-
-/* CONNECT BANNER */
-.connect-banner {
-  background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(56,189,248,0.1));
-  border: 1px solid rgba(108,99,255,0.3);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.connect-banner .icon { font-size: 36px; }
-.connect-banner h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
-.connect-banner p { font-size: 12.5px; color: var(--text2); margin-top: 4px; }
+/* LOGS */
+.log-list{display:flex;flex-direction:column;gap:6px}
+.log-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.log-dot.ok{background:var(--green)}.log-dot.error{background:var(--red)}.log-dot.warn{background:var(--orange)}
+.log-time{font-size:11px;color:var(--text3);min-width:36px}
+.log-msg{font-size:12px;color:var(--text2);flex:1}
+.log-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--surface3);color:var(--text2)}
 
 /* TOAST */
-.toast {
-  position: fixed;
-  bottom: 24px; right: 24px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 12px 18px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  z-index: 200;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-.toast.show {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.toast.success { border-color: rgba(52,211,153,0.4); }
-.toast.success .t-icon { color: var(--green); }
-
-/* DIVIDER */
-.divider { height: 1px; background: var(--border); margin: 0 -28px; }
-
-/* SCROLLBAR for content */
-* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-  from { opacity:0; transform: translateY(8px); }
-  to { opacity:1; transform: translateY(0); }
-}
-
-.timeline-grid { animation: fadeIn 0.3s ease; }
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;z-index:999;transition:transform .3s;box-shadow:0 8px 32px rgba(0,0,0,0.5);max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0)}
 
 /* METRICS */
-.metrics-grid-top {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.metric-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  transition: border-color 0.2s;
-  animation: fadeIn 0.35s ease both;
-}
-
-.metric-card:hover { border-color: var(--border2); }
-
-.metric-card .mc-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.metric-card .mc-val {
-  font-family: 'Syne', sans-serif;
-  font-size: 32px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.metric-card .mc-delta {
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.mc-delta.up { color: var(--green); }
-.mc-delta.down { color: var(--red); }
-.mc-delta.neutral { color: var(--text2); }
-
-.metrics-grid-mid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-}
-
-.metrics-grid-bot {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-canvas { display: block; }
-
-.chart-wrap {
-  padding: 16px 20px 20px;
-  position: relative;
-}
-
-.chart-legend {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--text2);
-}
-
-.legend-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.metric-period-tabs {
-  display: flex;
-  gap: 2px;
-  background: var(--surface2);
-  padding: 3px;
-  border-radius: 7px;
-}
-
-.mpt {
-  padding: 5px 12px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  color: var(--text2);
-  border: none;
-  background: transparent;
-  font-family: 'DM Sans', sans-serif;
-}
-.mpt.active { background: var(--surface3); color: var(--text); }
-
-.top-story-list {
-  padding: 0 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.top-story-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
-  border-radius: 8px;
-  background: var(--surface2);
-  transition: background 0.15s;
-  cursor: default;
-}
-.top-story-row:hover { background: var(--surface3); }
-
-.ts-rank {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--text2);
-  width: 20px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.ts-rank.gold { color: #fbbf24; }
-.ts-rank.silver { color: #94a3b8; }
-.ts-rank.bronze { color: #c2783b; }
-
-.ts-emoji { font-size: 18px; flex-shrink: 0; }
-.ts-info { flex: 1; min-width: 0; }
-.ts-title { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ts-cat { font-size: 10px; color: var(--text2); }
-
-.ts-bar-wrap { width: 80px; flex-shrink: 0; }
-.ts-bar-bg { height: 4px; background: var(--border2); border-radius: 4px; overflow: hidden; }
-.ts-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent3)); }
-
-.ts-views { font-size: 12px; font-weight: 700; color: var(--text); min-width: 42px; text-align: right; flex-shrink: 0; }
-
-.heatmap-grid {
-  display: grid;
-  grid-template-columns: 40px repeat(7, 1fr);
-  gap: 3px;
-  padding: 0 20px 16px;
-}
-
-.hm-label {
-  font-size: 10px;
-  color: var(--text2);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 8px;
-}
-
-.hm-day-label {
-  font-size: 10px;
-  color: var(--text2);
-  text-align: center;
-  padding-bottom: 4px;
-}
-
-.hm-cell {
-  aspect-ratio: 1;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: transform 0.1s;
-  position: relative;
-}
-.hm-cell:hover { transform: scale(1.15); z-index: 2; }
-
-.hm-tooltip {
-  position: absolute;
-  bottom: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--surface3);
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  padding: 5px 9px;
-  font-size: 11px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
-
-/* NOTIFICATION BANNER */
-.notif-banner {
-  display: none;
-  position: fixed;
-  top: 20px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--surface);
-  border: 1px solid rgba(163,230,53,0.4);
-  border-radius: 14px;
-  padding: 14px 20px;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-  z-index: 300;
-  min-width: 380px;
-  max-width: 90vw;
-  animation: slideDown 0.4s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-@keyframes slideDown {
-  from { opacity:0; transform: translateX(-50%) translateY(-20px); }
-  to   { opacity:1; transform: translateX(-50%) translateY(0); }
-}
-
-.notif-banner.show { display: flex; }
-
-.notif-icon-wrap {
-  width: 42px; height: 42px;
-  background: rgba(163,230,53,0.12);
-  border: 1px solid rgba(163,230,53,0.3);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-/* NOTIF STATUS in sidebar */
-.notif-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  margin-top: 6px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border: 1px solid transparent;
-}
-
-.notif-status.off {
-  background: rgba(248,113,113,0.08);
-  border-color: rgba(248,113,113,0.2);
-  color: var(--red);
-}
-
-.notif-status.on {
-  background: rgba(163,230,53,0.08);
-  border-color: rgba(163,230,53,0.2);
-  color: #a3e635;
-}
-
-.notif-status:hover { opacity: 0.8; }
-
-/* STORY CARD notif badge */
-.story-notif-badge {
-  position: absolute;
-  top: 7px; left: 7px;
-  background: rgba(163,230,53,0.9);
-  border-radius: 4px;
-  padding: 2px 5px;
-  font-size: 9px;
-  font-weight: 700;
-  color: #0a0a0f;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-/* NOTIFICATION LOG in sidebar bottom */
-.next-story-widget {
-  margin-top: 8px;
-  padding: 10px 14px;
-  background: rgba(108,99,255,0.08);
-  border: 1px solid rgba(108,99,255,0.2);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-}
-
-.next-story-widget .nsw-label {
-  color: var(--text2);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  font-size: 10px;
-}
-
-.next-story-widget .nsw-title {
-  color: var(--text);
-  font-weight: 600;
-  margin-top: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.next-story-widget .nsw-time {
-  color: var(--accent2);
-  font-weight: 700;
-  font-size: 13px;
-  margin-top: 2px;
-  font-family: 'Syne', sans-serif;
-}
-
-/* ===== MOBILE RESPONSIVO ===== */
-@media (max-width: 768px) {
-  /* Sidebar compacta com só ícones no celular */
-  .sidebar {
-    width: 58px !important;
-    min-width: 58px !important;
-    padding: 12px 0 0;
-    overflow: visible;
-  }
-
-  .sidebar-logo {
-    padding: 0 6px 12px;
-  }
-
-  .logo-circle {
-    width: 42px;
-    height: 42px;
-  }
-
-  .logo-line1 { font-size: 7px; }
-  .logo-line2 { font-size: 5px; }
-  .sidebar-logo p { display: none; }
-
-  .nav-item {
-    padding: 10px 0;
-    margin: 0 4px;
-    justify-content: center;
-    gap: 0;
-    position: relative;
-  }
-
-  .nav-item span:not(.nav-icon):not(.badge) { display: none; }
-  .nav-icon { font-size: 20px; width: auto; }
-
-  .badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    font-size: 8px;
-    padding: 1px 4px;
-    min-width: 14px;
-  }
-
-  .sidebar-bottom { padding: 8px 4px; }
-  .sidebar-bottom .nav-item span:not(.nav-icon) { display: none; }
-
-  /* Esconde barra inferior */
-  #mobile-nav { display: none !important; }
-
-  /* Conteúdo com padding adequado */
-  .main-content { padding-bottom: 20px; }
-
-  /* Botão publicar sticky */
-  #main-publish-btn {
-    position: sticky;
-    bottom: 12px;
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(108,99,255,0.4);
-  }
-
-  /* Header compacto */
-  .page-header {
-    padding: 10px 12px 8px;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
-
-  .page-title { font-size: 17px; }
-
-  /* Stats menores */
-  .stats-bar {
-    gap: 6px;
-    order: 3;
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .stat-num { font-size: 16px; }
-  .stat-label { font-size: 8px; }
-
-  /* Botão Organizar Semana menor */
-  .page-header .btn-primary {
-    font-size: 11px;
-    padding: 7px 12px;
-    white-space: nowrap;
-  }
-
-  /* Timeline scroll horizontal */
-  #timeline-grid {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 10px;
-    padding-bottom: 10px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .day-col {
-    min-width: 130px;
-    scroll-snap-align: start;
-    flex-shrink: 0;
-  }
-
-  /* Modal ocupa tela toda no celular */
-  .modal-overlay .modal {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0;
-    border-radius: 16px 16px 0 0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-
-  .modal-overlay {
-    align-items: flex-end;
-  }
-
-}
-
-/* Barra mobile — escondida no desktop */
-#mobile-nav {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 62px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  z-index: 200;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0 8px;
-  backdrop-filter: blur(12px);
-}
-
-.mob-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 6px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  color: var(--text3);
-  font-size: 10px;
-  font-weight: 600;
-  transition: all 0.18s;
-  flex: 1;
-}
-
-.mob-nav-item.active {
-  color: var(--accent2);
-  background: rgba(108,99,255,0.12);
-}
-
-.mob-nav-item span:first-child {
-  font-size: 20px;
+.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:600px){.metrics-grid{grid-template-columns:repeat(4,1fr)}}
+.metric-card{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)}
+.mc-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.mc-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+.mc-sub{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* MOBILE */
+@media(max-width:700px){
+  .sidebar{width:52px;min-width:52px;padding:10px 0 0}
+  .sidebar-logo{padding:0 4px 10px}
+  .logo-circle{width:38px;height:38px}
+  .logo-line1{font-size:6px}.logo-line2{font-size:5px}
+  .sidebar-logo p{display:none}
+  .nav-item{padding:10px 0;justify-content:center;margin:0 4px}
+  .nav-item span:not(:first-child){display:none}
+  .nav-item::before{display:none!important}
+  .badge{position:absolute;top:3px;right:3px;font-size:7px;padding:1px 3px}
+  .sidebar-bottom .status-item span:last-child{display:none}
+  .topbar{padding:10px 12px}
+  .page-title{font-size:16px}
+  .stats{gap:10px}
+  .stat-n{font-size:16px}
+  .content{padding:12px}
+  .timeline-grid{display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .day-col{min-width:120px;flex-shrink:0;scroll-snap-align:start}
+  .modal{margin:0 8px}
+  .time-grid{grid-template-columns:1fr 1fr 1fr}
 }
 </style>
-
 </head>
 <body>
-
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-circle">
-        <span class="logo-line1">MOVE PÉ</span>
-        <span class="logo-line2">CALÇADOS</span>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-circle">
+      <span class="logo-line1">MOVE PÉ</span>
+      <span class="logo-line2">CALÇADOS</span>
+    </div>
+    <p>Stories Manager</p>
+  </div>
+  <nav>
+    <div class="nav-item active" data-page="timeline" onclick="goTo(this)">
+      <span>📅</span><span>Timeline</span>
+    </div>
+    <div class="nav-item" data-page="metrics" onclick="goTo(this)">
+      <span>📊</span><span>Métricas</span>
+    </div>
+    <div class="nav-item" data-page="logs" onclick="goTo(this)">
+      <span>📋</span><span>Logs</span>
+      <span class="badge" id="badge-logs">0</span>
+    </div>
+    <div class="nav-item" data-page="config" onclick="goTo(this)">
+      <span>⚙️</span><span>Config</span>
+    </div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span>Sistema ativo</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">Timeline da Semana</div>
+    <div class="stats">
+      <div class="stat"><div class="stat-n blue" id="s-agendados">0</div><div class="stat-l">Agendados</div></div>
+      <div class="stat"><div class="stat-n green" id="s-postados">0</div><div class="stat-l">Postados</div></div>
+      <div class="stat"><div class="stat-n red" id="s-erros">0</div><div class="stat-l">Erros</div></div>
+    </div>
+    <button class="btn-week" onclick="openWeekModal()">✨ Organizar Semana</button>
+  </div>
+
+  <div class="content">
+
+    <!-- TIMELINE -->
+    <div class="page active" id="page-timeline">
+      <div class="tl-controls">
+        <div class="week-nav">
+          <button class="nav-btn" onclick="changeWeek(-1)">‹</button>
+          <span class="week-range" id="week-range">--/--</span>
+          <button class="nav-btn" onclick="changeWeek(1)">›</button>
+        </div>
+        <button class="today-btn" onclick="goToday()">Hoje</button>
+        <div class="clear-btns">
+          <button class="clear-btn red" onclick="clearWeek()">🗑️ Semana</button>
+          <button class="clear-btn gray" onclick="clearAll()">🗑️ Tudo</button>
+        </div>
       </div>
-      <p id="sidebar-store-name" style="margin-top:10px; font-size:11px; color:var(--text2);">Stories Manager</p>
+      <div class="cat-filters">
+        <button class="cf-btn active" onclick="filterCat('todos',this)">Todos</button>
+        <button class="cf-btn" onclick="filterCat('promo',this)">🔥 Promoção</button>
+        <button class="cf-btn" onclick="filterCat('produto',this)">👟 Produto</button>
+        <button class="cf-btn" onclick="filterCat('dica',this)">💡 Dica</button>
+        <button class="cf-btn" onclick="filterCat('depoimento',this)">⭐ Depoimento</button>
+        <button class="cf-btn" onclick="filterCat('bastidores',this)">🎬 Bastidores</button>
+      </div>
+      <div class="bs-bar">
+        <span style="font-size:13px;">📱</span>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:700;color:var(--text)">Agende no Meta Business Suite</div>
+          <div style="font-size:11px;color:var(--text2)">Após organizar aqui, agende os vídeos em business.facebook.com</div>
+        </div>
+        <a href="https://business.facebook.com" target="_blank">Abrir →</a>
+      </div>
+      <div class="timeline-grid" id="tl-grid"></div>
     </div>
 
-    <nav id="sidebar-nav">
-      <div class="nav-item active" data-page="timeline" onclick="navigate(this)">
-        <span class="nav-icon">📅</span> Timeline
+    <!-- METRICS -->
+    <div class="page" id="page-metrics">
+      <div class="panel">
+        <div class="panel-header"><span>📊</span><div class="panel-title">Resumo da Semana</div></div>
+        <div class="panel-body">
+          <div class="metrics-grid">
+            <div class="metric-card" style="border-top:2px solid var(--accent)">
+              <div class="mc-label">📅 Agendados</div>
+              <div class="mc-val" id="m-agendados" style="color:var(--accent2)">0</div>
+              <div class="mc-sub">Esta semana</div>
+            </div>
+            <div class="metric-card" style="border-top:2px solid var(--green)">
+              <div class="mc-label">✅ Postados</div>
+              <div class="mc-val" id="m-postados" style="color:var(--green)">0</div>
+              <div class="mc-sub">Total histórico</div>
+            </div>
+            <div class="metric-card" style="border-top:2px solid var(--orange)">
+              <div class="mc-label">📆 Dias com stories</div>
+              <div class="mc-val" id="m-dias" style="color:var(--orange)">0</div>
+              <div class="mc-sub">Esta semana</div>
+            </div>
+            <div class="metric-card" style="border-top:2px solid #f472b6">
+              <div class="mc-label">🎯 Meta diária</div>
+              <div class="mc-val" id="m-meta" style="color:#f472b6">21</div>
+              <div class="mc-sub">Stories por dia</div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="nav-item" data-page="metrics" onclick="navigate(this)">
-        <span class="nav-icon">📊</span> Métricas
-        <span class="badge green">New</span>
-      </div>
-      <div class="nav-item" data-page="logs" onclick="navigate(this)">
-        <span class="nav-icon">🔴</span> Erros / Logs
-        <span class="badge" id="error-badge">3</span>
-      </div>
-      <div class="nav-item" data-page="config" onclick="navigate(this)">
-        <span class="nav-icon">⚙️</span> Config
-      </div>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <div class="status-dot">
-        <div class="dot-pulse"></div>
-        Sistema ativo
-      </div>
-      <div class="notif-status off" id="notif-status" onclick="requestNotifPermission()" title="Clique para ativar notificações">
-        <span id="notif-status-icon">🔕</span>
-        <span id="notif-status-label">Notificações desativadas</span>
-      </div>
-      <div class="next-story-widget" id="next-story-widget" style="display:none">
-        <div class="nsw-label">⏰ Próximo story</div>
-        <div class="nsw-title" id="nsw-title">—</div>
-        <div class="nsw-time" id="nsw-time">—</div>
+      <div class="panel">
+        <div class="panel-header"><span>📈</span><div class="panel-title">Métricas do Instagram</div></div>
+        <div class="panel-body">
+          <div style="text-align:center;padding:20px;color:var(--text2);font-size:13px">
+            <div style="font-size:32px;margin-bottom:12px">📱</div>
+            <div>Para ver métricas reais (visualizações, alcance, seguidores),</div>
+            <div style="margin-top:4px">acesse diretamente o Instagram Insights ou Meta Business Suite.</div>
+            <a href="https://business.facebook.com" target="_blank" style="display:inline-block;margin-top:14px;padding:10px 20px;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;text-decoration:none">Abrir Business Suite →</a>
+          </div>
+        </div>
       </div>
     </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- TOPBAR -->
-    <header class="topbar">
-      <div class="topbar-title" id="page-title">Timeline da Semana</div>
-      <div class="topbar-stats">
-        <div class="stat-chip blue"><span class="val" id="stat-agendados">0</span><span class="lbl">Agendados</span></div>
-        <div class="stat-chip green"><span class="val" id="stat-postados">0</span><span class="lbl">Postados</span></div>
-        <div class="stat-chip red"><span class="val" id="stat-erros">3</span><span class="lbl">Erros</span></div>
-        <div class="stat-chip orange"><span class="val" id="stat-midias">0</span><span class="lbl">Mídias</span></div>
-      </div>
-      <button class="btn btn-primary" onclick="openWeekModal()">✨ Organizar Semana</button>
-    </header>
-
-    <!-- CONTENT -->
-    <div class="content">
-
-      <!-- PAGE: TIMELINE -->
-      <div class="page active" id="page-timeline">
-
-        <!-- Controles principais -->
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <div class="week-nav">
-            <button class="nav-btn" onclick="changeWeek(-1)">‹</button>
-            <span class="week-range" id="week-range">--/-- – --/--</span>
-            <button class="nav-btn" onclick="changeWeek(1)">›</button>
-          </div>
-          <button class="today-btn" onclick="goToday()">Hoje</button>
-          <button onclick="clearWeekStories()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--red); background:transparent; color:var(--red); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Semana</button>
-          <button onclick="clearAllScheduled()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:12px; font-weight:600; cursor:pointer;">🗑️ Tudo</button>
+    <!-- LOGS -->
+    <div class="page" id="page-logs">
+      <div class="panel">
+        <div class="panel-header">
+          <span>📋</span>
+          <div class="panel-title">Histórico de Ações</div>
+          <button onclick="clearLogs()" style="margin-left:auto;padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer">🗑️ Limpar</button>
         </div>
-
-        <!-- Filtro por categoria -->
-        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-          <span style="font-size:11px; color:var(--text3); font-weight:600;">Filtrar:</span>
-          <button onclick="setCatFilter('todos', this)" class="cat-filter-btn active" style="padding:4px 10px; border-radius:20px; border:1px solid var(--accent); background:rgba(108,99,255,0.15); color:var(--accent2); font-size:11px; font-weight:600; cursor:pointer;">Todos</button>
-          <button onclick="setCatFilter('promo', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🔥 Promoção</button>
-          <button onclick="setCatFilter('produto', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">👟 Produto</button>
-          <button onclick="setCatFilter('dica', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">💡 Dica</button>
-          <button onclick="setCatFilter('depoimento', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">⭐ Depoimento</button>
-          <button onclick="setCatFilter('bastidores', this)" class="cat-filter-btn" style="padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text2); font-size:11px; cursor:pointer;">🎬 Bastidores</button>
-        </div>
-
-        <!-- Lembrete Business Suite -->
-        <div style="display:flex; align-items:center; gap:10px; background:rgba(108,99,255,0.08); border-radius:10px; padding:10px 16px; border:1px solid rgba(108,99,255,0.3); flex-wrap:wrap;">
-          <span style="font-size:16px;">📱</span>
-          <div style="flex:1;">
-            <div style="font-size:12px; font-weight:700; color:var(--text);">Lembre-se de agendar no Meta Business Suite</div>
-            <div style="font-size:11px; color:var(--text2);">Após organizar aqui, agende os vídeos em business.facebook.com</div>
-          </div>
-          <a href="https://business.facebook.com" target="_blank" style="padding:6px 12px; border-radius:8px; background:var(--accent); color:#fff; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap;">Abrir Business Suite →</a>
-        </div>
-
-        <div class="timeline-grid" id="timeline-grid"></div>
-      </div>
-
-
-
-      <!-- PAGE: LOGS -->
-      <div class="page" id="page-logs">
-        <div class="panel">
-          <div class="panel-header">
-            <span>📋</span>
-            <span class="panel-title">Logs do Sistema</span>
-            <button class="btn btn-ghost" style="padding:6px 12px; font-size:12px;" onclick="clearLogs()">🗑 Limpar</button>
-          </div>
-          <div class="log-list" id="log-list"></div>
-        </div>
-      </div>
-
-      <!-- PAGE: CONFIG -->
-      <div class="page" id="page-config">
-
-        <!-- GUIA META BUSINESS SUITE -->
-        <div class="panel">
-          <div class="panel-header">
-            <span>📱</span>
-            <span class="panel-title">Meta Business Suite</span>
-          </div>
-          <div class="config-section">
-            <div style="background:rgba(108,99,255,0.08); border-radius:10px; padding:16px; border:1px solid rgba(108,99,255,0.3); margin-bottom:12px;">
-              <div style="font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">📋 Como agendar stories</div>
-              <div style="font-size:12px; color:var(--text2); line-height:1.8;">
-                <div>1️⃣ Organize os vídeos na Timeline aqui</div>
-                <div>2️⃣ Acesse o Meta Business Suite</div>
-                <div>3️⃣ Clique em "Criar publicação" → "Story"</div>
-                <div>4️⃣ Faça upload do vídeo</div>
-                <div>5️⃣ Clique em "Agendar" e defina o horário</div>
-              </div>
-            </div>
-            <a href="https://business.facebook.com" target="_blank" style="display:block; text-align:center; padding:12px; border-radius:10px; background:var(--accent); color:#fff; font-size:14px; font-weight:700; text-decoration:none; margin-bottom:12px;">
-              🚀 Abrir Meta Business Suite
-            </a>
-            <div class="config-row">
-              <div class="config-icon">📸</div>
-              <div class="config-info">
-                <h4>Conta Instagram</h4>
-                <p>@movepestreet — 2.563 seguidores</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CONFIGURAÇÕES GERAIS -->
-        <div class="panel">
-          <div class="panel-header">
-            <span>⚙️</span>
-            <span class="panel-title">Configurações Gerais</span>
-          </div>
-          <div class="config-section">
-
-            <div class="config-row">
-              <div class="config-icon">🔔</div>
-              <div class="config-info">
-                <h4>Notificações no celular</h4>
-                <p>Receba lembretes dos stories agendados</p>
-              </div>
-              <button onclick="requestNotifPermission()" style="padding:7px 14px; border-radius:8px; border:1px solid var(--green); background:rgba(52,211,153,0.1); color:var(--green); font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;">🔔 Ativar</button>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">🏷️</div>
-              <div class="config-info">
-                <h4>Nome da loja</h4>
-                <p>Aparece na barra lateral</p>
-              </div>
-              <input type="text" class="form-input" style="width:180px; padding:7px 10px; font-size:13px;" id="store-name-input" placeholder="Move Pé Calçados" oninput="updateStoreName(this.value)"/>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">💾</div>
-              <div class="config-info">
-                <h4>Backup dos agendamentos</h4>
-                <p>Exporta todos os stories em arquivo JSON</p>
-              </div>
-              <button class="btn" onclick="exportBackup()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬇️ Exportar</button>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">📤</div>
-              <div class="config-info">
-                <h4>Restaurar backup</h4>
-                <p>Importa stories de um arquivo de backup</p>
-              </div>
-              <input type="file" id="backup-import-input" accept=".json" style="display:none" onchange="importBackup(this)"/>
-              <button class="btn" onclick="document.getElementById('backup-import-input').click()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬆️ Importar</button>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-      <!-- PAGE: METRICS -->
-      <div class="page" id="page-metrics">
-
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-          <div>
-            <div style="font-size:18px; font-weight:700; color:var(--text);">📊 Métricas do Instagram</div>
-            <div style="font-size:12px; color:var(--text2); margin-top:2px;">Dados reais da conta @movepestreet</div>
-          </div>
-          <button onclick="loadRealMetrics()" style="padding:8px 16px; border-radius:8px; border:1px solid var(--accent); background:rgba(108,99,255,0.1); color:var(--accent2); font-size:12px; font-weight:700; cursor:pointer;">🔄 Atualizar dados</button>
-        </div>
-
-        <!-- Status de carregamento -->
-        <div id="metrics-loading" style="display:none; text-align:center; padding:20px; color:var(--text2); font-size:13px;">
-          ⏳ Carregando dados do Instagram...
-        </div>
-
-        <div id="metrics-error" style="display:none; background:rgba(220,38,38,0.1); border:1px solid var(--red); border-radius:10px; padding:14px; font-size:13px; color:var(--red);">
-        </div>
-
-        <!-- KPIs do perfil -->
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
-          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">🏠 Perfil</span>
-          <div style="flex:1; height:1px; background:var(--border);"></div>
-          <span id="metrics-updated" style="font-size:10px; color:var(--text3);"></span>
-        </div>
-        <div class="metrics-grid-top">
-          <div class="metric-card" style="border-top: 2px solid #f472b6">
-            <div class="mc-label">👥 Seguidores</div>
-            <div class="mc-val" id="m-followers" style="color:#f472b6">--</div>
-            <div class="mc-delta" id="m-followers-d" style="color:var(--text3);">Carregando...</div>
-          </div>
-          <div class="metric-card" style="border-top: 2px solid #22d3ee">
-            <div class="mc-label">🔍 Visitas ao Perfil</div>
-            <div class="mc-val" id="m-profile-views" style="color:#22d3ee">--</div>
-            <div class="mc-delta" id="m-profile-views-d" style="color:var(--text3);">Últimos 30 dias</div>
-          </div>
-          <div class="metric-card" style="border-top: 2px solid var(--accent)">
-            <div class="mc-label">👁️ Alcance</div>
-            <div class="mc-val" id="m-reach" style="color:var(--accent2)">--</div>
-            <div class="mc-delta" id="m-reach-d" style="color:var(--text3);">Últimos 30 dias</div>
-          </div>
-          <div class="metric-card" style="border-top: 2px solid var(--green)">
-            <div class="mc-label">📣 Impressões</div>
-            <div class="mc-val" id="m-impressions" style="color:var(--green)">--</div>
-            <div class="mc-delta" id="m-impressions-d" style="color:var(--text3);">Últimos 30 dias</div>
-          </div>
-        </div>
-
-        <!-- Stories postados -->
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
-          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">📱 Stories recentes</span>
-          <div style="flex:1; height:1px; background:var(--border);"></div>
-        </div>
-
-        <div id="stories-metrics-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px;">
-          <div style="text-align:center; padding:20px; color:var(--text3); font-size:12px; grid-column:1/-1;">
-            Clique em "Atualizar dados" para ver os stories
-          </div>
-        </div>
-
-        <!-- Info sobre dados -->
-        <div style="background:var(--surface2); border-radius:10px; padding:12px 16px; border:1px solid var(--border); font-size:11px; color:var(--text2); line-height:1.6;">
-          ℹ️ <strong style="color:var(--text)">Sobre as métricas:</strong> Stories expiram após 24h no Instagram. A API fornece dados dos últimos stories publicados via esta ferramenta. Visualizações e alcance são dados reais da sua conta @movepestreet.
-        </div>
-
-      </div>
-
-      <!-- PAGE: LOGS -->
-      <div class="page" id="page-logs">
-        <div class="panel">
-          <div class="panel-header">
-            <span>📋</span>
-            <span class="panel-title">Logs do Sistema</span>
-            <button class="btn btn-ghost" style="padding:6px 12px; font-size:12px;" onclick="clearLogs()">🗑 Limpar</button>
-          </div>
-          <div class="log-list" id="log-list"></div>
-        </div>
-      </div>
-
-      <!-- PAGE: CONFIG -->
-      <div class="page" id="page-config">
-
-        <!-- API CONNECTION PANEL -->
-        <div class="panel" id="api-panel">
-          <div class="panel-header">
-            <span>📸</span>
-            <span class="panel-title">Conexão Instagram API</span>
-            <span id="api-status-badge" style="margin-left:auto; font-size:11px; padding:3px 10px; border-radius:20px; background:var(--surface3); color:var(--text2);">Não conectado</span>
-          </div>
-          <div class="config-section">
-
-            <div style="background:var(--surface2); border-radius:var(--radius-sm); padding:14px; margin-bottom:8px; border:1px solid var(--border);">
-              <p style="font-size:12px; color:var(--text2); line-height:1.6;">
-                🔐 Cole abaixo o <strong style="color:var(--text)">Token de Acesso</strong> gerado no Explorador da Graph API. O token fica salvo <strong style="color:var(--text)">apenas no seu dispositivo</strong> e nunca é enviado para nenhum servidor externo.
-              </p>
-            </div>
-
-            <div class="config-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
-              <label style="font-size:12px; font-weight:600; color:var(--text2);">Token de Acesso</label>
-              <div style="display:flex; gap:8px; width:100%;">
-                <input type="password" id="ig-token-input" class="form-input" style="flex:1; padding:9px 12px; font-size:13px;" placeholder="Cole o token aqui..."/>
-                <button class="btn btn-primary" onclick="saveIGToken()" style="white-space:nowrap;">Salvar token</button>
-              </div>
-              <p id="token-saved-msg" style="font-size:12px; color:var(--green); display:none;">✅ Token salvo com sucesso!</p>
-            </div>
-
-            <div class="config-row" style="margin-top:4px;">
-              <div class="config-icon">🔍</div>
-              <div class="config-info">
-                <h4>Testar conexão</h4>
-                <p>Verifica se o token está válido e a conta está acessível</p>
-              </div>
-              <button class="btn" onclick="testIGConnection()" style="font-size:12px; padding:7px 14px;">Testar</button>
-            </div>
-
-            <div id="ig-account-info" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:14px; border:1px solid var(--green); margin-top:4px;">
-              <div style="display:flex; align-items:center; gap:12px;">
-                <div style="width:42px; height:42px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px;">📷</div>
-                <div>
-                  <div id="ig-account-name" style="font-size:14px; font-weight:700; color:var(--text);">—</div>
-                  <div id="ig-account-followers" style="font-size:12px; color:var(--text2); margin-top:2px;">—</div>
-                </div>
-                <div style="margin-left:auto; background:var(--green); color:#000; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ Conectado</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- PUBLISH STORY PANEL -->
-        <div class="panel" id="publish-panel">
-          <div class="panel-header">
-            <span>🚀</span>
-            <span class="panel-title">Publicar Stories no Instagram</span>
-          </div>
-          <div class="config-section">
-
-            <!-- Upload zone múltiplos arquivos -->
-            <div id="upload-zone" onclick="document.getElementById('file-input').click()"
-              style="border:2px dashed var(--border2); border-radius:var(--radius); padding:28px; text-align:center; cursor:pointer; transition:.2s; background:var(--surface2);"
-              ondragover="event.preventDefault(); this.style.borderColor='var(--accent)'"
-              ondragleave="this.style.borderColor='var(--border2)'"
-              ondrop="handleFileDrop(event)">
-              <div style="font-size:36px; margin-bottom:8px;">📁</div>
-              <div style="font-size:14px; font-weight:600; color:var(--text);">Clique ou arraste as fotos/vídeos aqui</div>
-              <div style="font-size:12px; color:var(--text2); margin-top:4px;">JPG, PNG, MP4 • Vários arquivos de uma vez • Máx 100MB cada</div>
-              <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleFileSelect(this)"/>
-            </div>
-
-            <!-- Lista de arquivos selecionados -->
-            <div id="files-list" style="display:none; margin-top:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:12px; font-weight:600; color:var(--text2);">ARQUIVOS SELECIONADOS</span>
-                <button onclick="clearAllFiles()" style="background:none; border:none; color:var(--red); font-size:12px; cursor:pointer;">Limpar tudo</button>
-              </div>
-              <div id="files-grid" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
-            </div>
-
-            <!-- Modo de publicação -->
-            <div style="background:var(--surface2); border-radius:var(--radius-sm); padding:14px; border:1px solid var(--border); margin-top:4px;">
-              <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:10px;">MODO DE PUBLICAÇÃO</div>
-              <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button id="mode-now-btn" class="btn btn-primary" onclick="setPublishMode('now')" style="font-size:12px; padding:8px 16px;">⚡ Publicar agora</button>
-                <button id="mode-sched-btn" class="btn" onclick="setPublishMode('scheduled')" style="font-size:12px; padding:8px 16px;">⏰ Agendar</button>
-              </div>
-
-              <!-- Opções de agendamento -->
-              <div id="schedule-options" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
-
-                <!-- Blocos rápidos -->
-                <div style="margin-bottom:14px;">
-                  <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:8px;">⚡ BLOCOS RÁPIDOS</label>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button onclick="setQuickBlock('07:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">🌅 Manhã 7:00</button>
-                    <button onclick="setQuickBlock('11:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">☀️ Meio-dia 11:00</button>
-                    <button onclick="setQuickBlock('19:00')" style="flex:1; min-width:120px; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:12px; font-weight:700; cursor:pointer;">🌙 Noite 19:00</button>
-                  </div>
-                </div>
-
-                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
-                  <div>
-                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">DATA</label>
-                    <input type="date" id="sched-date" class="form-input" style="padding:8px 10px; font-size:13px;"/>
-                  </div>
-                  <div>
-                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">HORÁRIO</label>
-                    <input type="time" id="sched-time" class="form-input" style="padding:8px 10px; font-size:13px;"/>
-                  </div>
-                  <div>
-                    <label style="font-size:11px; color:var(--text2); display:block; margin-bottom:4px;">INTERVALO ENTRE STORIES</label>
-                    <select id="sched-interval" class="form-input" style="padding:8px 10px; font-size:13px;">
-                      <option value="10" selected>10 minutos</option>
-                      <option value="15">15 minutos</option>
-                      <option value="30">30 minutos</option>
-                      <option value="60">1 hora</option>
-                      <option value="120">2 horas</option>
-                    </select>
-                  </div>
-                </div>
-                <p style="font-size:11px; color:var(--text2); margin-top:8px;">💡 Com 10 minutos de intervalo, 7 stories são publicados em 1 hora e 10 minutos.</p>
-              </div>
-            </div>
-
-            <!-- Fila de agendados -->
-            <div id="scheduled-queue" style="display:none; margin-top:4px;">
-              <div style="font-size:12px; font-weight:600; color:var(--text2); margin-bottom:8px;">⏰ FILA DE AGENDADOS</div>
-              <div id="queue-list"></div>
-            </div>
-
-            <!-- Progress geral -->
-            <div id="upload-progress-wrap" style="display:none; margin-top:8px;">
-              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-bottom:4px;">
-                <span id="upload-status-text">Enviando...</span>
-                <span id="upload-pct">0%</span>
-              </div>
-              <div style="background:var(--surface3); border-radius:20px; height:8px; overflow:hidden;">
-                <div id="upload-bar" style="height:100%; background:var(--accent); border-radius:20px; width:0%; transition:width .4s;"></div>
-              </div>
-            </div>
-
-            <!-- Botão principal -->
-            <div class="config-row" style="margin-top:8px; flex-wrap:wrap; gap:10px;">
-              <div class="config-icon">📤</div>
-              <div class="config-info" style="min-width:0; flex:1;">
-                <h4 id="publish-btn-label">Publicar agora no Instagram</h4>
-                <p id="publish-btn-sub">Faz upload e publica todos os stories selecionados</p>
-              </div>
-              <button class="btn btn-primary" onclick="handlePublish()" style="font-size:13px; padding:9px 20px; width:100%; margin-top:4px;" id="main-publish-btn">Publicar →</button>
-            </div>
-
-            <div id="publish-result" style="display:none; background:var(--surface2); border-radius:var(--radius-sm); padding:12px; margin-top:4px; border:1px solid var(--border);">
-              <p id="publish-result-msg" style="font-size:13px; color:var(--text);"></p>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- GENERAL SETTINGS -->
-        <div class="panel">
-          <div class="panel-header">
-            <span>⚙️</span>
-            <span class="panel-title">Configurações Gerais</span>
-          </div>
-          <div class="config-section">
-
-            <div class="config-row">
-              <div class="config-icon">⏰</div>
-              <div class="config-info">
-                <h4>Postagem automática</h4>
-                <p>Posta os stories no horário agendado automaticamente</p>
-              </div>
-              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
-            </div>
-
-                        <div class="config-row">
-              <div class="config-icon">🔔</div>
-              <div class="config-info">
-                <h4>Notificações no celular</h4>
-                <p>Receba alertas quando um story for publicado</p>
-              </div>
-              <button onclick="requestNotifPermission()" style="padding:7px 14px; border-radius:8px; border:1px solid var(--green); background:rgba(52,211,153,0.1); color:var(--green); font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;">🔔 Ativar notificações</button>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">🔔</div>
-              <div class="config-info">
-                <h4>Notificações de erros</h4>
-                <p>Receba alertas quando um story falhar ao postar</p>
-              </div>
-              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">🔁</div>
-              <div class="config-info">
-                <h4>Retentar automaticamente</h4>
-                <p>Tenta novamente após 30min em caso de falha</p>
-              </div>
-              <button class="toggle on" onclick="this.classList.toggle('on'); showToast('Configuração salva', '✅')"></button>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">🏷️</div>
-              <div class="config-info">
-                <h4>Nome da loja</h4>
-                <p>Aparece na barra lateral do sistema</p>
-              </div>
-              <input type="text" class="form-input" style="width:180px; padding:7px 10px; font-size:13px;" id="store-name-input" placeholder="Move Pé Calçados" oninput="updateStoreName(this.value)"/>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">🕐</div>
-              <div class="config-info">
-                <h4>Horário padrão de postagem</h4>
-                <p>Usado quando nenhum horário é especificado</p>
-              </div>
-              <input type="time" class="form-input" value="09:00" style="width:100px; padding:7px 10px; font-size:13px;"/>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">💾</div>
-              <div class="config-info">
-                <h4>Backup dos agendamentos</h4>
-                <p>Exporta todos os stories agendados em arquivo JSON</p>
-              </div>
-              <button class="btn" onclick="exportBackup()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬇️ Exportar backup</button>
-            </div>
-
-            <div class="config-row">
-              <div class="config-icon">📤</div>
-              <div class="config-info">
-                <h4>Restaurar backup</h4>
-                <p>Importa stories de um arquivo de backup</p>
-              </div>
-              <input type="file" id="backup-import-input" accept=".json" style="display:none" onchange="importBackup(this)"/>
-              <button class="btn" onclick="document.getElementById('backup-import-input').click()" style="font-size:12px; padding:7px 14px; white-space:nowrap;">⬆️ Importar backup</button>
-            </div>
-
+        <div class="panel-body">
+          <div class="log-list" id="log-list">
+            <div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">Nenhum registro ainda</div>
           </div>
         </div>
       </div>
-
-      <!-- PAGE: METRICS -->
-      <div class="page" id="page-metrics">
-
-        <!-- Period selector -->
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <span style="font-size:13px; font-weight:600; color:var(--text2)">Período:</span>
-          <div class="metric-period-tabs" id="main-period-tabs">
-            <button class="mpt active" onclick="setMainPeriod(this,'semana')">Esta semana</button>
-            <button class="mpt" onclick="setMainPeriod(this,'mes')">Este mês</button>
-            <button class="mpt" onclick="setMainPeriod(this,'mes_ant')">Mês anterior</button>
-          </div>
-          <span id="period-label" style="font-size:12px; color:var(--text2); margin-left:4px;">Março 2026</span>
-        </div>
-
-        <!-- KPI Cards Row 1: Stories -->
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
-          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">📱 Stories</span>
-          <div style="flex:1; height:1px; background:var(--border);"></div>
-        </div>
-        <div class="metrics-grid-top">
-          <div class="metric-card" style="animation-delay:0.0s; border-top: 2px solid var(--accent)">
-            <div class="mc-label">👁️ Visualizações</div>
-            <div class="mc-val" id="kpi-views" style="color:var(--accent2)">24.8k</div>
-            <div class="mc-delta up" id="kpi-views-d">▲ 18% vs período anterior</div>
-          </div>
-          <div class="metric-card" style="animation-delay:0.05s; border-top: 2px solid var(--green)">
-            <div class="mc-label">💬 Respostas</div>
-            <div class="mc-val" id="kpi-replies" style="color:var(--green)">312</div>
-            <div class="mc-delta up" id="kpi-replies-d">▲ 24% vs período anterior</div>
-          </div>
-          <div class="metric-card" style="animation-delay:0.1s; border-top: 2px solid var(--orange)">
-            <div class="mc-label">🔗 Cliques no Link</div>
-            <div class="mc-val" id="kpi-clicks" style="color:var(--orange)">847</div>
-            <div class="mc-delta up" id="kpi-clicks-d">▲ 11% vs período anterior</div>
-          </div>
-          <div class="metric-card" style="animation-delay:0.15s; border-top: 2px solid var(--accent3)">
-            <div class="mc-label">📤 Taxa de Saída</div>
-            <div class="mc-val" id="kpi-exit" style="color:var(--accent3)">14%</div>
-            <div class="mc-delta down" id="kpi-exit-d">▼ 3% vs período anterior</div>
-          </div>
-        </div>
-
-        <!-- KPI Cards Row 2: Perfil -->
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:-8px;">
-          <span style="font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.08em;">🏠 Perfil</span>
-          <div style="flex:1; height:1px; background:var(--border);"></div>
-        </div>
-        <div class="metrics-grid-top">
-          <div class="metric-card" style="animation-delay:0.0s; border-top: 2px solid #f472b6">
-            <div class="mc-label">👥 Novos Seguidores</div>
-            <div class="mc-val" id="kpi-followers" style="color:#f472b6">+284</div>
-            <div class="mc-delta up" id="kpi-followers-d">▲ 31% vs mês anterior</div>
-            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Total: <strong style="color:var(--text)" id="kpi-total-followers">3.847</strong></div>
-          </div>
-          <div class="metric-card" style="animation-delay:0.05s; border-top: 2px solid #22d3ee">
-            <div class="mc-label">🔍 Visitas ao Perfil</div>
-            <div class="mc-val" id="kpi-profile" style="color:#22d3ee">1.2k</div>
-            <div class="mc-delta up" id="kpi-profile-d">▲ 22% vs mês anterior</div>
-            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Únicos no mês</div>
-          </div>
-          <div class="metric-card" style="animation-delay:0.1s; border-top: 2px solid #a3e635">
-            <div class="mc-label">✉️ Mensagens no Direct</div>
-            <div class="mc-val" id="kpi-direct" style="color:#a3e635">193</div>
-            <div class="mc-delta up" id="kpi-direct-d">▲ 38% vs mês anterior</div>
-            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Contatos novos</div>
-          </div>
-          <div class="metric-card" style="animation-delay:0.15s; border-top: 2px solid #fb7185">
-            <div class="mc-label">📊 Alcance Total</div>
-            <div class="mc-val" id="kpi-reach" style="color:#fb7185">8.4k</div>
-            <div class="mc-delta up" id="kpi-reach-d">▲ 14% vs mês anterior</div>
-            <div style="font-size:11px; color:var(--text2); margin-top:2px;">Contas únicas</div>
-          </div>
-        </div>
-
-        <!-- Followers + Direct growth chart -->
-        <div class="metrics-grid-mid">
-          <div class="panel">
-            <div class="panel-header">
-              <span>📈</span>
-              <span class="panel-title">Crescimento Mensal do Perfil</span>
-              <div class="metric-period-tabs">
-                <button class="mpt active" onclick="setPeriod(this,'7d')">7d</button>
-                <button class="mpt" onclick="setPeriod(this,'14d')">14d</button>
-                <button class="mpt" onclick="setPeriod(this,'30d')">30d</button>
-              </div>
-            </div>
-            <div class="chart-wrap">
-              <div class="chart-legend">
-                <div class="legend-item"><div class="legend-dot" style="background:#f472b6"></div> Novos seguidores</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#22d3ee"></div> Visitas ao perfil</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#a3e635"></div> Mensagens Direct</div>
-              </div>
-              <canvas id="chart-growth" height="160"></canvas>
-            </div>
-          </div>
-
-          <!-- Top stories -->
-          <div class="panel">
-            <div class="panel-header">
-              <span>🏆</span>
-              <span class="panel-title">Top Stories</span>
-            </div>
-            <div class="top-story-list" id="top-story-list"></div>
-          </div>
-        </div>
-
-        <!-- Stories views chart + Category donut -->
-        <div class="metrics-grid-bot">
-          <div class="panel">
-            <div class="panel-header">
-              <span>👁️</span>
-              <span class="panel-title">Visualizações de Stories por Dia</span>
-            </div>
-            <div class="chart-wrap">
-              <div class="chart-legend">
-                <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div> Visualizações</div>
-                <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Respostas</div>
-                <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Cliques</div>
-              </div>
-              <canvas id="chart-views" height="140"></canvas>
-            </div>
-          </div>
-
-          <!-- Category breakdown -->
-          <div class="panel">
-            <div class="panel-header">
-              <span>🎯</span>
-              <span class="panel-title">Engajamento por Categoria</span>
-            </div>
-            <div class="chart-wrap" style="display:flex; gap:24px; align-items:center;">
-              <canvas id="chart-donut" width="140" height="140" style="flex-shrink:0"></canvas>
-              <div id="donut-legend" style="display:flex; flex-direction:column; gap:10px; flex:1"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Heatmap full width -->
-        <div class="panel">
-          <div class="panel-header">
-            <span>🗓️</span>
-            <span class="panel-title">Melhores Horários para Postar</span>
-          </div>
-          <div class="heatmap-grid" id="heatmap-grid"></div>
-          <div style="padding:0 20px 14px; display:flex; align-items:center; gap:10px;">
-            <span style="font-size:11px; color:var(--text2)">Menos</span>
-            <div style="display:flex; gap:3px;">
-              <div style="width:14px;height:14px;border-radius:3px;background:var(--surface3)"></div>
-              <div style="width:14px;height:14px;border-radius:3px;background:rgba(108,99,255,0.2)"></div>
-              <div style="width:14px;height:14px;border-radius:3px;background:rgba(108,99,255,0.45)"></div>
-              <div style="width:14px;height:14px;border-radius:3px;background:rgba(108,99,255,0.7)"></div>
-              <div style="width:14px;height:14px;border-radius:3px;background:var(--accent)"></div>
-            </div>
-            <span style="font-size:11px; color:var(--text2)">Mais engajamento</span>
-          </div>
-        </div>
-
-      </div>
-
     </div>
-  </main>
-</div>
 
-<!-- MODAL: Agendar Story -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal" id="modal" style="max-width:480px; width:95%;">
-    <h2 id="modal-title-label">📅 Story</h2>
+    <!-- CONFIG -->
+    <div class="page" id="page-config">
+      <div class="panel">
+        <div class="panel-header"><span>📱</span><div class="panel-title">Meta Business Suite</div></div>
+        <div class="panel-body">
+          <div style="background:rgba(108,99,255,0.08);border-radius:10px;padding:16px;border:1px solid rgba(108,99,255,0.3);margin-bottom:14px">
+            <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">📋 Como usar o sistema</div>
+            <div style="font-size:12px;color:var(--text2);line-height:2">
+              <div>1️⃣ Clique em <strong style="color:var(--text)">✨ Organizar Semana</strong></div>
+              <div>2️⃣ Selecione os vídeos e configure os horários</div>
+              <div>3️⃣ Os stories aparecem na Timeline organizados</div>
+              <div>4️⃣ Acesse o <strong style="color:var(--text)">Meta Business Suite</strong> para agendar</div>
+              <div>5️⃣ Marque como ✅ postado na timeline</div>
+            </div>
+          </div>
+          <a href="https://business.facebook.com" target="_blank" style="display:block;text-align:center;padding:12px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;text-decoration:none">🚀 Abrir Meta Business Suite</a>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span>⚙️</span><div class="panel-title">Configurações</div></div>
+        <div class="panel-body">
+          <div class="config-row">
+            <div class="config-icon">🏷️</div>
+            <div class="config-info"><h4>Nome da loja</h4><p>Aparece na barra lateral</p></div>
+            <input type="text" class="form-input" style="width:160px" placeholder="Move Pé Calçados" id="store-name" oninput="updateStoreName(this.value)" value="Move Pé Calçados"/>
+          </div>
+          <div class="config-row">
+            <div class="config-icon">🔔</div>
+            <div class="config-info"><h4>Notificações</h4><p>Lembretes dos stories agendados</p></div>
+            <button onclick="ativarNotif()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--green);background:rgba(52,211,153,0.1);color:var(--green);font-size:12px;font-weight:700;cursor:pointer">🔔 Ativar</button>
+          </div>
+          <div class="config-row">
+            <div class="config-icon">💾</div>
+            <div class="config-info"><h4>Backup</h4><p>Exporta todos os agendamentos</p></div>
+            <button onclick="exportar()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer">⬇️ Exportar</button>
+          </div>
+          <div class="config-row">
+            <div class="config-icon">📤</div>
+            <div class="config-info"><h4>Restaurar</h4><p>Importa backup JSON</p></div>
+            <input type="file" id="import-input" accept=".json" style="display:none" onchange="importar(this)"/>
+            <button onclick="document.getElementById('import-input').click()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer">⬆️ Importar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL: AGENDAR STORY -->
+<div class="modal-bg" id="story-modal" onclick="closeStoryModal(event)">
+  <div class="modal">
+    <h2 id="story-modal-title">📅 Agendar Story</h2>
     <div class="form-group">
       <label class="form-label">Título</label>
-      <input type="text" class="form-input" placeholder="Ex: Nike Air Force — Lançamento" id="modal-title"/>
+      <input type="text" class="form-input" id="sm-title" placeholder="Ex: Nike Air Force — Promoção"/>
     </div>
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-      <div class="form-group" style="margin-bottom:0">
+    <div class="form-row">
+      <div class="form-group">
         <label class="form-label">Data</label>
-        <input type="date" class="form-input" id="modal-date"/>
+        <input type="date" class="form-input" id="sm-date"/>
       </div>
-      <div class="form-group" style="margin-bottom:0">
+      <div class="form-group">
         <label class="form-label">Horário</label>
-        <input type="time" class="form-input" value="09:00" id="modal-time"/>
+        <input type="time" class="form-input" id="sm-time" value="09:00"/>
       </div>
     </div>
-
-    <div class="form-group" style="margin-top:14px">
+    <div class="form-group">
       <label class="form-label">Categoria</label>
-      <select class="form-select" id="modal-cat">
-        <option value="promo">🔥 Promoção</option>
+      <select class="form-select" id="sm-cat">
         <option value="produto">👟 Produto</option>
+        <option value="promo">🔥 Promoção</option>
         <option value="dica">💡 Dica</option>
         <option value="depoimento">⭐ Depoimento</option>
         <option value="bastidores">🎬 Bastidores</option>
       </select>
     </div>
-
-    <!-- Upload zone com preview -->
-    <input type="file" id="modal-file-input" accept="image/*,video/*" style="display:none" onchange="handleModalFile(this)"/>
-    <div id="modal-upload-zone" class="upload-zone" style="padding:18px; margin-top:4px; cursor:pointer;" onclick="document.getElementById('modal-file-input').click()">
-      <div class="upload-icon" style="font-size:24px">🎥</div>
-      <p style="font-size:12px">Clique para adicionar vídeo ou imagem</p>
-    </div>
-    <!-- Preview do arquivo selecionado -->
-    <div id="modal-preview" style="display:none; margin-top:10px; position:relative; border-radius:10px; overflow:hidden; background:var(--surface2); border:1px solid var(--border);">
-      <img id="modal-preview-img" style="display:none; width:100%; max-height:200px; object-fit:cover;"/>
-      <video id="modal-preview-vid" style="display:none; width:100%; max-height:200px; object-fit:cover;" muted playsinline></video>
-      <div id="modal-preview-info" style="padding:8px 12px; display:flex; align-items:center; justify-content:space-between;">
-        <span id="modal-file-name" style="font-size:11px; color:var(--text2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;"></span>
-        <button onclick="clearModalFile()" style="background:var(--red); border:none; color:#fff; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:12px; line-height:1; flex-shrink:0;">✕</button>
+    <div class="form-group">
+      <label class="form-label">Mídia (opcional)</label>
+      <input type="file" id="sm-file" accept="image/*,video/*" style="display:none" onchange="handleStoryFile(this)"/>
+      <div class="upload-zone" id="sm-upload-zone" onclick="document.getElementById('sm-file').click()">
+        📁 Clique para adicionar foto ou vídeo
+      </div>
+      <div class="preview-box" id="sm-preview" style="display:none">
+        <img id="sm-preview-img" style="display:none"/>
+        <video id="sm-preview-vid" style="display:none" muted playsinline></video>
+        <div class="preview-info">
+          <span id="sm-file-name"></span>
+          <button onclick="clearStoryFile()" style="background:var(--red);border:none;color:#fff;border-radius:50%;width:18px;height:18px;cursor:pointer;font-size:10px">✕</button>
+        </div>
       </div>
     </div>
-
-
-
-    <div class="modal-actions" style="margin-top:16px;">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="modal-save-btn" onclick="saveStory()">✅ Agendar Story</button>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeStoryModalDirect()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveStory()" id="save-story-btn">✅ Agendar</button>
     </div>
-
-    <!-- Status de publicação -->
-    <div id="modal-publish-status" style="display:none; margin-top:10px; padding:10px; border-radius:8px; background:var(--surface2); font-size:12px; color:var(--text2); text-align:center;"></div>
   </div>
 </div>
 
 <!-- MODAL: ORGANIZAR SEMANA -->
-<div class="modal-overlay" id="week-modal-overlay" onclick="closeWeekModalOutside(event)" style="z-index:500;">
-  <div class="modal" id="week-modal" style="max-width:520px; width:95%; max-height:90vh; overflow-y:auto;">
+<div class="modal-bg week-modal" id="week-modal" onclick="closeWeekModal(event)">
+  <div class="modal">
     <h2>✨ Organizar Semana</h2>
-    <p style="font-size:13px; color:var(--text2); margin-top:4px;">Selecione até 21 vídeos/fotos e o sistema distribui automaticamente nos 3 blocos da semana.</p>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Selecione os vídeos e configure os horários. O sistema distribui automaticamente na timeline.</p>
 
-    <!-- Configuração dos blocos -->
-    <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
-      <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
-        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px;">⏰ Horários de publicação</div>
-        <div style="font-size:11px; color:var(--text2); margin-bottom:10px;">Escolha os horários dos 3 blocos diários — cada bloco publica 7 stories</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
-          <div>
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌅 BLOCO 1</label>
-            <input type="time" id="week-time-1" value="07:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
-            <div style="font-size:9px; color:var(--text3); margin-top:2px;">Stories 1 a 7</div>
-          </div>
-          <div>
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">☀️ BLOCO 2</label>
-            <input type="time" id="week-time-2" value="11:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
-            <div style="font-size:9px; color:var(--text3); margin-top:2px;">Stories 8 a 14</div>
-          </div>
-          <div>
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">🌙 BLOCO 3</label>
-            <input type="time" id="week-time-3" value="19:00" class="form-input" style="padding:6px 8px; font-size:12px;"/>
-            <div style="font-size:9px; color:var(--text3); margin-top:2px;">Stories 15 a 21</div>
-          </div>
+    <div class="form-group">
+      <label class="form-label">⏰ Horários dos 3 blocos diários</label>
+      <div class="time-grid">
+        <div class="time-block">
+          <label>🌅 Bloco 1</label>
+          <input type="time" class="form-input" id="wm-t1" value="07:00" style="padding:6px 8px;font-size:12px"/>
+          <small>Stories 1-7</small>
         </div>
-        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-          <label style="font-size:10px; color:var(--text2);">INTERVALO ENTRE STORIES:</label>
-          <select id="week-interval" class="form-input" style="padding:4px 8px; font-size:12px; flex:1;">
-            <option value="10" selected>10 minutos</option>
-            <option value="15">15 minutos</option>
-            <option value="20">20 minutos</option>
-            <option value="30">30 minutos</option>
-          </select>
+        <div class="time-block">
+          <label>☀️ Bloco 2</label>
+          <input type="time" class="form-input" id="wm-t2" value="11:00" style="padding:6px 8px;font-size:12px"/>
+          <small>Stories 8-14</small>
         </div>
-        <div style="margin-top:8px; font-size:10px; color:var(--accent2); background:rgba(108,99,255,0.1); padding:6px 10px; border-radius:6px;">
-          💡 Com 10 min de intervalo e 7 stories por bloco, cada bloco dura 1h10min
+        <div class="time-block">
+          <label>🌙 Bloco 3</label>
+          <input type="time" class="form-input" id="wm-t3" value="19:00" style="padding:6px 8px;font-size:12px"/>
+          <small>Stories 15-21</small>
         </div>
-      </div>
-
-      <!-- Data de início -->
-      <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
-        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">📅 Semana</div>
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <div style="flex:1;">
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">DATA DE INÍCIO</label>
-            <input type="date" id="week-start-date" class="form-input" style="padding:6px 8px; font-size:12px;"/>
-          </div>
-          <div style="flex:1;">
-            <label style="font-size:10px; color:var(--text2); display:block; margin-bottom:4px;">DIAS DA SEMANA</label>
-            <select id="week-days" class="form-input" style="padding:6px 8px; font-size:12px;">
-              <option value="7">7 dias (Seg-Dom)</option>
-              <option value="5">5 dias (Seg-Sex)</option>
-              <option value="1">Só hoje</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Upload dos arquivos -->
-      <div style="background:var(--surface2); border-radius:10px; padding:12px; border:1px solid var(--border);">
-        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">📁 Arquivos <span id="week-file-count" style="color:var(--accent2);">(0 selecionados)</span></div>
-        <input type="file" id="week-file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleWeekFiles(this)"/>
-        <div onclick="document.getElementById('week-file-input').click()" style="border:2px dashed var(--border); border-radius:8px; padding:16px; text-align:center; cursor:pointer; color:var(--text2); font-size:12px;">
-          📂 Clique para selecionar os arquivos da semana
-        </div>
-        <!-- Preview dos arquivos -->
-        <div id="week-files-preview" style="display:none; margin-top:10px; display:flex; flex-wrap:wrap; gap:6px;"></div>
-      </div>
-
-      <!-- Preview do agendamento -->
-      <div id="week-schedule-preview" style="display:none; background:var(--surface2); border-radius:10px; padding:12px; border:1px solid rgba(108,99,255,0.3);">
-        <div style="font-size:12px; font-weight:700; color:var(--accent2); margin-bottom:8px;">📋 Prévia do agendamento</div>
-        <div id="week-schedule-list" style="font-size:11px; color:var(--text2); max-height:150px; overflow-y:auto; display:flex; flex-direction:column; gap:4px;"></div>
       </div>
     </div>
 
-    <div style="margin-top:16px; display:flex; gap:8px;">
-      <button class="btn btn-ghost" onclick="closeWeekModal()" style="flex:1;">Cancelar</button>
-      <button class="btn" onclick="previewWeekSchedule()" style="flex:1; background:var(--surface3); color:var(--text);">👁️ Prévia</button>
-      <button class="btn btn-primary" onclick="confirmWeekSchedule()" style="flex:1;" id="week-confirm-btn">✨ Agendar semana</button>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Data início</label>
+        <input type="date" class="form-input" id="wm-date"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Intervalo</label>
+        <select class="form-select" id="wm-interval">
+          <option value="10" selected>10 minutos</option>
+          <option value="15">15 minutos</option>
+          <option value="20">20 minutos</option>
+          <option value="30">30 minutos</option>
+        </select>
+      </div>
     </div>
 
-    <div id="week-status" style="display:none; margin-top:10px; padding:10px; border-radius:8px; background:var(--surface2); font-size:12px; color:var(--text2); text-align:center;"></div>
+    <div class="form-group">
+      <label class="form-label">📁 Arquivos <span id="wm-count" style="color:var(--accent2)">(0 selecionados)</span></label>
+      <input type="file" id="wm-files" accept="image/*,video/*" multiple style="display:none" onchange="handleWeekFiles(this)"/>
+      <div class="upload-zone" onclick="document.getElementById('wm-files').click()">
+        📂 Clique para selecionar os vídeos/fotos da semana
+      </div>
+      <div class="files-preview" id="wm-preview"></div>
+    </div>
+
+    <div id="wm-schedule-preview" style="display:none;margin-top:8px">
+      <div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:6px">📋 Prévia do agendamento</div>
+      <div class="schedule-preview" id="wm-schedule-list"></div>
+    </div>
+
+    <div class="modal-actions" style="flex-wrap:wrap;gap:8px">
+      <button class="btn" onclick="closeWeekModalDirect()">Cancelar</button>
+      <button class="btn" onclick="previewWeek()" style="border-color:var(--accent);color:var(--accent2)">👁️ Prévia</button>
+      <button class="btn btn-primary" onclick="confirmWeek()" id="wm-confirm-btn">✨ Agendar semana</button>
+    </div>
+    <div class="status-msg" id="wm-status" style="display:none"></div>
   </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast success" id="toast">
-  <span class="t-icon" id="toast-icon">✅</span>
-  <span id="toast-msg">Story agendado com sucesso!</span>
-</div>
-
-<!-- MOBILE NAV BAR -->
-<nav id="mobile-nav">
-  <div class="mob-nav-item active" data-page="timeline" onclick="navigateMobile(this)">
-    <span>📅</span><span>Timeline</span>
-  </div>
-
-  <div class="mob-nav-item" data-page="metrics" onclick="navigateMobile(this)">
-    <span>📊</span><span>Métricas</span>
-  </div>
-  <div class="mob-nav-item" data-page="config" onclick="navigateMobile(this)">
-    <span>⚙️</span><span>Config</span>
-  </div>
-</nav>
-
-<!-- TOKEN EXPIRY BANNER -->
-<div id="token-expiry-banner" style="display:none; position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:400; background:rgba(234,179,8,0.15); border:1px solid var(--orange); border-radius:12px; padding:12px 20px; display:none; align-items:center; gap:12px; box-shadow:0 4px 20px rgba(0,0,0,0.4); backdrop-filter:blur(12px); min-width:300px; max-width:90vw;">
-  <span style="font-size:20px;">⚠️</span>
-  <div style="flex:1;">
-    <div style="font-size:13px; font-weight:700; color:var(--text);">Token do Instagram expira em <span id="token-days-left" style="color:var(--orange);">?</span></div>
-    <div style="font-size:11px; color:var(--text2);">Renove em developers.facebook.com antes de perder os agendamentos</div>
-  </div>
-  <button onclick="document.getElementById('token-expiry-banner').style.display='none'" style="background:none; border:none; color:var(--text2); cursor:pointer; font-size:18px;">×</button>
-</div>
-
-<!-- NOTIFICATION PERMISSION BANNER -->
-<div class="notif-banner" id="notif-banner">
-  <div class="notif-icon-wrap">🔔</div>
-  <div style="flex:1">
-    <div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:var(--text);">Ativar notificações</div>
-    <div style="font-size:11px;color:var(--text2);margin-top:3px;">Receba um alerta no celular quando cada story for postado para adicionar as enquetes.</div>
-  </div>
-  <button onclick="requestNotifPermission()" style="background:linear-gradient(135deg,#a3e635,#34d399);border:none;color:#0a0a0f;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap;">Ativar agora</button>
-  <button onclick="dismissNotifBanner()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:2px 6px;line-height:1;">×</button>
-</div>
-
-<!-- PWA INSTALL BANNER -->
-<div id="install-banner" style="display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid rgba(108,99,255,0.4); border-radius:14px; padding:14px 20px; display:none; align-items:center; gap:14px; box-shadow:0 8px 40px rgba(0,0,0,0.6); z-index:300; min-width:340px; backdrop-filter:blur(12px);">
-  <div style="width:40px;height:40px;background:#111;border-radius:50%;border:2px solid #e5e5e5;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
-    <span style="font-family:Syne,sans-serif;font-size:7px;font-weight:800;color:#fff;line-height:1;">MOVE PÉ</span>
-    <span style="font-family:Syne,sans-serif;font-size:5.5px;font-weight:700;color:#fff;line-height:1;">CALÇADOS</span>
-  </div>
-  <div style="flex:1;">
-    <div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:var(--text);">Instalar como App</div>
-    <div style="font-size:11px;color:var(--text2);margin-top:2px;">Fixar na área de trabalho sem navegador</div>
-  </div>
-  <button onclick="installApp()" style="background:linear-gradient(135deg,#6c63ff,#38bdf8);border:none;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Instalar</button>
-  <button onclick="dismissInstall()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:2px 4px;line-height:1;">×</button>
+<div class="toast" id="toast">
+  <span id="toast-icon">✅</span>
+  <span id="toast-msg">Mensagem</span>
 </div>
 
 <script>
-// === CONSTANTS ===
-const IG_USER_ID = '17841465204005610';
-const CLOUDINARY_CLOUD = 'duecmhuip';
-const CLOUDINARY_UPLOAD_PRESET = 'movepecalcados';
-const SERVER_URL = ''; // Modo organizador - sem servidor
-
-// === STATE ===
-let currentWeekOffset = 0;
+// === ESTADO ===
 let stories = [];
-let library = [];
 let logs = [];
-let currentFilter = 'todos';
-let scheduledJobs = [];      // Fila de agendamentos ativos
+let weekOffset = 0;
+let catFilter = 'todos';
+let editingId = null;
+let storyFile = null;
+let weekFiles = [];
+let toastTimer = null;
+let notifPermission = 'default';
 
-const EMOJIS = {
-  promo: '🔥', produto: '👟', dica: '💡', depoimento: '⭐', bastidores: '🎬'
-};
+const COLORS = {promo:'#991b1b',produto:'#1e40af',dica:'#065f46',depoimento:'#854d0e',bastidores:'#581c87'};
+const EMOJIS = {promo:'🔥',produto:'👟',dica:'💡',depoimento:'⭐',bastidores:'🎬'};
+const DAY_NAMES = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-const COLORS = {
-  promo: '#991b1b', produto: '#1e40af', dica: '#065f46', depoimento: '#854d0e', bastidores: '#581c87'
-};
-
-// === SALVAR / CARREGAR localStorage ===
-function saveData() {
+// === PERSISTÊNCIA ===
+function save() {
   try {
-    // Salva stories — preserva previewUrl se for base64, remove se for blob
-    const storiesToSave = stories.map(s => ({
-      ...s,
-      previewUrl: s.previewUrl && s.previewUrl.startsWith('data:') ? s.previewUrl : null
-    }));
-    localStorage.setItem('movepe_stories', JSON.stringify(storiesToSave));
-    localStorage.setItem('movepe_logs', JSON.stringify(logs.slice(0, 50)));
-    localStorage.setItem('movepe_library', JSON.stringify(library));
-  } catch(e) { console.warn('Erro ao salvar:', e); }
+    const toSave = stories.map(s => ({...s, previewUrl: s.previewUrl && s.previewUrl.startsWith('data:') ? s.previewUrl : null}));
+    localStorage.setItem('mp_stories', JSON.stringify(toSave));
+    localStorage.setItem('mp_logs', JSON.stringify(logs.slice(0,50)));
+  } catch(e) {}
 }
 
-// Converte arquivo para base64 para salvar no localStorage
-function fileToBase64(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => resolve(null);
-    reader.readAsDataURL(file);
-  });
-}
-
-// Extrai um frame do vídeo como imagem (thumbnail)
-function videoToThumbnail(file) {
-  return new Promise((resolve) => {
-    // Timeout de 5 segundos para não travar
-    const timeout = setTimeout(() => {
-      URL.revokeObjectURL(url);
-      resolve(null);
-    }, 5000);
-
-    const video = document.createElement('video');
-    const url = URL.createObjectURL(file);
-    video.src = url;
-    video.muted = true;
-    video.playsInline = true;
-    video.currentTime = 0.5;
-
-    video.addEventListener('seeked', () => {
-      clearTimeout(timeout);
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 180;
-        canvas.height = 320;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const thumbnail = canvas.toDataURL('image/jpeg', 0.5);
-        URL.revokeObjectURL(url);
-        resolve(thumbnail);
-      } catch(e) {
-        URL.revokeObjectURL(url);
-        resolve(null);
-      }
-    });
-
-    video.addEventListener('error', () => {
-      clearTimeout(timeout);
-      URL.revokeObjectURL(url);
-      resolve(null);
-    });
-
-    video.load();
-  });
-}
-
-function loadData() {
+function load() {
   try {
-    const s = localStorage.getItem('movepe_stories');
-    const l = localStorage.getItem('movepe_logs');
-    const lib = localStorage.getItem('movepe_library');
+    const s = localStorage.getItem('mp_stories');
+    const l = localStorage.getItem('mp_logs');
     if (s) stories = JSON.parse(s);
     if (l) logs = JSON.parse(l);
-    if (lib) library = JSON.parse(lib);
-    return !!(s || l || lib);
-  } catch(e) { return false; }
+  } catch(e) {}
 }
 
-// === INIT ===
-function init() {
+// === NAVEGAÇÃO ===
+const PAGE_TITLES = {timeline:'Timeline da Semana',metrics:'Métricas',logs:'Histórico',config:'Configurações'};
+
+function goTo(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const page = el.dataset.page;
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('page-title').textContent = PAGE_TITLES[page] || page;
+  if (page === 'metrics') updateMetrics();
+}
+
+// === SEMANA ===
+function getWeekDays(offset) {
   const today = new Date();
-  const hasData = loadData();
-
-  if (!hasData) {
-    // Dados de exemplo apenas na primeira vez
-    stories = [
-      { id:1, title:'Aviso Promoção', cat:'promo', date: getDateStr(today, 0), time:'09:00', status:'posted' },
-      { id:2, title:'Nike Air Force', cat:'produto', date: getDateStr(today, 0), time:'11:00', status:'posted' },
-      { id:3, title:'Brindes da Semana', cat:'promo', date: getDateStr(today, 0), time:'14:00', status:'posted' },
-      { id:4, title:'Nike Dunk Novo', cat:'produto', date: getDateStr(today, 1), time:'09:00', status:'scheduled' },
-      { id:5, title:'Dica Cuidar Tênis', cat:'dica', date: getDateStr(today, 1), time:'12:00', status:'scheduled' },
-      { id:6, title:'Vizzano', cat:'produto', date: getDateStr(today, 2), time:'11:00', status:'scheduled' },
-    ];
-
-    library = [
-      { id:1, title:'AF1 Branco', cat:'produto', emoji:'👟' },
-      { id:2, title:'Dunk Black', cat:'produto', emoji:'🖤' },
-      { id:3, title:'Promoção Jul', cat:'promo', emoji:'🔥' },
-    ];
-
-    logs = [
-      { type:'ok', time:'08:45', msg:'Sistema iniciado', tag:'Sistema' },
-    ];
-
-    saveData();
-  }
-
-  updateStats();
-  renderTimeline();
-  renderLibrary();
-  renderLogs();
-
-  const today2 = new Date();
-  document.getElementById('modal-date').value = getDateStr(today2, 0);
-  const uploadDate = document.getElementById('upload-date'); if (uploadDate) uploadDate.value = getDateStr(today2, 0);
-
-  // Verifica expiração do token
-  checkTokenExpiry();
-
-  // Sincroniza token com servidor ao iniciar
-  const savedToken = getIGToken();
-  if (savedToken) {
-    fetch(`/api/token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: savedToken })
-    }).then(() => console.log('✅ Token sincronizado com servidor'))
-      .catch(() => console.warn('⚠️ Servidor offline ao sincronizar token'));
-  }
-
-  // Verifica status do servidor
-  checkServerStatus();
-  setInterval(checkServerStatus, 120000); // atualiza a cada 2 minutos
-
-  // Verifica stories publicados pelo servidor a cada 2 minutos
-  pollServerForPublished();
-  setInterval(pollServerForPublished, 120000);
-
-  // Atualiza contadores regressivos a cada minuto
-  setInterval(updateCountdowns, 60000);
-  updateCountdowns();
-}
-
-async function checkServerStatus() {
-  const dot = document.getElementById('server-dot');
-  const text = document.getElementById('server-status-text');
-  const count = document.getElementById('server-jobs-count');
-  try {
-    const res = await fetch(`/api/status`);
-    const data = await res.json();
-    dot.style.background = 'var(--green)';
-    text.textContent = 'Servidor online ✓';
-    count.textContent = data.jobs || 0;
-
-    // Sincroniza todos os jobs do servidor com a timeline
-    const jobsRes = await fetch(`/api/jobs`);
-    const jobs = await jobsRes.json();
-    let changed = false;
-
-    jobs.forEach(job => {
-      if (job.status === 'scheduled') {
-        // Adiciona na timeline se não existir
-        const exists = stories.find(s =>
-          s.title === job.title && s.date === job.date && s.time === job.time
-        );
-        if (!exists) {
-          stories.push({
-            id: job.id,
-            title: job.title,
-            date: job.date,
-            time: job.time,
-            cat: job.cat || 'produto',
-            status: 'scheduled',
-            isVideo: job.mediaType === 'VIDEO'
-          });
-          changed = true;
-        }
-      } else if (job.status === 'published') {
-        // Atualiza status para postado
-        const story = stories.find(s =>
-          s.title === job.title && s.date === job.date && s.time === job.time
-        );
-        if (story && story.status !== 'posted') {
-          story.status = 'posted';
-          changed = true;
-        }
-      }
-    });
-
-    if (changed) {
-      saveData();
-      renderTimeline();
-      updateStats();
-    }
-
-  } catch(e) {
-    dot.style.background = 'var(--red)';
-    text.textContent = 'Servidor offline ⚠️';
-    count.textContent = '--';
-  }
-}
-
-function updateCountdowns() {
-  const now = new Date();
-  document.querySelectorAll('.story-countdown').forEach(el => {
-    const fireAt = new Date(el.dataset.fireat);
-    const diff = fireAt - now;
-    if (diff <= 0) { el.textContent = '🔴 Agora!'; return; }
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    if (h > 24) {
-      const d = Math.floor(h / 24);
-      el.textContent = `⏱ ${d}d ${h % 24}h`;
-    } else if (h > 0) {
-      el.textContent = `⏱ ${h}h ${m}m`;
-    } else {
-      el.textContent = `⏱ ${m}min`;
-    }
-  });
-}
-
-function exportBackup() {
-  const backup = {
-    exportedAt: new Date().toISOString(),
-    stories: stories.map(s => ({ ...s, previewUrl: null })), // remove preview para arquivo menor
-    logs: logs.slice(0, 30)
-  };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `movepe-backup-${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Backup exportado com sucesso!', '💾');
-}
-
-function importBackup(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const backup = JSON.parse(e.target.result);
-      if (!backup.stories) throw new Error('Arquivo inválido');
-      const existing = stories.map(s => s.id);
-      let added = 0;
-      backup.stories.forEach(s => {
-        if (!existing.includes(s.id)) {
-          stories.push(s);
-          added++;
-        }
-      });
-      saveData();
-      renderTimeline();
-      updateStats();
-      showToast(`${added} stories restaurados do backup!`, '✅');
-    } catch(e) {
-      showToast('Erro ao importar: arquivo inválido', '❌');
-    }
-  };
-  reader.readAsText(file);
-  input.value = '';
-}
-
-function getDateStr(base, offsetDays) {
-  const d = new Date(base);
-  d.setDate(d.getDate() + offsetDays);
-  return d.toISOString().split('T')[0];
-}
-
-// === ORGANIZAR SEMANA ===
-let weekFiles = [];
-
-function openWeekModal() {
-  weekFiles = [];
-  document.getElementById('week-file-count').textContent = '(0 selecionados)';
-  document.getElementById('week-files-preview').style.display = 'none';
-  document.getElementById('week-files-preview').innerHTML = '';
-  document.getElementById('week-schedule-preview').style.display = 'none';
-  document.getElementById('week-status').style.display = 'none';
-  // Define data de início como hoje
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('week-start-date').value = today;
-  document.getElementById('week-modal-overlay').classList.add('open');
-}
-
-function closeWeekModal() {
-  document.getElementById('week-modal-overlay').classList.remove('open');
-}
-
-function closeWeekModalOutside(e) {
-  if (e.target === document.getElementById('week-modal-overlay')) closeWeekModal();
-}
-
-function handleWeekFiles(input) {
-  weekFiles = Array.from(input.files);
-  const count = weekFiles.length;
-  document.getElementById('week-file-count').textContent = `(${count} selecionado${count !== 1 ? 's' : ''})`;
-
-  const preview = document.getElementById('week-files-preview');
-  preview.style.display = 'flex';
-  preview.innerHTML = weekFiles.map((f, i) => {
-    const isVid = f.type.startsWith('video');
-    const size = (f.size/1024/1024).toFixed(1);
-    return `<div style="background:var(--surface); border-radius:6px; padding:4px 8px; font-size:10px; color:var(--text2); border:1px solid var(--border); display:flex; align-items:center; gap:4px;">
-      <span>${isVid ? '🎬' : '🖼️'}</span>
-      <span style="max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.name}</span>
-      <span style="color:var(--text3);">${size}MB</span>
-    </div>`;
-  }).join('');
-
-  // Gera prévia automática
-  previewWeekSchedule();
-}
-
-function getWeekSchedule() {
-  const startDate = document.getElementById('week-start-date').value;
-  const time1 = document.getElementById('week-time-1').value;
-  const time2 = document.getElementById('week-time-2').value;
-  const time3 = document.getElementById('week-time-3').value;
-  const intervalMin = parseInt(document.getElementById('week-interval').value);
-  const days = parseInt(document.getElementById('week-days').value);
-
-  if (!startDate || weekFiles.length === 0) return [];
-
-  // Cada dia recebe os mesmos arquivos nos 3 blocos
-  // Os arquivos são repetidos por dia (mesmos vídeos todos os dias)
-  const blocks = [time1, time2, time3];
-  const storiesPerBlock = 7;
-  const schedule = [];
-
-  for (let d = 0; d < days; d++) {
-    const date = new Date(startDate + 'T12:00:00');
-    date.setDate(date.getDate() + d);
-    const dateStr = date.toISOString().split('T')[0];
-
-    // Distribui os arquivos nos 3 blocos do dia
-    let fileIndex = 0;
-    for (let b = 0; b < blocks.length; b++) {
-      const blockFiles = weekFiles.slice(b * storiesPerBlock, (b + 1) * storiesPerBlock);
-      for (let s = 0; s < blockFiles.length; s++) {
-        const fireTime = new Date(`${dateStr}T${blocks[b]}:00`);
-        fireTime.setMinutes(fireTime.getMinutes() + s * intervalMin);
-        schedule.push({
-          file: blockFiles[s],
-          date: dateStr,
-          time: fireTime.toTimeString().slice(0, 5)
-        });
-      }
-    }
-  }
-
-  return schedule;
-}
-
-function previewWeekSchedule() {
-  const schedule = getWeekSchedule();
-  if (schedule.length === 0) return;
-
-  const previewDiv = document.getElementById('week-schedule-preview');
-  const listDiv = document.getElementById('week-schedule-list');
-
-  previewDiv.style.display = 'block';
-  listDiv.innerHTML = schedule.map((s, i) => `
-    <div style="display:flex; gap:8px; align-items:center; padding:3px 0; border-bottom:1px solid var(--border);">
-      <span style="color:var(--accent2); font-weight:700; min-width:20px;">${i+1}.</span>
-      <span style="background:var(--surface); padding:2px 6px; border-radius:4px; font-size:10px;">${s.date}</span>
-      <span style="color:var(--green); font-weight:700;">${s.time}</span>
-      <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${s.file.name}</span>
-    </div>
-  `).join('');
-}
-
-async function confirmWeekSchedule() {
-  if (weekFiles.length === 0) { showToast('Selecione os arquivos primeiro!', '⚠️'); return; }
-
-  const schedule = getWeekSchedule();
-  if (schedule.length === 0) { showToast('Configure os horários e selecione arquivos!', '⚠️'); return; }
-
-  if (!confirm(`Agendar ${schedule.length} stories para a semana?`)) return;
-
-  const btn = document.getElementById('week-confirm-btn');
-  const statusEl = document.getElementById('week-status');
-  btn.disabled = true;
-  btn.textContent = '⏳ Processando...';
-  statusEl.style.display = 'block';
-
-  let success = 0;
-  for (let i = 0; i < schedule.length; i++) {
-    const { file, date, time } = schedule[i];
-    statusEl.textContent = `⏳ Processando ${i+1}/${schedule.length}...`;
-    try {
-      const isVideo = file.type.startsWith('video');
-      let previewUrl = null;
-      if (!isVideo) previewUrl = await fileToBase64(file);
-      else previewUrl = await videoToThumbnail(file);
-
-      const jobId = Date.now() + i;
-      const cat = guessCategoryFromFilename(file.name);
-      const newStory = { id: jobId, title: file.name, date, time, cat, status: 'scheduled', previewUrl, isVideo };
-      stories.push(newStory);
-      success++;
-    } catch(e) {
-      console.error('Erro:', file.name, e);
-    }
-  }
-
-  renderTimeline(); updateStats(); saveData();
-
-  statusEl.style.color = 'var(--green)';
-  statusEl.textContent = `✅ ${success}/${schedule.length} stories organizados na timeline!`;
-  showToast(`${success} stories agendados na semana!`, '🚀');
-  logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Semana organizada: ${success} stories`, tag: 'Semana' });
-  renderLogs(); saveData();
-
-  btn.disabled = false;
-  btn.textContent = '✨ Agendar semana';
-  setTimeout(() => closeWeekModal(), 2000);
-}
-
-
-// === LIMPAR STORIES ===
-async function clearWeekStories() {
-  const days = getWeekDays(currentWeekOffset);
-  const weekDates = days.map(d => d.toISOString().split('T')[0]);
-  const toDelete = stories.filter(s => s.status === 'scheduled' && weekDates.includes(s.date));
-  if (toDelete.length === 0) { showToast('Nenhum story agendado nesta semana!', '⚠️'); return; }
-  if (!confirm(`Remover ${toDelete.length} stories agendados desta semana?`)) return;
-
-  // Remove da timeline primeiro
-  stories = stories.filter(s => !(s.status === 'scheduled' && weekDates.includes(s.date)));
-  saveData(); renderTimeline(); updateStats();
-  showToast(`${toDelete.length} stories removidos!`, '🗑️');
-
-  // Cancela no servidor em background (sem travar a UI)
-  try {
-    await fetch(`/api/jobs`, { method: 'DELETE' });
-    scheduledJobs = [];
-  } catch(e) { console.warn('Erro ao cancelar jobs no servidor:', e); }
-}
-
-async function clearAllScheduled() {
-  const count = stories.filter(s => s.status === 'scheduled').length;
-  if (count === 0) { showToast('Nenhum story agendado!', '⚠️'); return; }
-  if (!confirm(`Remover TODOS os ${count} stories agendados?`)) return;
-
-  // Remove da timeline primeiro
-  stories = stories.filter(s => s.status !== 'scheduled');
-  scheduledJobs = [];
-  saveData(); renderTimeline(); updateStats();
-  showToast(`${count} stories removidos!`, '🗑️');
-
-  // Cancela no servidor em background
-  try {
-    await fetch(`/api/jobs`, { method: 'DELETE' });
-  } catch(e) { console.warn('Erro ao cancelar jobs no servidor:', e); }
-}
-
-// === STATS ===
-function deleteStory(event, id) {
-  event.stopPropagation();
-  if (!confirm('Deletar este story agendado?')) return;
-  stories = stories.filter(s => s.id !== id);
-  saveData();
-  renderTimeline();
-  updateStats();
-  showToast('Story removido!', '🗑️');
-}
-
-let editingStoryId = null;
-
-function editStory(event, id) {
-  event.stopPropagation();
-  const s = stories.find(s => s.id === id);
-  if (!s) return;
-
-  editingStoryId = id;
-
-  // Preenche o modal com os dados do story
-  document.getElementById('modal-title').value = s.title || '';
-  document.getElementById('modal-date').value = s.date || '';
-  document.getElementById('modal-time').value = s.time || '';
-  document.getElementById('modal-cat').value = s.cat || 'produto';
-  document.getElementById('modal-title-label').textContent = '✏️ Editar Story';
-
-  // Mostra preview se tiver
-  if (s.previewUrl) {
-    const preview = document.getElementById('modal-preview');
-    const img = document.getElementById('modal-preview-img');
-    const zone = document.getElementById('modal-upload-zone');
-    const name = document.getElementById('modal-file-name');
-    preview.style.display = 'block';
-    zone.style.display = 'none';
-    img.style.display = 'block';
-    img.src = s.previewUrl;
-    name.textContent = s.isVideo ? '🎬 Vídeo agendado' : '🖼️ Imagem agendada';
-  }
-
-  // Muda botão para salvar edição
-  setModalMode('scheduled');
-  const saveBtn = document.getElementById('modal-save-btn');
-  saveBtn.textContent = '💾 Salvar edição';
-  saveBtn.onclick = saveEditStory;
-
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function saveEditStory() {
-  const title = document.getElementById('modal-title').value || 'Novo Story';
-  const date = document.getElementById('modal-date').value;
-  const time = document.getElementById('modal-time').value;
-  const cat = document.getElementById('modal-cat').value;
-
-  if (!date) { showToast('Selecione uma data', '⚠️'); return; }
-
-  const idx = stories.findIndex(s => s.id === editingStoryId);
-  if (idx !== -1) {
-    stories[idx] = { ...stories[idx], title, date, time, cat };
-    saveData();
-    renderTimeline();
-    updateStats();
-    showToast('Story atualizado!', '✅');
-  }
-
-  // Restaura botão original
-  const saveBtn = document.getElementById('modal-save-btn');
-  saveBtn.textContent = '✅ Agendar Story';
-  saveBtn.onclick = saveStory;
-  editingStoryId = null;
-  document.getElementById('modal-title-label').textContent = '📅 Story';
-  closeModal();
-}
-
-function updateStats() {
-  const scheduled = stories.filter(s => s.status === 'scheduled').length;
-  const posted = stories.filter(s => s.status === 'posted').length;
-  const errors = stories.filter(s => s.status === 'error').length;
-  document.getElementById('stat-agendados').textContent = scheduled;
-  document.getElementById('stat-postados').textContent = posted;
-  document.getElementById('stat-erros').textContent = errors;
-  document.getElementById('stat-midias').textContent = library.length;
-  document.getElementById('error-badge').textContent = errors;
-}
-
-// === WEEK ===
-function getWeekDays(offset = 0) {
-  const today = new Date();
-  const day = today.getDay();
+  const dow = today.getDay();
   const monday = new Date(today);
-  monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1) + (offset * 7));
-
-  return Array.from({length: 7}, (_, i) => {
+  monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1) + offset * 7);
+  return Array.from({length:7}, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     return d;
   });
 }
 
-function changeWeek(dir) {
-  currentWeekOffset += dir;
-  renderTimeline();
-}
+function dateStr(d) { return d.toISOString().split('T')[0]; }
 
-function goToday() {
-  currentWeekOffset = 0;
-  renderTimeline();
-}
+function changeWeek(dir) { weekOffset += dir; renderTimeline(); }
+function goToday() { weekOffset = 0; renderTimeline(); }
 
-let currentCatFilter = 'todos';
-
-function setCatFilter(cat, btn) {
-  currentCatFilter = cat;
-  // Atualiza botões
-  document.querySelectorAll('.cat-filter-btn').forEach(b => {
-    b.style.background = 'transparent';
-    b.style.borderColor = 'var(--border)';
-    b.style.color = 'var(--text2)';
-  });
-  btn.style.background = 'rgba(108,99,255,0.15)';
-  btn.style.borderColor = 'var(--accent)';
-  btn.style.color = 'var(--accent2)';
-  renderTimeline();
-}
-
+// === TIMELINE ===
 function renderTimeline() {
-  const days = getWeekDays(currentWeekOffset);
-  const today = new Date().toISOString().split('T')[0];
-
-  const dayNames = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-
-  // Update week range
+  const days = getWeekDays(weekOffset);
+  const today = dateStr(new Date());
   const first = days[0], last = days[6];
   document.getElementById('week-range').textContent =
     `${String(first.getDate()).padStart(2,'0')}/${String(first.getMonth()+1).padStart(2,'0')} – ${String(last.getDate()).padStart(2,'0')}/${String(last.getMonth()+1).padStart(2,'0')}`;
 
-  const grid = document.getElementById('timeline-grid');
+  const grid = document.getElementById('tl-grid');
   grid.innerHTML = '';
 
-  days.forEach((date, i) => {
-    const dateStr = date.toISOString().split('T')[0];
-    const isToday = dateStr === today;
-    const dayStories = stories.filter(s => s.date === dateStr && (currentCatFilter === 'todos' || s.cat === currentCatFilter));
+  days.forEach(day => {
+    const ds = dateStr(day);
+    const isToday = ds === today;
+    const dayStories = stories.filter(s => s.date === ds && (catFilter === 'todos' || s.cat === catFilter));
 
     const col = document.createElement('div');
     col.className = 'day-col' + (isToday ? ' today' : '');
 
-    col.innerHTML = `
-      <div class="day-header-wrap">
-        <div class="day-header">
-          <div class="day-name">${dayNames[i]}</div>
-          <div class="day-date">${date.getDate()}</div>
-          <div class="day-count">${dayStories.length > 0 ? dayStories.length + ' stories' : 'Sem stories'}</div>
-        </div>
-        <button class="add-story-btn" onclick="openModalForDate('${dateStr}')" title="Adicionar story">+</button>
-      </div>
-    `;
+    // Header
+    const header = document.createElement('div');
+    header.className = 'day-header';
+    header.innerHTML = `<div class="day-name">${DAY_NAMES[day.getDay()]}</div><div class="day-date">${day.getDate()}</div><div class="day-count">${dayStories.length > 0 ? dayStories.length + ' stories' : 'Sem stories'}</div>`;
+    col.appendChild(header);
 
-    dayStories.forEach(s => {
+    // Stories
+    dayStories.sort((a,b) => a.time.localeCompare(b.time)).forEach(s => {
       const card = document.createElement('div');
       card.className = 'story-card';
-      card.style.position = 'relative';
 
-      // Drag and drop — só para stories agendados
-      if (s.status === 'scheduled') {
-        card.draggable = true;
-        card.style.cursor = 'grab';
-        card.dataset.storyId = s.id;
-
-        card.addEventListener('dragstart', (e) => {
-          e.dataTransfer.setData('storyId', s.id);
-          e.dataTransfer.setData('fromDate', s.date);
-          card.style.opacity = '0.5';
-        });
-
-        card.addEventListener('dragend', () => {
-          card.style.opacity = '1';
-        });
+      // Thumbnail
+      let thumbHtml = '';
+      if (s.previewUrl) {
+        thumbHtml = `<img class="story-thumb" src="${s.previewUrl}" onerror="this.style.display='none'"/>`;
+        if (s.isVideo) thumbHtml += `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;background:rgba(0,0,0,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;pointer-events:none">▶</div>`;
+      } else {
+        thumbHtml = `<div style="width:100%;height:100%;background:linear-gradient(160deg,${COLORS[s.cat] || '#333'}88,${COLORS[s.cat] || '#333'}33);display:flex;align-items:center;justify-content:center;font-size:28px">${EMOJIS[s.cat] || '📋'}</div>`;
       }
 
       const statusIcon = s.status === 'posted' ? '✓' : s.status === 'error' ? '!' : '⏰';
-      const statusClass = s.status;
-
-      // Thumb: foto/vídeo real ou gradiente de categoria
-      let thumbHtml = '';
-      if (s.previewUrl && !s.isVideo) {
-        thumbHtml = `<div class="story-thumb-placeholder" style="background:#000; padding:0; overflow:hidden;">
-          <img src="${s.previewUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"/>
-        </div>`;
-      } else if (s.isVideo && s.previewUrl) {
-        thumbHtml = `<div class="story-thumb-placeholder" style="background:#000; padding:0; overflow:hidden; position:relative;">
-          <img src="${s.previewUrl}" style="width:100%; height:100%; object-fit:cover; display:block;"/>
-          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:32px; height:32px; background:rgba(0,0,0,0.6); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; pointer-events:none;">▶</div>
-        </div>`;
-      } else if (s.isVideo) {
-        thumbHtml = `<div class="story-thumb-placeholder" style="background:linear-gradient(160deg, ${COLORS[s.cat]}cc, ${COLORS[s.cat]}66); padding:10px; display:flex; flex-direction:column; align-items:center; justify-content:space-between;">
-          <div style="font-size:10px; font-weight:800; color:rgba(255,255,255,0.9); text-transform:uppercase; letter-spacing:.1em; align-self:flex-start;">${EMOJIS[s.cat]} ${s.cat}</div>
-          <div style="font-size:32px;">🎬</div>
-          <div style="font-size:10px; font-weight:700; color:rgba(255,255,255,0.8); background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:20px;">▶ Vídeo</div>
-        </div>`;
-      } else {
-        thumbHtml = `<div class="story-thumb-placeholder" style="background:linear-gradient(160deg, ${COLORS[s.cat]}55, ${COLORS[s.cat]}22)">
-          <span style="font-size:10px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:.1em;">${s.cat}</span>
-        </div>`;
-      }
 
       card.innerHTML = `
         ${thumbHtml}
         <div class="story-overlay">
           <div class="story-label">${s.title}</div>
           <div class="story-time">${s.time}</div>
-          ${s.status === 'scheduled' ? `<div class="story-countdown" data-fireat="${s.date}T${s.time}:00" style="font-size:9px; color:rgba(255,255,255,0.7); margin-top:2px;"></div>` : ''}
         </div>
-        <div class="story-status ${statusClass}">${statusIcon}</div>
+        <div class="story-status ${s.status}">${statusIcon}</div>
         ${s.status !== 'posted' ? `
-          <button onclick="deleteStory(event, ${s.id})" style="position:absolute; top:5px; left:5px; background:rgba(220,38,38,0.85); border:none; color:#fff; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:1; display:flex; align-items:center; justify-content:center; z-index:10;">✕</button>
-          <button onclick="editStory(event, ${s.id})" style="position:absolute; top:5px; right:28px; background:rgba(108,99,255,0.85); border:none; color:#fff; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:1; display:flex; align-items:center; justify-content:center; z-index:10;">✏️</button>
-        ` : ''}
+          <div class="story-actions">
+            <button class="action-btn del" onclick="delStory(event,${s.id})">✕</button>
+            <button class="action-btn edit" onclick="editStory(event,${s.id})">✏</button>
+          </div>` : ''}
       `;
       col.appendChild(card);
     });
 
-    // Empty slot
-    const empty = document.createElement('div');
-    empty.className = 'empty-day';
-    empty.textContent = '+';
-    empty.onclick = () => openModalForDate(dateStr);
-    col.appendChild(empty);
+    // Add slot
+    const add = document.createElement('div');
+    add.className = 'add-slot';
+    add.textContent = '+';
+    add.onclick = () => openStoryModal(ds);
+    col.appendChild(add);
 
-    // Drag and drop na coluna
-    col.addEventListener('dragover', (e) => {
+    // Drag & drop
+    col.addEventListener('dragover', e => { e.preventDefault(); col.style.outline = '2px solid var(--accent)'; });
+    col.addEventListener('dragleave', () => { col.style.outline = ''; });
+    col.addEventListener('drop', e => {
       e.preventDefault();
-      col.style.background = 'rgba(108,99,255,0.08)';
-      col.style.borderRadius = '12px';
-    });
-
-    col.addEventListener('dragleave', () => {
-      col.style.background = '';
-    });
-
-    col.addEventListener('drop', (e) => {
-      e.preventDefault();
-      col.style.background = '';
-      const storyId = parseInt(e.dataTransfer.getData('storyId'));
-      const fromDate = e.dataTransfer.getData('fromDate');
-      if (!storyId || fromDate === dateStr) return;
-
-      const story = stories.find(s => s.id === storyId);
-      if (!story || story.status === 'posted') return;
-
-      // Move o story para o novo dia mantendo o horário
-      story.date = dateStr;
-      saveData();
-      renderTimeline();
-      updateStats();
-      showToast(`Story movido para ${dateStr}!`, '📅');
+      col.style.outline = '';
+      const id = parseInt(e.dataTransfer.getData('storyId'));
+      const story = stories.find(s => s.id === id);
+      if (story && story.status !== 'posted') { story.date = ds; save(); renderTimeline(); updateStats(); toast('Story movido!','📅'); }
     });
 
     grid.appendChild(col);
   });
+
+  updateStats();
 }
 
-// === LIBRARY ===
-function renderLibrary(filter = 'todos') {
-  const grid = document.getElementById('library-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const items = filter === 'todos' ? library : library.filter(l => l.cat === filter);
-
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'lib-item';
-    el.title = item.title;
-    el.onclick = () => showToast(`Mídia: ${item.title}`, item.emoji);
-    el.innerHTML = `<div class="lib-emoji">${item.emoji}</div>`;
-    grid.appendChild(el);
-  });
-
-  // Add button
-  const add = document.createElement('div');
-  add.className = 'lib-item';
-  add.style.border = '2px dashed var(--border2)';
-  add.innerHTML = `<div class="lib-emoji" style="font-size:24px; color:var(--border2)">+</div>`;
-  add.onclick = () => navigate(document.querySelector('[data-page="upload"]'));
-  grid.appendChild(add);
-}
-
-function filterLib(btn, cat) {
-  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+function filterCat(cat, btn) {
+  catFilter = cat;
+  document.querySelectorAll('.cf-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  currentFilter = cat;
-  renderLibrary(cat);
+  renderTimeline();
 }
 
-// === LOGS ===
-function renderLogs() {
-  const list = document.getElementById('log-list');
-  list.innerHTML = '';
-  logs.forEach(log => {
-    list.innerHTML += `
-      <div class="log-item">
-        <div class="log-dot ${log.type}"></div>
-        <span class="log-time">${log.time}</span>
-        <span class="log-msg">${log.msg}</span>
-        <span class="log-tag ${log.type}">${log.tag}</span>
-      </div>
-    `;
-  });
+// === STATS ===
+function updateStats() {
+  const agendados = stories.filter(s => s.status === 'scheduled').length;
+  const postados = stories.filter(s => s.status === 'posted').length;
+  const erros = stories.filter(s => s.status === 'error').length;
+  document.getElementById('s-agendados').textContent = agendados;
+  document.getElementById('s-postados').textContent = postados;
+  document.getElementById('s-erros').textContent = erros;
+  document.getElementById('badge-logs').textContent = logs.length;
 }
 
-function clearLogs() {
-  logs = logs.filter(l => l.type !== 'err' && l.type !== 'warn');
-  document.getElementById('error-badge').textContent = '0';
-  document.getElementById('stat-erros').textContent = '0';
-  renderLogs();
-  showToast('Logs limpos com sucesso', '🗑');
+function updateMetrics() {
+  const days = getWeekDays(weekOffset);
+  const weekDates = days.map(d => dateStr(d));
+  const agSemana = stories.filter(s => s.status === 'scheduled' && weekDates.includes(s.date)).length;
+  const diasComStories = new Set(stories.filter(s => weekDates.includes(s.date)).map(s => s.date)).size;
+  document.getElementById('m-agendados').textContent = agSemana;
+  document.getElementById('m-postados').textContent = stories.filter(s => s.status === 'posted').length;
+  document.getElementById('m-dias').textContent = diasComStories;
 }
 
-// === NAVIGATION ===
-function navigate(el) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  const page = el.dataset.page;
-  el.classList.add('active');
-  document.getElementById('page-' + page).classList.add('active');
-
-  const titles = {
-    timeline: 'Timeline da Semana',
-    upload: 'Upload de Mídia',
-    library: 'Biblioteca de Mídias',
-    metrics: 'Métricas de Visualização',
-    logs: 'Erros e Logs',
-    config: 'Configurações'
-  };
-  document.getElementById('page-title').textContent = titles[page] || page;
-  if (page === 'metrics') setTimeout(renderMetrics, 50);
-
-  // Sincroniza mobile nav
-  document.querySelectorAll('.mob-nav-item').forEach(n => {
-    n.classList.toggle('active', n.dataset.page === page);
-  });
+// === MODAL STORY ===
+function openStoryModal(date) {
+  editingId = null;
+  storyFile = null;
+  document.getElementById('sm-title').value = '';
+  document.getElementById('sm-date').value = date || dateStr(new Date());
+  document.getElementById('sm-time').value = '09:00';
+  document.getElementById('sm-cat').value = 'produto';
+  document.getElementById('sm-upload-zone').style.display = 'block';
+  document.getElementById('sm-preview').style.display = 'none';
+  document.getElementById('story-modal-title').textContent = '📅 Agendar Story';
+  document.getElementById('save-story-btn').textContent = '✅ Agendar';
+  document.getElementById('story-modal').classList.add('open');
 }
 
-function navigateMobile(el) {
-  const page = el.dataset.page;
-  // Ativa item mobile
-  document.querySelectorAll('.mob-nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-  // Navega para a página
-  document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.dataset.page === page) navigate(n);
-  });
-  // Scroll para o topo
-  document.querySelector('.main-content').scrollTo(0, 0);
-}
+function closeStoryModal(e) { if (e.target === document.getElementById('story-modal')) closeStoryModalDirect(); }
+function closeStoryModalDirect() { document.getElementById('story-modal').classList.remove('open'); }
 
-// === MODAL ===
-let modalMode = 'now';
-let modalFile = null;
-
-function setModalMode(mode) {
-  modalMode = mode;
-  const btnNow = document.getElementById('modal-mode-now');
-  const btnSched = document.getElementById('modal-mode-sched');
-  const saveBtn = document.getElementById('modal-save-btn');
-  if (mode === 'now') {
-    btnNow.style.background = 'var(--purple)';
-    btnNow.style.borderColor = 'var(--purple)';
-    btnNow.style.color = '#fff';
-    btnSched.style.background = 'transparent';
-    btnSched.style.borderColor = 'var(--border)';
-    btnSched.style.color = 'var(--text2)';
-    saveBtn.textContent = '⚡ Publicar agora';
-  } else {
-    btnSched.style.background = 'var(--purple)';
-    btnSched.style.borderColor = 'var(--purple)';
-    btnSched.style.color = '#fff';
-    btnNow.style.background = 'transparent';
-    btnNow.style.borderColor = 'var(--border)';
-    btnNow.style.color = 'var(--text2)';
-    saveBtn.textContent = '✅ Agendar Story';
-  }
-}
-
-function handleModalFile(input) {
+function handleStoryFile(input) {
   const file = input.files[0];
   if (!file) return;
-  modalFile = file;
+  storyFile = file;
   const isVideo = file.type.startsWith('video');
-  const preview = document.getElementById('modal-preview');
-  const img = document.getElementById('modal-preview-img');
-  const vid = document.getElementById('modal-preview-vid');
-  const name = document.getElementById('modal-file-name');
-  const zone = document.getElementById('modal-upload-zone');
-
-  zone.style.display = 'none';
+  const preview = document.getElementById('sm-preview');
+  const img = document.getElementById('sm-preview-img');
+  const vid = document.getElementById('sm-preview-vid');
+  document.getElementById('sm-upload-zone').style.display = 'none';
   preview.style.display = 'block';
-  name.textContent = file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
-
-  if (isVideo) {
-    img.style.display = 'none';
-    vid.style.display = 'block';
-    vid.src = URL.createObjectURL(file);
-  } else {
-    vid.style.display = 'none';
-    img.style.display = 'block';
-    img.src = URL.createObjectURL(file);
-  }
+  document.getElementById('sm-file-name').textContent = file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
+  if (isVideo) { img.style.display='none'; vid.style.display='block'; vid.src=URL.createObjectURL(file); }
+  else { vid.style.display='none'; img.style.display='block'; img.src=URL.createObjectURL(file); }
 }
 
-function clearModalFile() {
-  modalFile = null;
-  document.getElementById('modal-file-input').value = '';
-  document.getElementById('modal-preview').style.display = 'none';
-  document.getElementById('modal-upload-zone').style.display = 'flex';
-  document.getElementById('modal-preview-img').src = '';
-  document.getElementById('modal-preview-vid').src = '';
-}
-
-function openModal() {
-  modalMode = 'now';
-  modalFile = null;
-  clearModalFile();
-  setModalMode('now');
-  document.getElementById('modal-publish-status').style.display = 'none';
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function openModalForDate(dateStr) {
-  document.getElementById('modal-date').value = dateStr;
-  openModal();
-}
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
+function clearStoryFile() {
+  storyFile = null;
+  document.getElementById('sm-file').value = '';
+  document.getElementById('sm-preview').style.display = 'none';
+  document.getElementById('sm-upload-zone').style.display = 'block';
 }
 
 async function saveStory() {
-  const title = document.getElementById('modal-title').value || 'Novo Story';
-  const date = document.getElementById('modal-date').value;
-  const time = document.getElementById('modal-time').value;
-  const cat = document.getElementById('modal-cat').value;
+  const title = document.getElementById('sm-title').value.trim() || 'Novo Story';
+  const date = document.getElementById('sm-date').value;
+  const time = document.getElementById('sm-time').value;
+  const cat = document.getElementById('sm-cat').value;
+  if (!date) { toast('Selecione uma data','⚠️'); return; }
 
-  if (!date) { showToast('Selecione uma data', '⚠️'); return; }
-
-  // Gera preview se tiver arquivo
   let previewUrl = null;
   let isVideo = false;
-  if (modalFile) {
-    isVideo = modalFile.type.startsWith('video');
-    if (!isVideo) previewUrl = await fileToBase64(modalFile);
-    else previewUrl = await videoToThumbnail(modalFile);
+  if (storyFile) {
+    isVideo = storyFile.type.startsWith('video');
+    if (!isVideo) {
+      previewUrl = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.readAsDataURL(storyFile); });
+    } else {
+      previewUrl = await getVideoThumb(storyFile);
+    }
   }
 
-  const jobId = Date.now();
-  const newStory = { id: jobId, title, date, time, cat, status: 'scheduled', previewUrl, isVideo };
-  stories.push(newStory);
-  renderTimeline(); updateStats(); saveData();
+  if (editingId !== null) {
+    const idx = stories.findIndex(s => s.id === editingId);
+    if (idx !== -1) { stories[idx] = {...stories[idx], title, date, time, cat, previewUrl: previewUrl || stories[idx].previewUrl, isVideo}; }
+    addLog('ok', `Story "${title}" editado`, 'Editado');
+  } else {
+    stories.push({id: Date.now(), title, date, time, cat, status:'scheduled', previewUrl, isVideo});
+    addLog('ok', `Story "${title}" agendado para ${date} às ${time}`, 'Agendado');
+  }
 
-  closeModal();
-  document.getElementById('modal-title').value = '';
-  showToast(`Story agendado para ${date} às ${time}!`, '✅');
-  logs.unshift({ type: 'ok', time: new Date().toTimeString().slice(0,5), msg: `Story "${title}" agendado para ${date} às ${time}`, tag: 'Agendado' });
-  renderLogs();
-  if (notifPermission === 'granted') scheduleAllNotifications();
+  save(); renderTimeline(); updateStats();
+  closeStoryModalDirect();
+  toast(editingId !== null ? 'Story atualizado!' : `Story agendado para ${time}!`, '✅');
+  editingId = null;
 }
 
+function editStory(e, id) {
+  e.stopPropagation();
+  const s = stories.find(s => s.id === id);
+  if (!s) return;
+  editingId = id;
+  document.getElementById('sm-title').value = s.title;
+  document.getElementById('sm-date').value = s.date;
+  document.getElementById('sm-time').value = s.time;
+  document.getElementById('sm-cat').value = s.cat;
+  if (s.previewUrl) {
+    document.getElementById('sm-upload-zone').style.display = 'none';
+    document.getElementById('sm-preview').style.display = 'block';
+    document.getElementById('sm-preview-img').style.display = 'block';
+    document.getElementById('sm-preview-img').src = s.previewUrl;
+    document.getElementById('sm-file-name').textContent = s.isVideo ? '🎬 Vídeo' : '🖼️ Imagem';
+  }
+  document.getElementById('story-modal-title').textContent = '✏️ Editar Story';
+  document.getElementById('save-story-btn').textContent = '💾 Salvar';
+  document.getElementById('story-modal').classList.add('open');
+}
 
+function delStory(e, id) {
+  e.stopPropagation();
+  if (!confirm('Remover este story?')) return;
+  stories = stories.filter(s => s.id !== id);
+  save(); renderTimeline(); updateStats();
+  toast('Story removido','🗑️');
+}
 
+// === LIMPAR ===
+function clearWeek() {
+  const days = getWeekDays(weekOffset);
+  const dates = days.map(d => dateStr(d));
+  const count = stories.filter(s => s.status === 'scheduled' && dates.includes(s.date)).length;
+  if (count === 0) { toast('Nenhum story agendado nesta semana','⚠️'); return; }
+  if (!confirm(`Remover ${count} stories desta semana?`)) return;
+  stories = stories.filter(s => !(s.status === 'scheduled' && dates.includes(s.date)));
+  save(); renderTimeline(); updateStats();
+  toast(`${count} stories removidos`,'🗑️');
+}
+
+function clearAll() {
+  const count = stories.filter(s => s.status === 'scheduled').length;
+  if (count === 0) { toast('Nenhum story agendado','⚠️'); return; }
+  if (!confirm(`Remover TODOS os ${count} stories agendados?`)) return;
+  stories = stories.filter(s => s.status !== 'scheduled');
+  save(); renderTimeline(); updateStats();
+  toast(`${count} stories removidos`,'🗑️');
+}
+
+// === WEEK MODAL ===
+function openWeekModal() {
+  weekFiles = [];
+  document.getElementById('wm-count').textContent = '(0 selecionados)';
+  document.getElementById('wm-preview').innerHTML = '';
+  document.getElementById('wm-schedule-preview').style.display = 'none';
+  document.getElementById('wm-status').style.display = 'none';
+  document.getElementById('wm-date').value = dateStr(new Date());
+  document.getElementById('week-modal').classList.add('open');
+}
+
+function closeWeekModal(e) { if (e.target === document.getElementById('week-modal')) closeWeekModalDirect(); }
+function closeWeekModalDirect() { document.getElementById('week-modal').classList.remove('open'); }
+
+function handleWeekFiles(input) {
+  weekFiles = Array.from(input.files);
+  document.getElementById('wm-count').textContent = `(${weekFiles.length} selecionado${weekFiles.length !== 1 ? 's' : ''})`;
+  const preview = document.getElementById('wm-preview');
+  preview.innerHTML = weekFiles.map(f => `
+    <div class="file-chip">
+      <span>${f.type.startsWith('video') ? '🎬' : '🖼️'}</span>
+      <span style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span>
+      <span style="color:var(--text3)">${(f.size/1024/1024).toFixed(1)}MB</span>
+    </div>`).join('');
+  previewWeek();
+}
+
+function getWeekSchedule() {
+  const t1 = document.getElementById('wm-t1').value;
+  const t2 = document.getElementById('wm-t2').value;
+  const t3 = document.getElementById('wm-t3').value;
+  const interval = parseInt(document.getElementById('wm-interval').value);
+  const startDate = document.getElementById('wm-date').value;
+  if (!startDate || weekFiles.length === 0) return [];
+
+  const blocks = [t1, t2, t3];
+  const perBlock = 7;
+  const schedule = [];
+
+  blocks.forEach((blockTime, b) => {
+    const blockFiles = weekFiles.slice(b * perBlock, (b + 1) * perBlock);
+    blockFiles.forEach((file, i) => {
+      const fireTime = new Date(`${startDate}T${blockTime}:00`);
+      fireTime.setMinutes(fireTime.getMinutes() + i * interval);
+      schedule.push({ file, date: startDate, time: fireTime.toTimeString().slice(0,5) });
+    });
+  });
+
+  return schedule;
+}
+
+function previewWeek() {
+  const schedule = getWeekSchedule();
+  if (schedule.length === 0) return;
+  const preview = document.getElementById('wm-schedule-preview');
+  const list = document.getElementById('wm-schedule-list');
+  preview.style.display = 'block';
+  list.innerHTML = schedule.map((s, i) => `
+    <div class="schedule-row">
+      <span style="color:var(--accent2);font-weight:700;min-width:20px">${i+1}.</span>
+      <span style="background:var(--surface);padding:2px 6px;border-radius:4px">${s.date}</span>
+      <span style="color:var(--green);font-weight:700">${s.time}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${s.file.name}</span>
+    </div>`).join('');
+}
+
+async function confirmWeek() {
+  if (weekFiles.length === 0) { toast('Selecione os arquivos!','⚠️'); return; }
+  const schedule = getWeekSchedule();
+  if (schedule.length === 0) { toast('Configure os horários!','⚠️'); return; }
+  if (!confirm(`Agendar ${schedule.length} stories na timeline?`)) return;
+
+  const btn = document.getElementById('wm-confirm-btn');
+  const statusEl = document.getElementById('wm-status');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processando...';
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--text2)';
+
+  let success = 0;
+  for (let i = 0; i < schedule.length; i++) {
+    const {file, date, time} = schedule[i];
+    statusEl.textContent = `⏳ ${i+1}/${schedule.length}: ${file.name}`;
+    try {
+      const isVideo = file.type.startsWith('video');
+      let previewUrl = null;
+      if (!isVideo) {
+        previewUrl = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.onerror = () => r(null); fr.readAsDataURL(file); });
+      } else {
+        previewUrl = await getVideoThumb(file);
+      }
+      const cat = guessCategory(file.name);
+      stories.push({id: Date.now() + i, title: file.name, date, time, cat, status:'scheduled', previewUrl, isVideo});
+      success++;
+    } catch(e) { console.error(e); }
+  }
+
+  renderTimeline(); updateStats(); save();
+  addLog('ok', `Semana organizada: ${success} stories na timeline`, 'Semana');
+
+  statusEl.style.color = 'var(--green)';
+  statusEl.textContent = `✅ ${success}/${schedule.length} stories organizados!`;
+  toast(`${success} stories adicionados à timeline!`, '🚀');
+
+  btn.disabled = false;
+  btn.textContent = '✨ Agendar semana';
+  setTimeout(() => closeWeekModalDirect(), 2000);
+}
+
+// === UTILS ===
+function guessCategory(name) {
+  const n = name.toLowerCase();
+  if (n.includes('promo') || n.includes('desconto') || n.includes('oferta')) return 'promo';
+  if (n.includes('dica') || n.includes('tip') || n.includes('como')) return 'dica';
+  if (n.includes('depo') || n.includes('cliente')) return 'depoimento';
+  if (n.includes('basti') || n.includes('loja') || n.includes('equipe')) return 'bastidores';
+  return 'produto';
+}
+
+function getVideoThumb(file) {
+  return new Promise(resolve => {
+    const timeout = setTimeout(() => { URL.revokeObjectURL(url); resolve(null); }, 5000);
+    const video = document.createElement('video');
+    const url = URL.createObjectURL(file);
+    video.src = url; video.muted = true; video.currentTime = 0.5;
+    video.addEventListener('seeked', () => {
+      clearTimeout(timeout);
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 180; canvas.height = 320;
+        canvas.getContext('2d').drawImage(video, 0, 0, 180, 320);
+        URL.revokeObjectURL(url);
+        resolve(canvas.toDataURL('image/jpeg', 0.5));
+      } catch(e) { URL.revokeObjectURL(url); resolve(null); }
+    });
+    video.addEventListener('error', () => { clearTimeout(timeout); URL.revokeObjectURL(url); resolve(null); });
+    video.load();
+  });
+}
+
+// === LOGS ===
+function addLog(type, msg, tag) {
+  logs.unshift({type, msg, tag, time: new Date().toTimeString().slice(0,5)});
+  renderLogs();
+  save();
+}
+
+function renderLogs() {
+  const list = document.getElementById('log-list');
+  document.getElementById('badge-logs').textContent = logs.length;
+  if (logs.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">Nenhum registro ainda</div>';
+    return;
+  }
+  list.innerHTML = logs.map(l => `
+    <div class="log-item">
+      <div class="log-dot ${l.type}"></div>
+      <div class="log-time">${l.time}</div>
+      <div class="log-msg">${l.msg}</div>
+      <div class="log-tag">${l.tag}</div>
+    </div>`).join('');
+}
+
+function clearLogs() {
+  if (!confirm('Limpar todo o histórico?')) return;
+  logs = [];
+  renderLogs();
+  save();
+}
+
+// === TOAST ===
+function toast(msg, icon = '✅') {
+  const el = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = icon;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// === CONFIG ===
+function updateStoreName(val) {
+  document.querySelector('.sidebar-logo p').textContent = val || 'Stories Manager';
+  localStorage.setItem('mp_storename', val);
+}
+
+function ativarNotif() {
+  Notification.requestPermission().then(r => {
+    if (r === 'granted') { notifPermission = 'granted'; toast('Notificações ativadas!','🔔'); }
+    else toast('Permissão negada','⚠️');
+  });
+}
+
+function exportar() {
+  const data = { exportedAt: new Date().toISOString(), stories: stories.map(s => ({...s, previewUrl: null})) };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `movepe-backup-${dateStr(new Date())}.json`;
+  a.click();
+  toast('Backup exportado!','💾');
+}
+
+function importar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fr = new FileReader();
+  fr.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.stories) throw new Error('Arquivo inválido');
+      const existing = stories.map(s => s.id);
+      let added = 0;
+      data.stories.forEach(s => { if (!existing.includes(s.id)) { stories.push(s); added++; } });
+      save(); renderTimeline(); updateStats();
+      toast(`${added} stories restaurados!`,'✅');
+    } catch(e) { toast('Erro ao importar','❌'); }
+  };
+  fr.readAsText(file);
+  input.value = '';
+}
+
+// === INIT ===
+function init() {
+  load();
+  renderTimeline();
+  renderLogs();
+  updateStats();
+
+  // Restore store name
+  const name = localStorage.getItem('mp_storename');
+  if (name) {
+    document.getElementById('store-name').value = name;
+    document.querySelector('.sidebar-logo p').textContent = name;
+  }
+
+  // Set today as default date
+  document.getElementById('sm-date').value = dateStr(new Date());
+  document.getElementById('wm-date').value = dateStr(new Date());
+
+  addLog('ok', 'Sistema iniciado', 'Sistema');
+}
+
+init();
 </script>
 </body>
 </html>
