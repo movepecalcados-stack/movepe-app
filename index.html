@@ -2260,25 +2260,38 @@ function fileToBase64(file) {
 // Extrai um frame do vídeo como imagem (thumbnail)
 function videoToThumbnail(file) {
   return new Promise((resolve) => {
+    // Timeout de 5 segundos para não travar
+    const timeout = setTimeout(() => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    }, 5000);
+
     const video = document.createElement('video');
     const url = URL.createObjectURL(file);
     video.src = url;
     video.muted = true;
     video.playsInline = true;
-    video.currentTime = 1; // Captura o frame do segundo 1
+    video.currentTime = 0.5;
 
     video.addEventListener('seeked', () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 200;
-      canvas.height = 356; // proporção 9:16
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const thumbnail = canvas.toDataURL('image/jpeg', 0.7);
-      URL.revokeObjectURL(url);
-      resolve(thumbnail);
+      clearTimeout(timeout);
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 180;
+        canvas.height = 320;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const thumbnail = canvas.toDataURL('image/jpeg', 0.5);
+        URL.revokeObjectURL(url);
+        resolve(thumbnail);
+      } catch(e) {
+        URL.revokeObjectURL(url);
+        resolve(null);
+      }
     });
 
     video.addEventListener('error', () => {
+      clearTimeout(timeout);
       URL.revokeObjectURL(url);
       resolve(null);
     });
